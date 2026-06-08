@@ -1043,33 +1043,6 @@
         menuContainer.innerHTML = html;
     }
 
-    async function handleLogin(e) {
-        e.preventDefault();
-        showLoader(true, "Memvalidasi akun...");
-        try {
-            const user = document.getElementById('login-username').value;
-            const passPlain = document.getElementById('login-password').value;
-            const passHash = await sha256(passPlain);
-
-            const response = await callAPI('login', { username: user, password: passHash });
-            AppState.user = response.user;
-            if(response.settings) AppState.settings = { ...AppState.settings, ...response.settings };
-            
-            localStorage.setItem('sim_session', JSON.stringify(response));
-            initDashboard();
-        } catch (err) {
-            Swal.fire('Login Gagal', err.message, 'error');
-        } finally {
-            showLoader(false);
-        }
-    }
-
-    function logout() {
-        try { localStorage.removeItem('sim_session'); sessionStorage.removeItem('sim_session'); } catch (e) {}
-        AppState.user = null;
-        switchView('view-login');
-    }
-
     async function loadModule(moduleId) {
         showLoader(true, "Memuat data...");
         AppState.currentModule = moduleId;
@@ -1304,7 +1277,6 @@
             html += `<tr><td colspan="4" class="text-center py-4">Data kelas belum dikonfigurasi.</td></tr>`;
         } else {
             kelas.forEach(k => {
-                // Resolving Nama Guru untuk mencegah 'undefined' atau raw user_id
                 const matchedGuru = gurus.find(g => g.user_id === k.wali_kelas_id || g.nama === k.wali_kelas_id);
                 const namaGuru = matchedGuru ? matchedGuru.nama : (k.wali_kelas_id || '-');
 
@@ -1332,7 +1304,6 @@
             return;
         }
 
-        // Tampilan rekap umum bagi Admin
         const list = await callAPI('getData', { sheetName: 'AbsensiSiswa' });
         let html = `
             <div class="card card-custom">
@@ -1458,17 +1429,166 @@
         }
     }
 
-    // --- MODULE: CETAK & PDF CONFIGURATOR (LENGKAP SEMUA DATA AKUN GURU) ---
+    // --- MODULE: INVENTARIS MADRASAH ---
+    async function renderInventarisMenu(container) {
+        const list = await callAPI('getData', { sheetName: 'Inventaris' });
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Buku Inventaris & Aset</span>
+                    <button class="btn btn-sm btn-success" onclick="openAddInventarisModal()"><i class="fas fa-plus"></i> Tambah Aset</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle small">
+                            <thead class="table-light">
+                                <tr><th>Kode Barang</th><th>Nama Barang</th><th>Lokasi Penempatan</th><th>Kondisi</th><th>Tahun Perolehan</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        if (list.length === 0) {
+            html += `<tr><td colspan="6" class="text-center py-4">Aset belum terdaftar.</td></tr>`;
+        } else {
+            list.forEach(i => {
+                const color = i.kondisi === 'Baik' ? 'bg-success' : 'bg-warning';
+                const safeNama = (i.nama || '').replace(/'/g, "\\'");
+                const safeLokasi = (i.lokasi || '').replace(/'/g, "\\'");
+                html += `
+                    <tr>
+                        <td><code>${i.kode}</code></td>
+                        <td><b>${i.nama}</b></td>
+                        <td>${i.lokasi}</td>
+                        <td><span class="badge ${color}">${i.kondisi}</span></td>
+                        <td>${i.tahun}</td>
+                        <td>
+                            <button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editInventaris('${i.id}', '${i.kode}', '${safeNama}', '${safeLokasi}', '${i.kondisi}', '${i.tahun}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteData('Inventaris', '${i.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+
+    // --- MODULE: IMPORT CSV ---
+    function renderImportMenu(container) {
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header">Import Massal File CSV</div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-primary mb-3" onclick="downloadCSVTemplate('Siswa')"><i class="fas fa-download"></i> Unduh Template Siswa</button>
+                    <div class="upload-dropzone" onclick="document.getElementById('csv-file-picker').click()">
+                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                        <h6>Klik atau Seret File CSV</h6>
+                        <input type="file" id="csv-file-picker" style="display:none;" accept=".csv" onchange="handleCSVFileSelect(event)">
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
+    let parsedCSVData = [];
+    let parsedSheetName = "";
+
+    function downloadCSVTemplate(type) {
+        let headers = "";
+        let filename = "";
+        if (type === 'Siswa') {
+            headers = "nis,nisn,nama_lengkap,kelas_id,nama_wali,no_hp_wali\n12345,1234567890,Siswa Baru,Kelas 1A,Budi Santoso,0812345678";
+            filename = "template_siswa.csv";
+        } else if (type === 'Guru') {
+            headers = "nip,nama,no_hp,kelas_id,jabatan_tambahan,alamat\n19850101,Ahmad Guru,0812121212,Kelas 1A,Pembina Pramuka,Bekasi";
+            filename = "template_guru.csv";
+        } else if (type === 'Inventaris') {
+            headers = "kode,nama,lokasi,kondisi,tahun\nINV-001,Kursi Guru,Ruang Guru,Baik,2026";
+            filename = "template_inventaris.csv";
+        }
+
+        const blob = new Blob([headers], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function handleCSVFileSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        parsedSheetName = document.getElementById('import-target-sheet').value;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const text = evt.target.result;
+            parseCSVText(text);
+        };
+        reader.readAsText(file);
+    }
+
+    function parseCSVText(text) {
+        const rows = text.split("\n").map(r => r.trim()).filter(r => r.length > 0);
+        if (rows.length <= 1) {
+            Swal.fire('Error', 'Data CSV kosong atau hanya berisi header!', 'error');
+            return;
+        }
+
+        const headers = rows.shift().split(",");
+        parsedCSVData = rows.map(row => {
+            const columns = row.split(",");
+            let obj = {};
+            headers.forEach((h, i) => {
+                obj[h.trim()] = columns[i] ? columns[i].trim() : '';
+            });
+            return obj;
+        });
+
+        let html = `<thead class="table-light"><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+
+        parsedCSVData.forEach(row => {
+            html += `<tr>`;
+            headers.forEach(h => html += `<td>${row[h]}</td>`);
+            html += `</tr>`;
+        });
+        html += `</tbody>`;
+
+        document.getElementById('import-preview-table').innerHTML = html;
+        document.getElementById('import-preview-container').style.display = 'block';
+    }
+
+    async function executeBulkImport() {
+        if (parsedCSVData.length === 0) return;
+        showLoader(true, `Mengunggah ${parsedCSVData.length} baris data...`);
+        try {
+            for (let i = 0; i < parsedCSVData.length; i++) {
+                await callAPI('insertData', { sheetName: parsedSheetName, record: parsedCSVData[i] });
+            }
+            Swal.fire('Berhasil!', `Sukses mengimpor ${parsedCSVData.length} baris data ke Google Sheets.`, 'success');
+            loadModule(AppState.currentModule);
+        } catch (err) {
+            Swal.fire('Gagal Import', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    // --- MODULE: CETAK & PDF CONFIGURATOR ---
     function renderCetakMenu(container) {
         let html = `
             <div class="row">
                 <div class="col-md-5">
                     <div class="card card-custom">
-                        <div class="card-custom-header">Pengaturan Laporan PDF</div>
+                        <div class="card-custom-header">Konfigurasi Kop & Layout Margin</div>
                         <div class="card-body">
                             <div class="mb-2">
                                 <label class="form-label small fw-bold">Pilih Sumber Data Laporan</label>
-                                <select class="form-select form-select-sm" id="print-source">
+                                <select class="form-select" id="print-source">
                                     <option value="Siswa">Daftar Siswa Aktif</option>
                                     <option value="Guru">Daftar Pendidik / Guru</option>
                                     <option value="Inventaris">Laporan Aset Inventaris</option>
@@ -1498,7 +1618,7 @@
                                 <label class="form-label small fw-bold">Madrasah (Baris 2)</label>
                                 <input type="text" class="form-control form-control-sm" id="print-kop-2" value="MIS MIFTAHUSSA'ADAH BEKASI">
                             </div>
-                            <button class="btn btn-primary btn-sm w-100" onclick="previewPrintOutput()"><i class="fas fa-eye"></i> Tinjau Laporan PDF</button>
+                            <button class="btn btn-primary btn-sm w-100" onclick="previewPrintOutput()"><i class="fas fa-eye"></i> Tinjau Laporan</button>
                         </div>
                     </div>
                 </div>
@@ -1509,7 +1629,7 @@
                             <button class="btn btn-sm btn-success" id="btn-trigger-print" onclick="executeNativePrint()" style="display:none;"><i class="fas fa-print"></i> Unduh PDF</button>
                         </div>
                         <div class="card-body">
-                            <div id="print-preview-frame" class="border p-3 bg-white" style="min-height: 300px; display:none; overflow-y:auto; max-height:400px;"></div>
+                            <div id="print-preview-frame" class="border p-3 bg-white" style="min-height: 300px; display:none;"></div>
                         </div>
                     </div>
                 </div>
@@ -1658,13 +1778,31 @@
             document.getElementById('settings-logo-preview').src = base64;
             toast("Gambar berhasil diproses lokal, siap disimpan.");
         };
-        reader.readAsText(file); // fallback safe
-        const readerData = new FileReader();
-        readerData.onload = function(evt) {
-            document.getElementById('settings-logo-url').value = evt.target.result;
-            document.getElementById('settings-logo-preview').src = evt.target.result;
-        };
-        readerData.readAsDataURL(file);
+        reader.readAsDataURL(file);
+    }
+
+    async function saveSettings(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        showLoader(true, "Memperbarui parameter madrasah...");
+        try {
+            for (const key in data) {
+                await callAPI('insertData', { 
+                    sheetName: 'Pengaturan', 
+                    record: { id: key, kunci: key, nilai: data[key], updated_at: new Date().toISOString() } 
+                });
+            }
+            AppState.settings = { ...AppState.settings, ...data };
+            Swal.fire('Sukses!', 'Parameter Lembaga sukses diperbarui.', 'success');
+            initDashboard();
+        } catch (err) {
+            Swal.fire('Error', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
     }
 
     // --- RE-BIND SINKRONISASI RELASIONAL DI DALAM MODAL ---

@@ -480,7 +480,7 @@
     </div>
 </div>
 
-<!-- Modal Tambah/Edit Guru -->
+<!-- Modal Tambah/Edit Guru (TERHUBUNG KE USER SECARA RELASIONAL) -->
 <div class="modal fade" id="modalGuru" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -491,8 +491,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Pilih Akun User Pendidik (Role Guru)</label>
+                        <select name="user_id" id="formGuruUserId" class="form-select" required onchange="syncGuruName(this)">
+                            <!-- Diisi dinamis lewat JS -->
+                        </select>
+                    </div>
+                    <input type="hidden" name="nama" id="formGuruNama">
                     <div class="mb-2"><label class="form-label">NIP / NUPTK</label><input type="text" name="nip" id="formGuruNip" class="form-control"></div>
-                    <div class="mb-2"><label class="form-label">Nama Guru Lengkap</label><input type="text" name="nama" id="formGuruNama" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">No HP</label><input type="text" name="no_hp" id="formGuruHp" class="form-control"></div>
                     <div class="mb-2"><label class="form-label">Wali Kelas</label><input type="text" name="kelas_id" id="formGuruKelas" class="form-control" placeholder="Cth: Kelas 1A (Kosong jika tidak menjabat)"></div>
                     <div class="mb-2"><label class="form-label">Jabatan Tambahan</label><input type="text" name="jabatan_tambahan" id="formGuruJabatan" class="form-control" placeholder="Cth: Pembina Pramuka / TU"></div>
@@ -506,7 +512,7 @@
     </div>
 </div>
 
-<!-- Modal Tambah/Edit Siswa -->
+<!-- Modal Tambah/Edit Siswa (DENGAN AKUN ORANG TUA OTOMATIS) -->
 <div class="modal fade" id="modalSiswa" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -520,7 +526,12 @@
                     <div class="mb-2"><label class="form-label">NIS (Nomor Induk Siswa)</label><input type="text" name="nis" id="formSiswaNis" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">NISN</label><input type="text" name="nisn" id="formSiswaNisn" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">Nama Siswa Lengkap</label><input type="text" name="nama_lengkap" id="formSiswaNama" class="form-control" required></div>
-                    <div class="mb-2"><label class="form-label">Kelas Aktif</label><input type="text" name="kelas_id" id="formSiswaKelas" class="form-control" required placeholder="Cth: Kelas 1A"></div>
+                    <div class="mb-2">
+                        <label class="form-label">Kelas Aktif</label>
+                        <select name="kelas_id" id="formSiswaKelas" class="form-select" required>
+                            <!-- Diisi dinamis lewat JS -->
+                        </select>
+                    </div>
                     <div class="mb-2"><label class="form-label">Nama Wali/Orang Tua</label><input type="text" name="nama_wali" id="formSiswaWali" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">No HP Orang Tua</label><input type="text" name="no_hp_wali" id="formSiswaHpWali" class="form-control" required></div>
                 </div>
@@ -545,7 +556,12 @@
                 <div class="modal-body">
                     <div class="mb-2"><label class="form-label">Nama Kelas</label><input type="text" name="nama_kelas" id="formKelasNama" class="form-control" required placeholder="Cth: Kelas 1A"></div>
                     <div class="mb-2"><label class="form-label">Tingkat</label><input type="number" name="tingkat" id="formKelasTingkat" class="form-control" required min="1" max="6"></div>
-                    <div class="mb-2"><label class="form-label">ID Wali Kelas</label><input type="text" name="wali_kelas_id" id="formKelasWaliId" class="form-control" placeholder="Isi dengan ID User Guru"></div>
+                    <div class="mb-2">
+                        <label class="form-label">Wali Kelas</label>
+                        <select name="wali_kelas_id" id="formKelasWaliId" class="form-select" required>
+                            <!-- Diisi dinamis lewat JS -->
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Simpan Kelas</button>
@@ -567,7 +583,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formJurnalTanggal" class="form-control" required></div>
-                    <div class="mb-2"><label class="form-label">Kelas</label><input type="text" name="kelas_id" id="formJurnalKelas" class="form-control" required placeholder="Contoh: Kelas 1A"></div>
+                    <div class="mb-2">
+                        <label class="form-label">Kelas</label>
+                        <select name="kelas_id" id="formJurnalKelas" class="form-select" required>
+                            <!-- Diisi dinamis -->
+                        </select>
+                    </div>
                     <div class="mb-2"><label class="form-label">Mata Pelajaran</label><input type="text" name="mapel" id="formJurnalMapel" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">Materi / Kegiatan</label><textarea name="materi" id="formJurnalMateri" class="form-control" required rows="3"></textarea></div>
                 </div>
@@ -590,7 +611,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-2"><label class="form-label">Nama Siswa</label><input type="text" name="siswa_id" id="formKejadianSiswa" class="form-control" required placeholder="Masukkan Nama Siswa"></div>
+                    <div class="mb-2">
+                        <label class="form-label">Pilih Siswa</label>
+                        <select name="siswa_id" id="formKejadianSiswa" class="form-select" required>
+                            <!-- Diisi dinamis -->
+                        </select>
+                    </div>
                     <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formKejadianTanggal" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">Kategori</label>
                         <select name="kategori" id="formKejadianKategori" class="form-select">
@@ -620,7 +646,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-2"><label class="form-label">Nama Siswa</label><input type="text" name="siswa_id" id="formTahfidzSiswa" class="form-control" required placeholder="Nama Siswa"></div>
+                    <div class="mb-2">
+                        <label class="form-label">Nama Siswa</label>
+                        <select name="siswa_id" id="formTahfidzSiswa" class="form-select" required>
+                            <!-- Diisi dinamis -->
+                        </select>
+                    </div>
                     <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formTahfidzTanggal" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">Surah</label><input type="text" name="surah" id="formTahfidzSurah" class="form-control" required placeholder="Cth: An-Naba'"></div>
                     <div class="mb-2"><label class="form-label">Ayat</label><input type="text" name="ayat" id="formTahfidzAyat" class="form-control" required placeholder="Cth: 1-10"></div>
@@ -652,7 +683,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-2"><label class="form-label">Nama Siswa</label><input type="text" name="siswa_id" id="formKarakterSiswa" class="form-control" required placeholder="Nama Siswa"></div>
+                    <div class="mb-2">
+                        <label class="form-label">Nama Siswa</label>
+                        <select name="siswa_id" id="formKarakterSiswa" class="form-select" required>
+                            <!-- Diisi dinamis -->
+                        </select>
+                    </div>
                     <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formKarakterTanggal" class="form-control" required></div>
                     <div class="mb-2"><label class="form-label">Aspek Penilaian</label>
                         <select name="aspek" id="formKarakterAspek" class="form-select">
@@ -755,8 +791,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-2">
-                        <label class="form-label">Penerima (ID User / Nama)</label>
-                        <input type="text" name="penerima_id" id="formPenghubungPenerima" class="form-control" required placeholder="Masukkan ID atau nama penerima">
+                        <label class="form-label">Pilih Penerima Pesan</label>
+                        <select name="penerima_id" id="formPenghubungPenerima" class="form-select" required>
+                            <!-- Diisi dinamis lewat JS berdasarkan login user -->
+                        </select>
                     </div>
                     <div class="mb-2">
                         <label class="form-label">Tanggal</label>
@@ -970,20 +1008,18 @@
             ];
         } else if (role === 'Guru') {
             menus = [
-                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard' },
-                { id: 'absen_guru', icon: 'fa-fingerprint', text: 'Absen Saya' },
-                { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absen Siswa' },
+                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard Guru' },
+                { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absen Siswa Kelas Saya' },
                 { id: 'jurnal', icon: 'fa-edit', text: 'Jurnal Harian Mengajar' },
                 { id: 'kejadian', icon: 'fa-clipboard-list', text: 'Kejadian Siswa' },
-                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung' },
+                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung Wali' },
                 { id: 'tahfidz', icon: 'fa-quran', text: 'Bina Tahfidz' },
-                { id: 'karakter', icon: 'fa-star', text: 'Nilai Karakter' },
-                { id: 'cetak_laporan', icon: 'fa-print', text: 'Cetak Laporan / PDF' }
+                { id: 'karakter', icon: 'fa-star', text: 'Nilai Karakter' }
             ];
         } else if (role === 'Orang Tua') {
             menus = [
                 { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard Wali' },
-                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung' },
+                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung Guru' },
                 { id: 'tahfidz', icon: 'fa-quran', text: 'Hafalan Anak' },
                 { id: 'karakter', icon: 'fa-star', text: 'Karakter Anak' }
             ];
@@ -994,31 +1030,6 @@
             html += `<li><a href="#" id="menu-${m.id}" onclick="loadModule('${m.id}')"><i class="fas ${m.icon}"></i> ${m.text}</a></li>`;
         });
         menuContainer.innerHTML = html;
-    }
-
-    async function handleSetup(e) {
-        e.preventDefault();
-        showLoader(true, "Membangun Google Sheets...");
-        try {
-            const pwdPlain = document.getElementById('setup-password').value;
-            const pwdHash = await sha256(pwdPlain);
-
-            const data = {
-                nama_lembaga: document.getElementById('setup-lembaga').value,
-                nama_kepala: document.getElementById('setup-kepala').value,
-                username: document.getElementById('setup-username').value,
-                password: pwdHash
-            };
-
-            await callAPI('setupDatabase', data);
-            Swal.fire('Setup Selesai!', 'Database Google Sheets sukses terinisialisasi. Silakan login.', 'success').then(() => {
-                switchView('view-login');
-            });
-        } catch (err) {
-            Swal.fire('Setup Gagal', err.message, 'error');
-        } finally {
-            showLoader(false);
-        }
     }
 
     // ==========================================
@@ -1068,6 +1079,12 @@
     // ==========================================
 
     async function renderDashboard(container) {
+        // Deteksi Khusus jika Orang Tua login
+        if (AppState.user.role === 'Orang Tua') {
+            await renderOrangTuaDashboard(container);
+            return;
+        }
+
         const stats = await callAPI('getDashboardStats', { role: AppState.user.role });
         let html = `
             <div class="row g-3 mb-4">
@@ -1173,6 +1190,79 @@
         container.innerHTML = html;
     }
 
+    // --- DASHBOARD KHUSUS ORANG TUA ---
+    async function renderOrangTuaDashboard(container) {
+        // Format username orang tua: wali_[NIS]
+        const childNis = AppState.user.username.replace('wali_', '');
+        const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+        
+        if (siswas.length === 0) {
+            container.innerHTML = `
+                <div class="alert alert-warning">
+                    <h5>Data Anak Tidak Ditemukan</h5>
+                    <p>Akun Orang Tua terhubung, namun relasi data NIS anak (<b>${childNis}</b>) belum terdaftar di database siswa. Silakan hubungi Admin Madrasah.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const anak = siswas[0];
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header bg-success text-white">Informasi Akademik Ananda</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <img src="https://via.placeholder.com/120/0d5c75/FFFFFF?text=${anak.nama_lengkap.substring(0,1)}" class="rounded-circle border" alt="Anak">
+                            <h5 class="mt-2 mb-1 fw-bold">${anak.nama_lengkap}</h5>
+                            <span class="badge bg-secondary">Kelas: ${anak.kelas_id}</span>
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered">
+                                <tr><th>NIS / NISN</th><td>${anak.nis} / ${anak.nisn}</td></tr>
+                                <tr><th>Nama Wali</th><td>${anak.nama_wali}</td></tr>
+                                <tr><th>No HP Terdaftar</th><td>${anak.no_hp_wali}</td></tr>
+                                <tr><th>Tahun Ajaran Aktif</th><td>${AppState.settings.tahun_ajaran} (${AppState.settings.semester_aktif})</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card card-custom">
+                        <div class="card-custom-header">Tindakan Cepat Buku Penghubung</div>
+                        <div class="card-body text-center py-4">
+                            <i class="far fa-comments fa-3x text-primary mb-3"></i>
+                            <h5>Ada perkembangan atau izin sakit?</h5>
+                            <p class="text-muted small">Kirimkan catatan langsung ke Wali Kelas ananda tanpa perlu WhatsApp manual.</p>
+                            <button class="btn btn-primary" onclick="loadModule('penghubung')"><i class="fas fa-paper-plane"></i> Buka Buku Penghubung</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card card-custom">
+                        <div class="card-custom-header">Aksi Monitoring</div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <a href="#" onclick="loadModule('tahfidz')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-quran text-success me-2"></i> Pantau Setoran Hafalan Qur'an</span>
+                                    <i class="fas fa-chevron-right text-muted"></i>
+                                </a>
+                                <a href="#" onclick="loadModule('karakter')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mt-2">
+                                    <span><i class="fas fa-star text-warning me-2"></i> Nilai Karakter & Akhlak</span>
+                                    <i class="fas fa-chevron-right text-muted"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
     async function renderUsersMenu(container) {
         const users = await callAPI('getData', { sheetName: 'Users' });
         let html = `
@@ -1261,14 +1351,14 @@
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Database Pendidik & Staff</span>
+                    <span>Database Pendidik & Staff (Sinkron Akun)</span>
                     <button class="btn btn-sm btn-success" onclick="openAddGuruModal()"><i class="fas fa-plus"></i> Tambah Guru Baru</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
-                                <tr><th>NIP / NUPTK</th><th>Nama Lengkap</th><th>Wali Kelas</th><th>Jabatan</th><th>No HP</th><th>Aksi</th></tr>
+                                <tr><th>User ID Terpilih</th><th>Nama Lengkap</th><th>NIP / NUPTK</th><th>Wali Kelas</th><th>Jabatan Tambahan</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
@@ -1281,13 +1371,13 @@
                 const safeJabatan = (g.jabatan_tambahan || '').replace(/'/g, "\\'");
                 html += `
                     <tr>
-                        <td>${g.nip || '-'}</td>
+                        <td><code>${g.user_id}</code></td>
                         <td><b>${g.nama}</b></td>
+                        <td>${g.nip || '-'}</td>
                         <td><span class="badge bg-secondary">${g.kelas_id || '-'}</span></td>
                         <td>${g.jabatan_tambahan || '-'}</td>
-                        <td>${g.no_hp || '-'}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="editGuru('${g.id}', '${g.nip || ''}', '${safeNama}', '${g.no_hp || ''}', '${safeAlamat}', '${g.kelas_id || ''}', '${safeJabatan}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editGuru('${g.id}', '${g.user_id}', '${g.nip || ''}', '${safeNama}', '${g.no_hp || ''}', '${safeAlamat}', '${g.kelas_id || ''}', '${safeJabatan}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Guru', '${g.id}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
@@ -1310,7 +1400,7 @@
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle">
                             <thead class="table-light">
-                                <tr><th>Nama Kelas</th><th>Tingkat</th><th>Wali Kelas ID</th><th>Aksi</th></tr>
+                                <tr><th>Nama Kelas</th><th>Tingkat</th><th>ID Wali Kelas</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
@@ -1322,7 +1412,7 @@
                     <tr>
                         <td><b>${k.nama_kelas}</b></td>
                         <td>Tingkat ${k.tingkat}</td>
-                        <td>${k.wali_kelas_id || '-'}</td>
+                        <td><code>${k.wali_kelas_id || '-'}</code></td>
                         <td>
                             <button class="btn btn-sm btn-outline-primary" onclick="editKelas('${k.id}', '${k.nama_kelas}', '${k.tingkat}', '${k.wali_kelas_id}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Kelas', '${k.id}')"><i class="fas fa-trash"></i></button>
@@ -1513,6 +1603,7 @@
         showLoader(true, `Mengunggah ${parsedCSVData.length} baris data ke Google Sheets...`);
         try {
             for (let i = 0; i < parsedCSVData.length; i++) {
+                // Di sini Anda juga bisa menambahkan auto-user orang tua jika parsedSheetName === 'Siswa'
                 await callAPI('insertData', { sheetName: parsedSheetName, record: parsedCSVData[i] });
             }
             Swal.fire('Berhasil!', `Sukses mengimpor ${parsedCSVData.length} baris data ke Google Sheets.`, 'success');
@@ -1684,7 +1775,6 @@
         const ml = document.getElementById('m-left').value;
         const mr = document.getElementById('m-right').value;
 
-        // Buka jendela baru khusus untuk cetak, agar layout margin terkonfigurasi murni
         const printWindow = window.open('', '_blank', 'width=900,height=600');
         printWindow.document.write(`
             <html>
@@ -1835,7 +1925,19 @@
     }
 
     async function renderKejadianMenu(container) {
+        // Jika Guru login, filter kejadian hanya untuk siswa di kelas bimbingannya
         const list = await callAPI('getData', { sheetName: 'KejadianSiswa' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(k => mySiswaNames.includes(k.siswa_id));
+            }
+        }
+
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
@@ -1850,10 +1952,10 @@
                             </thead>
                             <tbody>
         `;
-        if (list.length === 0) {
+        if (filteredList.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Tidak ada catatan kejadian.</td></tr>`;
         } else {
-            list.forEach(k => {
+            filteredList.forEach(k => {
                 const badge = k.kategori === 'Positif' ? 'bg-success' : 'bg-danger';
                 html += `
                     <tr>
@@ -1872,6 +1974,25 @@
 
     async function renderTahfidzMenu(container) {
         const list = await callAPI('getData', { sheetName: 'Tahfidz' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(t => mySiswaNames.includes(t.siswa_id));
+            }
+        } else if (AppState.user.role === 'Orang Tua') {
+            const childNis = AppState.user.username.replace('wali_', '');
+            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+            if (siswas.length > 0) {
+                filteredList = list.filter(t => t.siswa_id === siswas[0].nama_lengkap);
+            } else {
+                filteredList = [];
+            }
+        }
+
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
@@ -1886,10 +2007,10 @@
                             </thead>
                             <tbody>
         `;
-        if (list.length === 0) {
+        if (filteredList.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Belum ada catatan setoran tahfidz.</td></tr>`;
         } else {
-            list.forEach(t => {
+            filteredList.forEach(t => {
                 html += `
                     <tr>
                         <td>${t.siswa_id}</td>
@@ -1907,6 +2028,25 @@
 
     async function renderKarakterMenu(container) {
         const list = await callAPI('getData', { sheetName: 'Karakter' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(k => mySiswaNames.includes(k.siswa_id));
+            }
+        } else if (AppState.user.role === 'Orang Tua') {
+            const childNis = AppState.user.username.replace('wali_', '');
+            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+            if (siswas.length > 0) {
+                filteredList = list.filter(k => k.siswa_id === siswas[0].nama_lengkap);
+            } else {
+                filteredList = [];
+            }
+        }
+
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
@@ -1921,10 +2061,10 @@
                             </thead>
                             <tbody>
         `;
-        if (list.length === 0) {
+        if (filteredList.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Belum ada penilaian karakter.</td></tr>`;
         } else {
-            list.forEach(k => {
+            filteredList.forEach(k => {
                 html += `
                     <tr>
                         <td>${k.siswa_id}</td>
@@ -1942,6 +2082,17 @@
 
     async function renderAbsenSiswaMenu(container) {
         const list = await callAPI('getData', { sheetName: 'AbsensiSiswa' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(a => mySiswaNames.includes(a.siswa_id));
+            }
+        }
+
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
@@ -1956,10 +2107,10 @@
                             </thead>
                             <tbody>
         `;
-        if (list.length === 0) {
+        if (filteredList.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Belum ada rekap absen siswa.</td></tr>`;
         } else {
-            list.forEach(a => {
+            filteredList.forEach(a => {
                 const color = a.status === 'Hadir' ? 'bg-success' : a.status === 'Sakit' ? 'bg-warning' : a.status === 'Izin' ? 'bg-info' : 'bg-danger';
                 html += `
                     <tr>
@@ -1977,24 +2128,53 @@
     }
 
     async function openInputAbsenSiswa() {
+        // Ambil data siswa di bawah binaan guru ini saja jika Guru
+        let targetSiswa = [];
+        showLoader(true, "Memuat daftar kelas...");
+        try {
+            const allSiswa = await callAPI('getData', { sheetName: 'Siswa' });
+            if (AppState.user.role === 'Guru') {
+                const myClass = await getWaliKelasClass(AppState.user.id);
+                targetSiswa = allSiswa.filter(s => s.kelas_id === myClass);
+            } else {
+                targetSiswa = allSiswa;
+            }
+        } catch (e) {
+            targetSiswa = [];
+        } finally {
+            showLoader(false);
+        }
+
+        if (targetSiswa.length === 0) {
+            Swal.fire('Gagal', 'Tidak ada siswa yang terdaftar di kelas Anda bina.', 'warning');
+            return;
+        }
+
+        const optionsHtml = targetSiswa.map(s => `<option value="${s.nama_lengkap}">${s.nama_lengkap} (${s.kelas_id})</option>`).join('');
+
         const { value: formValues } = await Swal.fire({
             title: 'Input Absensi Siswa',
             html:
-                '<input id="swal-siswa" class="form-control mb-2" placeholder="Nama Siswa">' +
-                '<input id="swal-kelas" class="form-control mb-2" placeholder="Kelas (Cth: 1A)">' +
+                '<label class="form-label text-start d-block">Pilih Siswa</label>' +
+                `<select id="swal-siswa" class="form-select mb-2">${optionsHtml}</select>` +
+                '<label class="form-label text-start d-block">Tanggal</label>' +
                 '<input id="swal-tgl" type="date" class="form-control mb-2" value="'+new Date().toISOString().split('T')[0]+'">' +
+                '<label class="form-label text-start d-block">Status</label>' +
                 '<select id="swal-status" class="form-select mb-2">' +
                 '  <option value="Hadir">Hadir</option>' +
                 '  <option value="Sakit">Sakit</option>' +
                 '  <option value="Izin">Izin</option>' +
                 '  <option value="Alpha">Alpha</option>' +
                 '</select>' +
+                '<label class="form-label text-start d-block">Keterangan</label>' +
                 '<input id="swal-ket" class="form-control" placeholder="Keterangan (Opsional)">',
             focusConfirm: false,
             preConfirm: () => {
+                const selectedName = document.getElementById('swal-siswa').value;
+                const matchSiswa = targetSiswa.find(s => s.nama_lengkap === selectedName);
                 return {
-                    siswa_id: document.getElementById('swal-siswa').value,
-                    kelas_id: document.getElementById('swal-kelas').value,
+                    siswa_id: selectedName,
+                    kelas_id: matchSiswa ? matchSiswa.kelas_id : '',
                     tanggal: document.getElementById('swal-tgl').value,
                     status: document.getElementById('swal-status').value,
                     keterangan: document.getElementById('swal-ket').value
@@ -2003,10 +2183,6 @@
         });
 
         if (formValues) {
-            if(!formValues.siswa_id || !formValues.kelas_id) {
-                Swal.fire('Gagal', 'Nama Siswa dan Kelas wajib diisi!', 'error');
-                return;
-            }
             showLoader(true, "Menyimpan data absensi...");
             try {
                 await callAPI('insertData', { sheetName: 'AbsensiSiswa', record: formValues });
@@ -2110,10 +2286,33 @@
 
     async function renderPenghubungMenu(container) {
         const list = await callAPI('getData', { sheetName: 'BukuPenghubung' });
+        let filteredList = list;
+
+        // Jika Orang Tua login, filter pesan hanya antara mereka dengan Wali Kelas
+        if (AppState.user.role === 'Orang Tua') {
+            const childNis = AppState.user.username.replace('wali_', '');
+            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+            if (siswas.length > 0) {
+                const anak = siswas[0];
+                const kelasList = await callAPI('getData', { sheetName: 'Kelas', filter: { nama_kelas: anak.kelas_id } });
+                const waliId = kelasList.length > 0 ? kelasList[0].wali_kelas_id : '';
+                
+                filteredList = list.filter(p => 
+                    (p.pengirim_id === AppState.user.nama_lengkap && p.penerima_id === waliId) ||
+                    (p.pengirim_id === waliId && p.penerima_id === AppState.user.nama_lengkap)
+                );
+            } else {
+                filteredList = [];
+            }
+        } else if (AppState.user.role === 'Guru') {
+            // Jika Guru login, tunjukkan semua pesan yang dikirim ke mereka atau dari mereka
+            filteredList = list.filter(p => p.penerima_id === AppState.user.id || p.pengirim_id === AppState.user.id);
+        }
+
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Buku Penghubung Guru & Orang Tua</span>
+                    <span>Buku Penghubung Digital Guru & Orang Tua</span>
                     <button class="btn btn-sm btn-success" onclick="openAddPenghubungModal()"><i class="fas fa-plus"></i> Kirim Pesan Baru</button>
                 </div>
                 <div class="card-body p-0">
@@ -2124,15 +2323,15 @@
                             </thead>
                             <tbody>
         `;
-        if (list.length === 0) {
+        if (filteredList.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-4">Belum ada pesan di buku penghubung.</td></tr>`;
         } else {
-            list.forEach(p => {
+            filteredList.forEach(p => {
                 html += `
                     <tr>
                         <td>${p.tanggal}</td>
                         <td><b>${p.pengirim_id}</b></td>
-                        <td>${p.penerima_id}</td>
+                        <td><code>${p.penerima_id}</code></td>
                         <td>${p.pesan}</td>
                         <td><span class="badge ${p.status_baca === 'Dibaca' ? 'bg-success' : 'bg-warning'}">${p.status_baca}</span></td>
                     </tr>
@@ -2143,12 +2342,28 @@
         container.innerHTML = html;
     }
 
-    function openAddPenghubungModal() {
-        document.getElementById('formPenghubungId').value = '';
-        document.querySelector('#modalPenghubung form').reset();
-        document.getElementById('formPenghubungTanggal').value = new Date().toISOString().split('T')[0];
-        document.getElementById('formPenghubungPengirim').value = AppState.user.nama_lengkap;
-        new bootstrap.Modal(document.getElementById('modalPenghubung')).show();
+    // ==========================================
+    // SINKRONISASI RELASIONAL - LOAD DATA DROPDOWNS
+    // ==========================================
+    
+    // Sinkronisasi Nama Guru ketika memilih User ID Pendidik
+    let usersListGlobal = [];
+    function syncGuruName(selectEl) {
+        const userId = selectEl.value;
+        const matchUser = usersListGlobal.find(u => u.id === userId);
+        if (matchUser) {
+            document.getElementById('formGuruNama').value = matchUser.nama_lengkap;
+        }
+    }
+
+    // Mendapatkan nama kelas dari ID Guru (Wali Kelas)
+    async function getWaliKelasClass(userId) {
+        try {
+            const kelas = await callAPI('getData', { sheetName: 'Kelas', filter: { wali_kelas_id: userId } });
+            return kelas.length > 0 ? kelas[0].nama_kelas : null;
+        } catch (e) {
+            return null;
+        }
     }
 
     // ==========================================
@@ -2179,14 +2394,28 @@
         new bootstrap.Modal(document.getElementById('modalUser')).show();
     }
 
-    function openAddGuruModal() {
+    async function openAddGuruModal() {
         document.getElementById('formGuruId').value = '';
         document.querySelector('#modalGuru form').reset();
         document.getElementById('modalGuruTitle').innerText = "Tambah Data Guru";
+
+        // Load dropdown akun user yang mempunyai role 'Guru'
+        showLoader(true, "Memuat daftar akun guru...");
+        try {
+            const users = await callAPI('getData', { sheetName: 'Users', filter: { role: 'Guru' } });
+            usersListGlobal = users;
+            const options = users.map(u => `<option value="${u.id}">${u.nama_lengkap} (${u.username})</option>`).join('');
+            document.getElementById('formGuruUserId').innerHTML = `<option value="">-- Pilih Akun User --</option>` + options;
+        } catch (e) {
+            toast("Gagal memuat akun user", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalGuru')).show();
     }
 
-    function editGuru(id, nip, nama, hp, alamat, kelas, jabatan) {
+    function editGuru(id, userId, nip, nama, hp, alamat, kelas, jabatan) {
         document.getElementById('formGuruId').value = id;
         document.getElementById('formGuruNip').value = nip;
         document.getElementById('formGuruNama').value = nama;
@@ -2194,105 +2423,243 @@
         document.getElementById('formGuruAlamat').value = alamat;
         document.getElementById('formGuruKelas').value = kelas;
         document.getElementById('formGuruJabatan').value = jabatan;
+        
+        // Buat readonly/set dropdown akun guru
+        document.getElementById('formGuruUserId').innerHTML = `<option value="${userId}">${nama}</option>`;
+        document.getElementById('formGuruUserId').value = userId;
+
         document.getElementById('modalGuruTitle').innerText = "Edit Data Guru";
         new bootstrap.Modal(document.getElementById('modalGuru')).show();
     }
 
-    function openAddSiswaModal() {
+    async function openAddSiswaModal() {
         document.getElementById('formSiswaId').value = '';
         document.querySelector('#modalSiswa form').reset();
         document.getElementById('modalSiswaTitle').innerText = "Tambah Data Siswa";
+
+        // Load daftar kelas secara dinamis
+        showLoader(true, "Memuat daftar kelas...");
+        try {
+            const kelas = await callAPI('getData', { sheetName: 'Kelas' });
+            const options = kelas.map(k => `<option value="${k.nama_kelas}">${k.nama_kelas}</option>`).join('');
+            document.getElementById('formSiswaKelas').innerHTML = `<option value="">-- Pilih Kelas --</option>` + options;
+        } catch (e) {
+            toast("Gagal memuat kelas", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalSiswa')).show();
     }
 
-    function editSiswa(id, nis, nisn, nama, kelas, wali, hp) {
+    async function editSiswa(id, nis, nisn, nama, kelasId, wali, hp) {
         document.getElementById('formSiswaId').value = id;
         document.getElementById('formSiswaNis').value = nis;
         document.getElementById('formSiswaNisn').value = nisn;
         document.getElementById('formSiswaNama').value = nama;
-        document.getElementById('formSiswaKelas').value = kelas;
         document.getElementById('formSiswaWali').value = wali;
         document.getElementById('formSiswaHpWali').value = hp;
+
+        showLoader(true, "Memuat daftar kelas...");
+        try {
+            const kelas = await callAPI('getData', { sheetName: 'Kelas' });
+            const options = kelas.map(k => `<option value="${k.nama_kelas}">${k.nama_kelas}</option>`).join('');
+            document.getElementById('formSiswaKelas').innerHTML = options;
+            document.getElementById('formSiswaKelas').value = kelasId;
+        } catch (e) {
+            toast("Gagal memuat kelas", "error");
+        } finally {
+            showLoader(false);
+        }
+
         document.getElementById('modalSiswaTitle').innerText = "Edit Data Siswa";
         new bootstrap.Modal(document.getElementById('modalSiswa')).show();
     }
 
-    function openAddKelasModal() {
+    async function openAddKelasModal() {
         document.getElementById('formKelasId').value = '';
         document.querySelector('#modalKelas form').reset();
         document.getElementById('modalKelasTitle').innerText = "Tambah Data Kelas";
+
+        // Load daftar guru yang aktif
+        showLoader(true, "Memuat daftar guru...");
+        try {
+            const gurus = await callAPI('getData', { sheetName: 'Guru' });
+            const options = gurus.map(g => `<option value="${g.user_id}">${g.nama}</option>`).join('');
+            document.getElementById('formKelasWaliId').innerHTML = `<option value="">-- Pilih Wali Kelas --</option>` + options;
+        } catch (e) {
+            toast("Gagal memuat guru", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalKelas')).show();
     }
 
-    function editKelas(id, nama, tingkat, wali) {
+    async function editKelas(id, nama, tingkat, waliId) {
         document.getElementById('formKelasId').value = id;
         document.getElementById('formKelasNama').value = nama;
         document.getElementById('formKelasTingkat').value = tingkat;
-        document.getElementById('formKelasWaliId').value = wali;
+
+        showLoader(true, "Memuat daftar guru...");
+        try {
+            const gurus = await callAPI('getData', { sheetName: 'Guru' });
+            const options = gurus.map(g => `<option value="${g.user_id}">${g.nama}</option>`).join('');
+            document.getElementById('formKelasWaliId').innerHTML = options;
+            document.getElementById('formKelasWaliId').value = waliId;
+        } catch (e) {
+            toast("Gagal memuat guru", "error");
+        } finally {
+            showLoader(false);
+        }
+
         document.getElementById('modalKelasTitle').innerText = "Edit Data Kelas";
         new bootstrap.Modal(document.getElementById('modalKelas')).show();
     }
 
-    function openAddJurnalModal() {
+    async function openAddJurnalModal() {
         document.getElementById('formJurnalId').value = '';
         document.querySelector('#modalJurnal form').reset();
         document.getElementById('formJurnalTanggal').value = new Date().toISOString().split('T')[0];
         document.getElementById('modalJurnalTitle').innerText = "Isi Jurnal Mengajar";
+
+        // Load kelas binaan atau seluruh kelas
+        showLoader(true, "Memuat daftar kelas...");
+        try {
+            const kelas = await callAPI('getData', { sheetName: 'Kelas' });
+            let myKelasList = kelas;
+            if (AppState.user.role === 'Guru') {
+                const myClass = await getWaliKelasClass(AppState.user.id);
+                if (myClass) {
+                    myKelasList = kelas.filter(k => k.nama_kelas === myClass);
+                }
+            }
+            const options = myKelasList.map(k => `<option value="${k.nama_kelas}">${k.nama_kelas}</option>`).join('');
+            document.getElementById('formJurnalKelas').innerHTML = options;
+        } catch (e) {
+            toast("Gagal memuat kelas", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalJurnal')).show();
     }
 
-    function editJurnal(id, tgl, kelas, mapel, materi) {
-        document.getElementById('formJurnalId').value = id;
-        document.getElementById('formJurnalTanggal').value = tgl;
-        document.getElementById('formJurnalKelas').value = kelas;
-        document.getElementById('formJurnalMapel').value = mapel;
-        document.getElementById('formJurnalMateri').value = materi;
-        document.getElementById('modalJurnalTitle').innerText = "Edit Catatan Jurnal";
-        new bootstrap.Modal(document.getElementById('modalJurnal')).show();
-    }
-
-    function openAddKejadianModal() {
+    async function openAddKejadianModal() {
         document.getElementById('formKejadianId').value = '';
         document.querySelector('#modalKejadian form').reset();
         document.getElementById('formKejadianTanggal').value = new Date().toISOString().split('T')[0];
+
+        // Load pilihan siswa kelas binaan
+        showLoader(true, "Memuat daftar siswa...");
+        try {
+            const siswas = await callAPI('getData', { sheetName: 'Siswa' });
+            let mySiswaList = siswas;
+            if (AppState.user.role === 'Guru') {
+                const myClass = await getWaliKelasClass(AppState.user.id);
+                if (myClass) {
+                    mySiswaList = siswas.filter(s => s.kelas_id === myClass);
+                }
+            }
+            const options = mySiswaList.map(s => `<option value="${s.nama_lengkap}">${s.nama_lengkap} (${s.kelas_id})</option>`).join('');
+            document.getElementById('formKejadianSiswa').innerHTML = options;
+        } catch (e) {
+            toast("Gagal memuat siswa", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalKejadian')).show();
     }
 
-    function openAddTahfidzModal() {
+    async function openAddTahfidzModal() {
         document.getElementById('formTahfidzId').value = '';
         document.querySelector('#modalTahfidz form').reset();
         document.getElementById('formTahfidzTanggal').value = new Date().toISOString().split('T')[0];
+
+        showLoader(true, "Memuat daftar siswa...");
+        try {
+            const siswas = await callAPI('getData', { sheetName: 'Siswa' });
+            let mySiswaList = siswas;
+            if (AppState.user.role === 'Guru') {
+                const myClass = await getWaliKelasClass(AppState.user.id);
+                if (myClass) {
+                    mySiswaList = siswas.filter(s => s.kelas_id === myClass);
+                }
+            }
+            const options = mySiswaList.map(s => `<option value="${s.nama_lengkap}">${s.nama_lengkap}</option>`).join('');
+            document.getElementById('formTahfidzSiswa').innerHTML = options;
+        } catch (e) {
+            toast("Gagal memuat siswa", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalTahfidz')).show();
     }
 
-    function openAddKarakterModal() {
+    async function openAddKarakterModal() {
         document.getElementById('formKarakterId').value = '';
         document.querySelector('#modalKarakter form').reset();
         document.getElementById('formKarakterTanggal').value = new Date().toISOString().split('T')[0];
+
+        showLoader(true, "Memuat daftar siswa...");
+        try {
+            const siswas = await callAPI('getData', { sheetName: 'Siswa' });
+            let mySiswaList = siswas;
+            if (AppState.user.role === 'Guru') {
+                const myClass = await getWaliKelasClass(AppState.user.id);
+                if (myClass) {
+                    mySiswaList = siswas.filter(s => s.kelas_id === myClass);
+                }
+            }
+            const options = mySiswaList.map(s => `<option value="${s.nama_lengkap}">${s.nama_lengkap}</option>`).join('');
+            document.getElementById('formKarakterSiswa').innerHTML = options;
+        } catch (e) {
+            toast("Gagal memuat siswa", "error");
+        } finally {
+            showLoader(false);
+        }
+
         new bootstrap.Modal(document.getElementById('modalKarakter')).show();
     }
 
-    function openAddInventarisModal() {
-        document.getElementById('formInventarisId').value = '';
-        document.querySelector('#modalInventaris form').reset();
-        new bootstrap.Modal(document.getElementById('modalInventaris')).show();
-    }
+    async function openAddPenghubungModal() {
+        document.getElementById('formPenghubungId').value = '';
+        document.querySelector('#modalPenghubung form').reset();
+        document.getElementById('formPenghubungTanggal').value = new Date().toISOString().split('T')[0];
+        document.getElementById('formPenghubungPengirim').value = AppState.user.nama_lengkap;
 
-    function editInventaris(id, kode, nama, lokasi, kondisi, tahun) {
-        document.getElementById('formInventarisId').value = id;
-        document.getElementById('formInventarisKode').value = kode;
-        document.getElementById('formInventarisNama').value = nama;
-        document.getElementById('formInventarisLokasi').value = lokasi;
-        document.getElementById('formInventarisKondisi').value = kondisi;
-        document.getElementById('formInventarisTahun').value = tahun;
-        new bootstrap.Modal(document.getElementById('modalInventaris')).show();
-    }
+        showLoader(true, "Memuat daftar tujuan...");
+        try {
+            if (AppState.user.role === 'Orang Tua') {
+                // Tujuan pesan adalah Wali Kelas anak mereka
+                const childNis = AppState.user.username.replace('wali_', '');
+                const anakList = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+                if (anakList.length > 0) {
+                    const anak = anakList[0];
+                    const kelasList = await callAPI('getData', { sheetName: 'Kelas', filter: { nama_kelas: anak.kelas_id } });
+                    const waliId = kelasList.length > 0 ? kelasList[0].wali_kelas_id : '';
+                    
+                    const gurus = await callAPI('getData', { sheetName: 'Guru', filter: { user_id: waliId } });
+                    const namaWali = gurus.length > 0 ? gurus[0].nama : 'Wali Kelas';
+                    
+                    document.getElementById('formPenghubungPenerima').innerHTML = `<option value="${waliId}">${namaWali} (Wali Kelas ${anak.kelas_id})</option>`;
+                }
+            } else if (AppState.user.role === 'Guru') {
+                // Tujuan pesan adalah Orang Tua siswa dari kelas binaannya
+                const myClass = await getWaliKelasClass(AppState.user.id);
+                const anakBinaan = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const options = anakBinaan.map(a => `<option value="wali_${a.nis}">Orang Tua dari ${a.nama_lengkap}</option>`).join('');
+                document.getElementById('formPenghubungPenerima').innerHTML = options;
+            }
+        } catch (e) {
+            toast("Gagal memuat data tujuan", "error");
+        } finally {
+            showLoader(false);
+        }
 
-    function openAddPengumumanModal() {
-        document.getElementById('formPengumumanId').value = '';
-        document.querySelector('#modalPengumuman form').reset();
-        document.getElementById('formPengumumanTanggal').value = new Date().toISOString().split('T')[0];
-        new bootstrap.Modal(document.getElementById('modalPengumuman')).show();
+        new bootstrap.Modal(document.getElementById('modalPenghubung')).show();
     }
 
     // ==========================================
@@ -2319,6 +2686,25 @@
                 record.user_id = AppState.user.id;
             }
 
+            // --- PROSES OTOMATISASI AKUN ORANG TUA SAAT INPUT SISWA BARU ---
+            if (sheetName === 'Siswa' && !isEdit) {
+                // 1. Buat username otomatis: wali_[NIS]
+                const parentUsername = "wali_" + record.nis;
+                // 2. Buat password default: 123456
+                const parentPassword = await sha256("123456");
+
+                const parentUserRecord = {
+                    nama_lengkap: "Wali dari " + record.nama_lengkap,
+                    username: parentUsername,
+                    password: parentPassword,
+                    role: "Orang Tua",
+                    status: "Aktif"
+                };
+
+                // 3. Masukkan data ke sheet Users
+                await callAPI('insertData', { sheetName: 'Users', record: parentUserRecord });
+            }
+
             if (isEdit) {
                 await callAPI('updateData', { sheetName: sheetName, id: record.id, record: record });
             } else {
@@ -2334,7 +2720,18 @@
             document.body.classList.remove('modal-open');
 
             form.reset();
-            Swal.fire('Berhasil!', 'Data berhasil disimpan.', 'success');
+            
+            // Beri notifikasi khusus jika baru saja menambahkan siswa
+            if (sheetName === 'Siswa' && !isEdit) {
+                Swal.fire({
+                    title: 'Siswa Berhasil Ditambahkan!',
+                    html: `Data siswa sukses disimpan.<br><br><b>Akun Orang Tua Dibuat Otomatis:</b><br>Username: <code class="text-danger">wali_${record.nis}</code><br>Password: <code class="text-danger">123456</code>`,
+                    icon: 'success'
+                });
+            } else {
+                Swal.fire('Berhasil!', 'Data berhasil disimpan.', 'success');
+            }
+
             loadModule(AppState.currentModule);
 
         } catch (err) {

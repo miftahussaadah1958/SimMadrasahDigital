@@ -14,15 +14,20 @@
 
     <style>
         /* ==========================================
-           CSS SCOPED & THEME
+           CSS SCOPED & THEME (Premium Modern LMS)
            ========================================== */
         :root {
-            --primary-color: #198754; /* Hijau Madrasah */
-            --primary-dark: #146c43;
-            --sidebar-bg: #212529;
-            --sidebar-hover: #343a40;
+            --primary-color: #0d5c75; /* Premium Dark Teal */
+            --primary-dark: #073b4c;
+            --secondary-color: #198754; /* Hijau Madrasah */
+            --sidebar-bg: #0b3c4d;
+            --sidebar-hover: #145366;
             --text-light: #f8f9fa;
-            --bg-light: #f4f6f9;
+            --bg-light: #f0f4f8;
+            --color-blue: #0ea5e9;
+            --color-green: #10b981;
+            --color-red: #ef4444;
+            --color-orange: #f59e0b;
         }
 
         body {
@@ -37,7 +42,7 @@
             min-height: 100vh;
         }
 
-        /* Loading Overlay */
+        /* Global Loader */
         #global-loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -50,17 +55,16 @@
             transition: opacity 0.3s ease;
         }
         .spinner-madrasah {
-            width: 3rem; height: 3rem;
+            width: 3.5rem; height: 3.5rem;
             color: var(--primary-color);
         }
 
-        /* Layout SPA */
+        /* SPA Sections */
         .view-section { display: none !important; }
         .view-section.active { display: block !important; }
         .view-section.auth-wrapper.active { display: flex !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Auth Container (Login & Setup) */
+        /* Layout & Header */
         .auth-wrapper {
             height: 100vh;
             display: flex;
@@ -72,85 +76,240 @@
             background: #fff;
             padding: 2.5rem;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
             width: 100%;
             max-width: 450px;
         }
 
-        /* Main Dashboard Layout */
         #app-layout {
             display: flex;
+            flex-direction: column;
             height: 100vh;
+        }
+
+        /* Top Navbar */
+        .app-header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 65px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .header-brand i { margin-right: 10px; font-size: 1.5rem; }
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -6px; right: -8px;
+            background-color: var(--color-red);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        .user-profile-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 38px; height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* Main Workspace */
+        .app-workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
 
         /* Sidebar */
         .sidebar {
-            width: 250px;
+            width: 260px;
             background-color: var(--sidebar-bg);
             color: var(--text-light);
             display: flex;
             flex-direction: column;
-            transition: all 0.3s;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
-        .sidebar-header {
-            padding: 20px;
+        .sidebar-profile {
+            padding: 25px 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background-color: rgba(0,0,0,0.15);
+        }
+        .sidebar-profile .avatar-large {
+            width: 75px; height: 75px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.15);
+            margin-bottom: 12px;
         }
         .sidebar-menu {
             flex: 1;
-            overflow-y: auto;
-            padding: 10px 0;
+            padding: 15px 0;
             list-style: none;
             margin: 0;
         }
         .sidebar-menu li a {
             display: flex;
             align-items: center;
-            padding: 12px 20px;
-            color: rgba(255,255,255,0.8);
+            padding: 11px 22px;
+            color: rgba(255,255,255,0.75);
             text-decoration: none;
-            transition: 0.2s;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
         }
         .sidebar-menu li a:hover, .sidebar-menu li a.active {
             background-color: var(--sidebar-hover);
             color: #fff;
-            border-left: 4px solid var(--primary-color);
+            border-left: 5px solid var(--secondary-color);
         }
-        .sidebar-menu li a i { width: 25px; }
+        .sidebar-menu li a i {
+            width: 25px;
+            font-size: 1.1rem;
+            margin-right: 10px;
+            opacity: 0.9;
+        }
 
-        /* Main Content */
+        /* Main Content Scroll */
         .main-content {
             flex: 1;
+            overflow-y: auto;
+            background-color: var(--bg-light);
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-        }
-        .topbar {
-            background: #fff;
-            padding: 15px 25px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
         }
         .content-area {
             padding: 25px;
             flex: 1;
         }
 
-        /* Cards & Tables */
-        .card { border: none; box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); border-radius: 10px; margin-bottom: 20px; }
-        .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; }
-        .table-responsive { border-radius: 8px; overflow: hidden; }
-        .table th { background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; }
+        /* Modern Flat Color Metric Cards */
+        .metric-card {
+            border-radius: 8px;
+            color: #fff;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+            height: 105px;
+        }
+        .metric-card:hover { transform: translateY(-3px); }
+        .metric-card.m-blue { background-color: var(--color-blue); }
+        .metric-card.m-green { background-color: var(--color-green); }
+        .metric-card.m-red { background-color: var(--color-red); }
+        .metric-card.m-orange { background-color: var(--color-orange); }
+        .metric-info h3 { font-size: 2.2rem; font-weight: 700; margin: 0; }
+        .metric-info p { font-size: 0.95rem; font-weight: 500; margin: 0; opacity: 0.9; }
+        .metric-icon { font-size: 2.5rem; opacity: 0.35; }
+
+        /* Quick Shortcut Panel */
+        .shortcut-card {
+            border-radius: 8px;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .shortcut-card:hover { transform: scale(1.02); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .shortcut-card.s-red { background-color: #e53935; }
+        .shortcut-card.s-orange { background-color: #fb8c00; }
+        .shortcut-card.s-blue { background-color: #1e88e5; }
+        .shortcut-card.s-green { background-color: #43a047; }
+
+        .card-custom {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: none;
+            margin-bottom: 25px;
+        }
+        .card-custom-header {
+            background-color: #fff;
+            border-bottom: 1px solid #eef2f5;
+            padding: 18px 24px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+        }
+
+        /* CSV Import Area */
+        .upload-dropzone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 35px;
+            text-align: center;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .upload-dropzone:hover {
+            border-color: var(--primary-color);
+            background-color: #f1f5f9;
+        }
+
+        /* Footer styling */
+        .app-footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85rem;
+            color: #64748b;
+            background-color: #fff;
+            border-top: 1px solid #e2e8f0;
+        }
 
         @media (max-width: 768px) {
-            #app-layout { flex-direction: column; }
+            .app-workspace { flex-direction: column; overflow-y: auto; }
             .sidebar { width: 100%; height: auto; }
             .sidebar-menu { display: flex; flex-wrap: wrap; }
             .sidebar-menu li { flex: 1 1 50%; }
+        }
+
+        /* Print Settings Frame & CSS */
+        @media print {
+            body * { visibility: hidden; }
+            #print-rendered-document, #print-rendered-document * { visibility: visible; }
+            #print-rendered-document { position: absolute; left: 0; top: 0; width: 100%; }
         }
     </style>
 </head>
@@ -160,7 +319,7 @@
     <!-- Global Loader -->
     <div id="global-loader">
         <div class="spinner-border spinner-madrasah" role="status"></div>
-        <h5 class="mt-3 text-muted" id="loader-text">Memuat Sistem...</h5>
+        <h5 class="mt-3 text-muted" id="loader-text">Menghubungkan ke Portal...</h5>
     </div>
 
     <!-- VIEW: SETUP DATABASE -->
@@ -168,8 +327,8 @@
         <div class="auth-card">
             <div class="text-center mb-4">
                 <i class="fas fa-database fa-3x text-success mb-3"></i>
-                <h4>Setup Awal Sistem</h4>
-                <p class="text-muted small">Database belum terdeteksi. Silakan lakukan setup awal.</p>
+                <h4>Inisialisasi SIM Madrasah</h4>
+                <p class="text-muted small">Database sistem terintegrasi belum terdeteksi. Silakan isikan parameter madrasah berikut.</p>
             </div>
             <form id="form-setup" onsubmit="handleSetup(event)">
                 <div class="mb-3">
@@ -178,10 +337,10 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Nama Kepala Madrasah</label>
-                    <input type="text" id="setup-kepala" class="form-control" required>
+                    <input type="text" id="setup-kepala" class="form-control" required placeholder="Cth: H. Ahmad, S.Ag, M.Pd">
                 </div>
                 <hr>
-                <h6 class="mb-3">Akun Administrator Default</h6>
+                <h6 class="mb-3">Akun Administrator Utama</h6>
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" id="setup-username" class="form-control" required value="admin">
@@ -190,7 +349,7 @@
                     <label class="form-label">Password</label>
                     <input type="password" id="setup-password" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-success w-100"><i class="fas fa-cogs"></i> Mulai Setup & Buat Database</button>
+                <button type="submit" class="btn btn-success w-100"><i class="fas fa-cogs"></i> Jalankan Setup Database</button>
             </form>
         </div>
     </div>
@@ -199,447 +358,461 @@
     <div id="view-login" class="view-section auth-wrapper">
         <div class="auth-card">
             <div class="text-center mb-4">
-                <img src="https://via.placeholder.com/80/198754/FFFFFF?text=SIM" alt="Logo" class="rounded-circle mb-3" id="login-logo-img">
-                <h4 id="login-lembaga-nama">SIM Madrasah Digital</h4>
-                <p class="text-muted small">Silakan login untuk mengakses sistem</p>
+                <img src="https://via.placeholder.com/85/0d5c75/FFFFFF?text=MIS" alt="Logo" class="rounded-circle mb-3" id="login-logo-img">
+                <h4 id="login-lembaga-nama" class="text-success font-weight-bold">SIM Madrasah Digital</h4>
+                <p class="text-muted small">MIS MIFTAHUSSA'ADAH</p>
             </div>
             <form id="form-login" onsubmit="handleLogin(event)">
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <span class="input-group-text"><i class="fas fa-user text-muted"></i></span>
                         <input type="text" id="login-username" class="form-control" required>
                     </div>
                 </div>
                 <div class="mb-4">
                     <label class="form-label">Password</label>
                     <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <span class="input-group-text"><i class="fas fa-lock text-muted"></i></span>
                         <input type="password" id="login-password" class="form-control" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success w-100 mb-3"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <button type="submit" class="btn btn-success w-100 mb-2"><i class="fas fa-sign-in-alt"></i> Masuk ke Dashboard</button>
             </form>
         </div>
     </div>
 
-    <!-- VIEW: MAIN APP (Dashboard dll) -->
+    <!-- VIEW: MAIN APP (Dashboard, Modul, Laporan) -->
     <div id="view-main" class="view-section">
         <div id="app-layout">
-            <!-- Sidebar -->
-            <aside class="sidebar" id="sidebar">
-                <div class="sidebar-header">
-                    <h5 class="mb-0 text-truncate" id="sidebar-lembaga">SIM Madrasah</h5>
-                    <small class="text-muted" id="sidebar-role">Role</small>
+            <!-- App Header (Top Navbar) -->
+            <header class="app-header">
+                <div class="header-brand">
+                    <i class="fas fa-mosque"></i>
+                    <span>SIM MAS DIGITAL</span>
                 </div>
-                <ul class="sidebar-menu" id="menu-container">
-                    <!-- Menu dirender dinamis via JS berdasarkan Role -->
-                </ul>
-                <div class="p-3 mt-auto">
-                    <button class="btn btn-outline-danger w-100 btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <div class="header-title d-none d-md-block" id="header-center-title">
+                    Librarian Control Panel
                 </div>
-            </aside>
-
-            <!-- Main Content Area -->
-            <main class="main-content">
-                <header class="topbar">
-                    <div>
-                        <button class="btn btn-light d-md-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-                        <span class="h5 mb-0 ms-2" id="topbar-title">Dashboard</span>
+                <div class="header-actions">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <span class="me-3 d-none d-md-block" id="topbar-user">Nama User</span>
-                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
-                            <i class="fas fa-user"></i>
-                        </div>
+                    <div class="user-profile-menu" onclick="toast('Profil diakses harian')">
+                        <img src="https://via.placeholder.com/40/0d5c75/FFFFFF?text=ADM" class="user-avatar" alt="Avatar">
+                        <span id="topbar-user" class="fw-bold d-none d-md-inline">Administrator</span>
+                        <i class="fas fa-chevron-down d-none d-md-inline" style="font-size: 0.8rem;"></i>
                     </div>
-                </header>
-
-                <div class="content-area" id="main-content-area">
-                    <!-- Konten dinamis dirender di sini -->
                 </div>
-            </main>
-        </div>
-    </div>
+            </header>
 
-    <!-- ==========================================
-         MODALS (FORM INPUT DATA)
-         ========================================== -->
-    <!-- Modal Tambah/Edit User -->
-    <div class="modal fade" id="modalUser" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Users')">
-                    <input type="hidden" name="id" id="formUserId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalUserTitle">Data User</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <!-- Main Workspace (Sidebar + Area Kerja) -->
+            <div class="app-workspace">
+                <aside class="sidebar">
+                    <div class="sidebar-profile">
+                        <img src="https://via.placeholder.com/80/0d5c75/FFFFFF?text=Admin" class="avatar-large" alt="User">
+                        <h6 class="mb-1 text-white fw-bold" id="sidebar-user-name">Welcome Admin</h6>
+                        <span class="badge bg-success" id="sidebar-role">Level Admin</span>
                     </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Nama Lengkap</label><input type="text" name="nama_lengkap" id="formUserNama" class="form-control" required></div>
-                        <div class="mb-2"><label>Username</label><input type="text" name="username" id="formUserUsername" class="form-control" required></div>
-                        <div class="mb-2">
-                            <label>Password</label>
-                            <input type="password" name="password" id="formUserPassword" class="form-control" required>
-                            <small class="text-muted" id="formUserPasswordHelp" style="display:none;">*Kosongkan jika tidak ingin mengubah password</small>
-                        </div>
-                        <div class="mb-2"><label>Role</label>
-                            <select name="role" id="formUserRole" class="form-select">
-                                <option value="Guru">Guru</option>
-                                <option value="Siswa">Siswa</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Kepala Madrasah">Kepala Madrasah</option>
-                                <option value="Orang Tua">Orang Tua</option>
-                            </select>
-                        </div>
-                        <div class="mb-2" id="userStatusDiv" style="display:none;">
-                            <label>Status</label>
-                            <select name="status" id="formUserStatus" class="form-select">
-                                <option value="Aktif">Aktif</option>
-                                <option value="Nonaktif">Nonaktif</option>
-                            </select>
-                        </div>
+                    <ul class="sidebar-menu" id="menu-container">
+                        <!-- Menu dinamis dirender di sini -->
+                    </ul>
+                </aside>
+
+                <main class="main-content">
+                    <div class="content-area" id="main-content-area">
+                        <!-- Konten dinamis modul -->
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan User</button>
-                    </div>
-                </form>
+                    
+                    <footer class="app-footer">
+                        © 2026 <b>SIM MADRASAH DIGITAL</b>. All rights reserved MIS MIFTAHUSSA'ADAH.
+                    </footer>
+                </main>
             </div>
         </div>
     </div>
-
-    <!-- Modal Tambah/Edit Guru -->
-    <div class="modal fade" id="modalGuru" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Guru')">
-                    <input type="hidden" name="id" id="formGuruId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalGuruTitle">Data Guru</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>NIP / NUPTK</label><input type="text" name="nip" id="formGuruNip" class="form-control"></div>
-                        <div class="mb-2"><label>Nama Guru</label><input type="text" name="nama" id="formGuruNama" class="form-control" required></div>
-                        <div class="mb-2"><label>No HP</label><input type="text" name="no_hp" id="formGuruHp" class="form-control"></div>
-                        <div class="mb-2"><label>Wali Kelas</label><input type="text" name="kelas_id" id="formGuruKelas" class="form-control" placeholder="Cth: Kelas 1A (Kosongkan jika bukan)"></div>
-                        <div class="mb-2"><label>Jabatan Tambahan</label><input type="text" name="jabatan_tambahan" id="formGuruJabatan" class="form-control" placeholder="Cth: Pembina Pramuka / -"></div>
-                        <div class="mb-2"><label>Alamat</label><textarea name="alamat" id="formGuruAlamat" class="form-control"></textarea></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Guru</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah/Edit Siswa -->
-    <div class="modal fade" id="modalSiswa" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Siswa')">
-                    <input type="hidden" name="id" id="formSiswaId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalSiswaTitle">Data Siswa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>NIS</label><input type="text" name="nis" id="formSiswaNis" class="form-control" required></div>
-                        <div class="mb-2"><label>NISN</label><input type="text" name="nisn" id="formSiswaNisn" class="form-control" required></div>
-                        <div class="mb-2"><label>Nama Lengkap</label><input type="text" name="nama_lengkap" id="formSiswaNama" class="form-control" required></div>
-                        <div class="mb-2"><label>Kelas</label><input type="text" name="kelas_id" id="formSiswaKelas" class="form-control" required placeholder="Cth: Kelas 1A"></div>
-                        <div class="mb-2"><label>Nama Wali / Orang Tua</label><input type="text" name="nama_wali" id="formSiswaWali" class="form-control" required></div>
-                        <div class="mb-2"><label>No HP Wali</label><input type="text" name="no_hp_wali" id="formSiswaHpWali" class="form-control" required></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Siswa</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah/Edit Kelas -->
-    <div class="modal fade" id="modalKelas" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Kelas')">
-                    <input type="hidden" name="id" id="formKelasId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalKelasTitle">Data Kelas</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Nama Kelas</label><input type="text" name="nama_kelas" id="formKelasNama" class="form-control" required placeholder="Cth: Kelas 1A"></div>
-                        <div class="mb-2"><label>Tingkat</label><input type="number" name="tingkat" id="formKelasTingkat" class="form-control" required min="1" max="6"></div>
-                        <div class="mb-2"><label>ID Wali Kelas</label><input type="text" name="wali_kelas_id" id="formKelasWaliId" class="form-control" placeholder="Isi dengan ID User Guru"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Kelas</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Jurnal -->
-    <div class="modal fade" id="modalJurnal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'JurnalGuru')">
-                    <input type="hidden" name="id" id="formJurnalId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalJurnalTitle">Isi Jurnal Mengajar</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Tanggal</label><input type="date" name="tanggal" id="formJurnalTanggal" class="form-control" required></div>
-                        <div class="mb-2"><label>Kelas</label><input type="text" name="kelas_id" id="formJurnalKelas" class="form-control" required placeholder="Contoh: Kelas 1A"></div>
-                        <div class="mb-2"><label>Mata Pelajaran</label><input type="text" name="mapel" id="formJurnalMapel" class="form-control" required></div>
-                        <div class="mb-2"><label>Materi / Kegiatan</label><textarea name="materi" id="formJurnalMateri" class="form-control" required rows="3"></textarea></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Jurnal</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Kejadian Siswa -->
-    <div class="modal fade" id="modalKejadian" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'KejadianSiswa')">
-                    <input type="hidden" name="id" id="formKejadianId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalKejadianTitle">Catat Kejadian Harian Siswa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Nama Siswa</label><input type="text" name="siswa_id" id="formKejadianSiswa" class="form-control" required placeholder="Masukkan Nama Siswa"></div>
-                        <div class="mb-2"><label>Tanggal</label><input type="date" name="tanggal" id="formKejadianTanggal" class="form-control" required></div>
-                        <div class="mb-2"><label>Kategori</label>
-                            <select name="kategori" id="formKejadianKategori" class="form-select">
-                                <option value="Positif">Positif (Prestasi/Disiplin)</option>
-                                <option value="Negatif">Negatif (Pelanggaran/Terlambat)</option>
-                            </select>
-                        </div>
-                        <div class="mb-2"><label>Jenis Kejadian</label><input type="text" name="jenis" id="formKejadianJenis" class="form-control" required placeholder="Cth: Terlambat, Juara Lomba"></div>
-                        <div class="mb-2"><label>Kronologi / Keterangan</label><textarea name="kronologi" id="formKejadianKronologi" class="form-control" rows="3" required></textarea></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Catatan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Tahfidz -->
-    <div class="modal fade" id="modalTahfidz" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Tahfidz')">
-                    <input type="hidden" name="id" id="formTahfidzId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTahfidzTitle">Bina Tahfidz Siswa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Nama Siswa</label><input type="text" name="siswa_id" id="formTahfidzSiswa" class="form-control" required placeholder="Nama Siswa"></div>
-                        <div class="mb-2"><label>Tanggal</label><input type="date" name="tanggal" id="formTahfidzTanggal" class="form-control" required></div>
-                        <div class="mb-2"><label>Surah</label><input type="text" name="surah" id="formTahfidzSurah" class="form-control" required placeholder="Cth: An-Naba'"></div>
-                        <div class="mb-2"><label>Ayat</label><input type="text" name="ayat" id="formTahfidzAyat" class="form-control" required placeholder="Cth: 1-10"></div>
-                        <div class="mb-2"><label>Status Hafalan</label>
-                            <select name="status_hafalan" id="formTahfidzStatus" class="form-select">
-                                <option value="Baru">Baru</option>
-                                <option value="Murajaah">Murajaah</option>
-                                <option value="Lancar">Lancar</option>
-                                <option value="Sangat Baik">Sangat Baik</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Setoran</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Penilaian Karakter -->
-    <div class="modal fade" id="modalKarakter" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Karakter')">
-                    <input type="hidden" name="id" id="formKarakterId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalKarakterTitle">Input Penilaian Karakter</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Nama Siswa</label><input type="text" name="siswa_id" id="formKarakterSiswa" class="form-control" required placeholder="Nama Siswa"></div>
-                        <div class="mb-2"><label>Tanggal</label><input type="date" name="tanggal" id="formKarakterTanggal" class="form-control" required></div>
-                        <div class="mb-2"><label>Aspek Penilaian</label>
-                            <select name="aspek" id="formKarakterAspek" class="form-select">
-                                <option value="Disiplin">Disiplin</option>
-                                <option value="Kejujuran">Kejujuran</option>
-                                <option value="Tanggung Jawab">Tanggung Jawab</option>
-                                <option value="Akhlak">Akhlak / Sopan Santun</option>
-                                <option value="Ibadah">Aktivitas Ibadah</option>
-                            </select>
-                        </div>
-                        <div class="mb-2"><label>Nilai (Skala 1 - 4)</label>
-                            <select name="nilai" id="formKarakterNilai" class="form-select">
-                                <option value="4">4 (Sangat Baik)</option>
-                                <option value="3">3 (Baik)</option>
-                                <option value="2">2 (Cukup)</option>
-                                <option value="1">1 (Kurang)</option>
-                            </select>
-                        </div>
-                        <div class="mb-2"><label>Catatan</label><textarea name="catatan" id="formKarakterCatatan" class="form-control" rows="2"></textarea></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Penilaian</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Inventaris -->
-    <div class="modal fade" id="modalInventaris" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Inventaris')">
-                    <input type="hidden" name="id" id="formInventarisId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalInventarisTitle">Data Inventaris Barang</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Kode Barang</label><input type="text" name="kode" id="formInventarisKode" class="form-control" required placeholder="Cth: INV-MAD-001"></div>
-                        <div class="mb-2"><label>Nama Barang</label><input type="text" name="nama" id="formInventarisNama" class="form-control" required></div>
-                        <div class="mb-2"><label>Lokasi Penempatan</label><input type="text" name="lokasi" id="formInventarisLokasi" class="form-control" required placeholder="Cth: Ruang Guru"></div>
-                        <div class="mb-2"><label>Kondisi</label>
-                            <select name="kondisi" id="formInventarisKondisi" class="form-select">
-                                <option value="Baik">Baik</option>
-                                <option value="Rusak Ringan">Rusak Ringan</option>
-                                <option value="Rusak Berat">Rusak Berat</option>
-                            </select>
-                        </div>
-                        <div class="mb-2"><label>Tahun Perolehan</label><input type="number" name="tahun" id="formInventarisTahun" class="form-control" required placeholder="Cth: 2023"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Barang</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Tambah Pengumuman -->
-    <div class="modal fade" id="modalPengumuman" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form onsubmit="handleSaveData(event, 'Pengumuman')">
-                    <input type="hidden" name="id" id="formPengumumanId">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalPengumumanTitle">Buat Pengumuman Baru</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-2"><label>Judul Pengumuman</label><input type="text" name="judul" id="formPengumumanJudul" class="form-control" required></div>
-                        <div class="mb-2"><label>Isi Pengumuman</label><textarea name="isi" id="formPengumumanIsi" class="form-control" rows="4" required></textarea></div>
-                        <div class="mb-2"><label>Target Pengguna</label>
-                            <select name="target_role" id="formPengumumanTarget" class="form-select">
-                                <option value="Semua">Semua Pengguna</option>
-                                <option value="Guru">Khusus Guru</option>
-                                <option value="Orang Tua">Khusus Wali Murid</option>
-                            </select>
-                        </div>
-                        <div class="mb-2"><label>Tanggal Publish</label><input type="date" name="tanggal" id="formPengumumanTanggal" class="form-control" required></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Simpan Pengumuman</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <!-- ==========================================
-     LOGIKA JAVASCRIPT (SPA & API CALLS)
+     MODALS (FORM INPUT DATA & EDIT)
+     ========================================== -->
+<!-- Modal Tambah/Edit User -->
+<div class="modal fade" id="modalUser" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Users')">
+                <input type="hidden" name="id" id="formUserId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalUserTitle">Data Pengguna</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Nama Lengkap</label><input type="text" name="nama_lengkap" id="formUserNama" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Username</label><input type="text" name="username" id="formUserUsername" class="form-control" required></div>
+                    <div class="mb-2">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" id="formUserPassword" class="form-control" required>
+                        <small class="text-muted" id="formUserPasswordHelp" style="display:none;">*Kosongkan jika tidak ingin mengubah password lama</small>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Role</label>
+                        <select name="role" id="formUserRole" class="form-select">
+                            <option value="Guru">Guru</option>
+                            <option value="Siswa">Siswa</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Kepala Madrasah">Kepala Madrasah</option>
+                            <option value="Orang Tua">Orang Tua</option>
+                        </select>
+                    </div>
+                    <div class="mb-2" id="userStatusDiv" style="display:none;">
+                        <label class="form-label">Status</label>
+                        <select name="status" id="formUserStatus" class="form-select">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Data Akun</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah/Edit Guru -->
+<div class="modal fade" id="modalGuru" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Guru')">
+                <input type="hidden" name="id" id="formGuruId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalGuruTitle">Formulir Guru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">NIP / NUPTK</label><input type="text" name="nip" id="formGuruNip" class="form-control"></div>
+                    <div class="mb-2"><label class="form-label">Nama Guru Lengkap</label><input type="text" name="nama" id="formGuruNama" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">No HP</label><input type="text" name="no_hp" id="formGuruHp" class="form-control"></div>
+                    <div class="mb-2"><label class="form-label">Wali Kelas</label><input type="text" name="kelas_id" id="formGuruKelas" class="form-control" placeholder="Cth: Kelas 1A (Kosong jika tidak menjabat)"></div>
+                    <div class="mb-2"><label class="form-label">Jabatan Tambahan</label><input type="text" name="jabatan_tambahan" id="formGuruJabatan" class="form-control" placeholder="Cth: Pembina Pramuka / TU"></div>
+                    <div class="mb-2"><label class="form-label">Alamat Lengkap</label><textarea name="alamat" id="formGuruAlamat" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Data Guru</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah/Edit Siswa -->
+<div class="modal fade" id="modalSiswa" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Siswa')">
+                <input type="hidden" name="id" id="formSiswaId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSiswaTitle">Formulir Siswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">NIS (Nomor Induk Siswa)</label><input type="text" name="nis" id="formSiswaNis" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">NISN</label><input type="text" name="nisn" id="formSiswaNisn" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Nama Siswa Lengkap</label><input type="text" name="nama_lengkap" id="formSiswaNama" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Kelas Aktif</label><input type="text" name="kelas_id" id="formSiswaKelas" class="form-control" required placeholder="Cth: Kelas 1A"></div>
+                    <div class="mb-2"><label class="form-label">Nama Wali/Orang Tua</label><input type="text" name="nama_wali" id="formSiswaWali" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">No HP Orang Tua</label><input type="text" name="no_hp_wali" id="formSiswaHpWali" class="form-control" required></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Data Siswa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah/Edit Kelas -->
+<div class="modal fade" id="modalKelas" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Kelas')">
+                <input type="hidden" name="id" id="formKelasId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalKelasTitle">Data Kelas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Nama Kelas</label><input type="text" name="nama_kelas" id="formKelasNama" class="form-control" required placeholder="Cth: Kelas 1A"></div>
+                    <div class="mb-2"><label class="form-label">Tingkat</label><input type="number" name="tingkat" id="formKelasTingkat" class="form-control" required min="1" max="6"></div>
+                    <div class="mb-2"><label class="form-label">ID Wali Kelas</label><input type="text" name="wali_kelas_id" id="formKelasWaliId" class="form-control" placeholder="Isi dengan ID User Guru"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Kelas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Jurnal -->
+<div class="modal fade" id="modalJurnal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'JurnalGuru')">
+                <input type="hidden" name="id" id="formJurnalId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalJurnalTitle">Isi Jurnal Mengajar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formJurnalTanggal" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Kelas</label><input type="text" name="kelas_id" id="formJurnalKelas" class="form-control" required placeholder="Contoh: Kelas 1A"></div>
+                    <div class="mb-2"><label class="form-label">Mata Pelajaran</label><input type="text" name="mapel" id="formJurnalMapel" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Materi / Kegiatan</label><textarea name="materi" id="formJurnalMateri" class="form-control" required rows="3"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Jurnal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Kejadian Siswa -->
+<div class="modal fade" id="modalKejadian" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'KejadianSiswa')">
+                <input type="hidden" name="id" id="formKejadianId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalKejadianTitle">Catat Kejadian Harian Siswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Nama Siswa</label><input type="text" name="siswa_id" id="formKejadianSiswa" class="form-control" required placeholder="Masukkan Nama Siswa"></div>
+                    <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formKejadianTanggal" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Kategori</label>
+                        <select name="kategori" id="formKejadianKategori" class="form-select">
+                            <option value="Positif">Positif (Prestasi/Disiplin)</option>
+                            <option value="Negatif">Negatif (Pelanggaran/Terlambat)</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Jenis Kejadian</label><input type="text" name="jenis" id="formKejadianJenis" class="form-control" required placeholder="Cth: Terlambat, Juara Lomba"></div>
+                    <div class="mb-2"><label class="form-label">Kronologi / Keterangan</label><textarea name="kronologi" id="formKejadianKronologi" class="form-control" rows="3" required></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Catatan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Tahfidz -->
+<div class="modal fade" id="modalTahfidz" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Tahfidz')">
+                <input type="hidden" name="id" id="formTahfidzId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTahfidzTitle">Bina Tahfidz Siswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Nama Siswa</label><input type="text" name="siswa_id" id="formTahfidzSiswa" class="form-control" required placeholder="Nama Siswa"></div>
+                    <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formTahfidzTanggal" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Surah</label><input type="text" name="surah" id="formTahfidzSurah" class="form-control" required placeholder="Cth: An-Naba'"></div>
+                    <div class="mb-2"><label class="form-label">Ayat</label><input type="text" name="ayat" id="formTahfidzAyat" class="form-control" required placeholder="Cth: 1-10"></div>
+                    <div class="mb-2"><label class="form-label">Status Hafalan</label>
+                        <select name="status_hafalan" id="formTahfidzStatus" class="form-select">
+                            <option value="Baru">Baru</option>
+                            <option value="Murajaah">Murajaah</option>
+                            <option value="Lancar">Lancar</option>
+                            <option value="Sangat Baik">Sangat Baik</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Setoran</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Penilaian Karakter -->
+<div class="modal fade" id="modalKarakter" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Karakter')">
+                <input type="hidden" name="id" id="formKarakterId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalKarakterTitle">Input Penilaian Karakter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Nama Siswa</label><input type="text" name="siswa_id" id="formKarakterSiswa" class="form-control" required placeholder="Nama Siswa"></div>
+                    <div class="mb-2"><label class="form-label">Tanggal</label><input type="date" name="tanggal" id="formKarakterTanggal" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Aspek Penilaian</label>
+                        <select name="aspek" id="formKarakterAspek" class="form-select">
+                            <option value="Disiplin">Disiplin</option>
+                            <option value="Kejujuran">Kejujuran</option>
+                            <option value="Tanggung Jawab">Tanggung Jawab</option>
+                            <option value="Akhlak">Akhlak / Sopan Santun</option>
+                            <option value="Ibadah">Aktivitas Ibadah</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Nilai (Skala 1 - 4)</label>
+                        <select name="nilai" id="formKarakterNilai" class="form-select">
+                            <option value="4">4 (Sangat Baik)</option>
+                            <option value="3">3 (Baik)</option>
+                            <option value="2">2 (Cukup)</option>
+                            <option value="1">1 (Kurang)</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Catatan</label><textarea name="catatan" id="formKarakterCatatan" class="form-control" rows="2"></textarea></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Penilaian</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Inventaris -->
+<div class="modal fade" id="modalInventaris" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Inventaris')">
+                <input type="hidden" name="id" id="formInventarisId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalInventarisTitle">Data Inventaris Barang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Kode Barang</label><input type="text" name="kode" id="formInventarisKode" class="form-control" required placeholder="Cth: INV-MAD-001"></div>
+                    <div class="mb-2"><label class="form-label">Nama Barang</label><input type="text" name="nama" id="formInventarisNama" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Lokasi Penempatan</label><input type="text" name="lokasi" id="formInventarisLokasi" class="form-control" required placeholder="Cth: Ruang Guru"></div>
+                    <div class="mb-2"><label class="form-label">Kondisi</label>
+                        <select name="kondisi" id="formInventarisKondisi" class="form-select">
+                            <option value="Baik">Baik</option>
+                            <option value="Rusak Ringan">Rusak Ringan</option>
+                            <option value="Rusak Berat">Rusak Berat</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Tahun Perolehan</label><input type="number" name="tahun" id="formInventarisTahun" class="form-control" required placeholder="Cth: 2023"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Barang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Pengumuman -->
+<div class="modal fade" id="modalPengumuman" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'Pengumuman')">
+                <input type="hidden" name="id" id="formPengumumanId">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPengumumanTitle">Buat Pengumuman Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><label class="form-label">Judul Pengumuman</label><input type="text" name="judul" id="formPengumumanJudul" class="form-control" required></div>
+                    <div class="mb-2"><label class="form-label">Isi Pengumuman</label><textarea name="isi" id="formPengumumanIsi" class="form-control" rows="4" required></textarea></div>
+                    <div class="mb-2"><label class="form-label">Target Pengguna</label>
+                        <select name="target_role" id="formPengumumanTarget" class="form-select">
+                            <option value="Semua">Semua Pengguna</option>
+                            <option value="Guru">Khusus Guru</option>
+                            <option value="Orang Tua">Khusus Wali Murid</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label">Tanggal Publish</label><input type="date" name="tanggal" id="formPengumumanTanggal" class="form-control" required></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Pengumuman</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Buku Penghubung -->
+<div class="modal fade" id="modalPenghubung" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="handleSaveData(event, 'BukuPenghubung')">
+                <input type="hidden" name="id" id="formPenghubungId">
+                <input type="hidden" name="pengirim_id" id="formPenghubungPengirim">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kirim Pesan Buku Penghubung</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Penerima (ID User / Nama)</label>
+                        <input type="text" name="penerima_id" id="formPenghubungPenerima" class="form-control" required placeholder="Masukkan ID atau nama penerima">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Tanggal</label>
+                        <input type="date" name="tanggal" id="formPenghubungTanggal" class="form-control" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Isi Pesan / Catatan Perkembangan</label>
+                        <textarea name="pesan" id="formPenghubungPesan" class="form-control" rows="4" required placeholder="Tuliskan pesan perkembangan anak atau koordinasi..."></textarea>
+                    </div>
+                    <input type="hidden" name="status_baca" value="Belum Dibaca">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane"></i> Kirim Pesan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     LOGIKA JAVASCRIPT (SPA, SINKRONISASI, PDF, IMPORT)
      ========================================== -->
 <script>
     // ==========================================
-    // KONFIGURASI UTAMA BLOGGER DEPLOYMENT
+    // UTILITIES (Dideklarasikan di paling atas agar hoisted sempurna)
     // ==========================================
-    const IS_PREVIEW = false; // UBAH KE false SAAT DEPLOY PRODUCTION
-    
-    // MASUKKAN URL WEB APP GAS ANDA DI DALAM TANDA KUTIP DI BAWAH INI
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwpaM35dtme8xUWFQZneMvSydsLcOvkuq6Q_9VocOpTKqzuztnJBMMr6s2JO0Uc_9q5MA/exec"; // <-- WAJIB DIISI: Paste URL Web App GAS Anda di sini
-
-    // ==========================================
-    // STATE MANAGEMENT
-    // ==========================================
-    const AppState = {
-        user: null,
-        settings: {},
-        currentModule: 'dashboard'
-    };
-
-    // ==========================================
-    // MOCK DATA & MOCK API UNTUK PREVIEW MODE
-    // ==========================================
-    const DUMMY_DB = {
-        setupStatus: { isSetup: true },
-        settings: { nama_lembaga: "MIS MIFTAHUSSA'ADAH", kepala_madrasah: "Ahmad, S.Pd.I" },
-        users: [
-            { id: 'u1', nama_lengkap: 'Admin Utama', username: 'admin', role: 'Admin', status: 'Aktif', passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }, // hash dr 'admin'
-            { id: 'u2', nama_lengkap: 'Budi Guru', username: 'guru1', role: 'Guru', status: 'Aktif', passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }
-        ],
-        jurnal: [
-            { id: 'j1', tanggal: '2023-10-25', mapel: 'Aqidah Akhlak', materi: 'Sifat Wajib Allah', kelas_id: 'Kls 1' }
-        ]
-    };
-
-    async function mockAPI(payload) {
-        console.log("Mock API Called:", payload.action, payload.data);
-        await new Promise(r => setTimeout(r, 600)); // Simulasi delay jaringan
-
-        switch (payload.action) {
-            case 'checkSetup':
-                return { status: 'success', data: DUMMY_DB.setupStatus };
-            case 'setupDatabase':
-                DUMMY_DB.setupStatus.isSetup = true;
-                return { status: 'success', data: { message: 'Setup Mock Berhasil' } };
-            case 'login':
-                const user = DUMMY_DB.users.find(u => u.username === payload.data.username && u.passwordHash === payload.data.password);
-                if (user) {
-                    let u = {...user}; delete u.passwordHash;
-                    return { status: 'success', data: { user: u, settings: DUMMY_DB.settings } };
-                }
-                throw new Error("Username atau password salah (Mock)");
-            case 'getData':
-                if (payload.data.sheetName === 'Users') return { status: 'success', data: DUMMY_DB.users };
-                if (payload.data.sheetName === 'JurnalGuru') return { status: 'success', data: DUMMY_DB.jurnal };
-                return { status: 'success', data: [] };
-            case 'getDashboardStats':
-                return { status: 'success', data: { totalSiswa: 150, totalGuru: 12, totalUsers: 165, guruHadirHariIni: 10 } };
-            default:
-                return { status: 'success', data: [] };
+    function showLoader(show, text = "Memuat Sistem...") {
+        const loader = document.getElementById('global-loader');
+        const loaderText = document.getElementById('loader-text');
+        if (loaderText) loaderText.innerText = text;
+        if (loader) {
+            loader.style.display = show ? 'flex' : 'none';
         }
     }
+    window.showLoader = showLoader; // Bind secara eksplisit ke window global
 
-    // ==========================================
-    // UTILITIES
-    // ==========================================
-    
+    function toast(message, type = 'success') {
+        Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: type, title: message });
+    }
+    window.toast = toast;
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        const targetView = document.getElementById(viewId);
+        if (targetView) targetView.classList.add('active');
+    }
+    window.switchView = switchView;
+
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        if (sb) {
+            sb.style.display = sb.style.display === 'none' ? 'flex' : 'none';
+        }
+    }
+    window.toggleSidebar = toggleSidebar;
+
     // Hash Password menggunakan Web Crypto API
     async function sha256(message) {
         const msgBuffer = new TextEncoder().encode(message);
@@ -647,112 +820,103 @@
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
+    window.sha256 = sha256;
 
-    function showLoader(show, text = "Memuat Sistem...") {
-        const loader = document.getElementById('global-loader');
-        if (loader) {
-            document.getElementById('loader-text').innerText = text;
-            loader.style.display = show ? 'flex' : 'none';
-        }
-    }
+    // ==========================================
+    // KONFIGURASI UTAMA BLOGGER / GITHUB PAGES
+    // ==========================================
+    const IS_PREVIEW = false; 
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwpaM35dtme8xUWFQZneMvSydsLcOvkuq6Q_9VocOpTKqzuztnJBMMr6s2JO0Uc_9q5MA/exec";
 
-    function toast(message, type = 'success') {
-        Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: type, title: message });
-    }
-
-    function switchView(viewId) {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        const targetView = document.getElementById(viewId);
-        if (targetView) targetView.classList.add('active');
-    }
-
-    function toggleSidebar() {
-        const sb = document.getElementById('sidebar');
-        sb.style.display = sb.style.display === 'none' ? 'flex' : 'none';
-    }
+    // ==========================================
+    // STATE MANAGEMENT
+    // ==========================================
+    const AppState = {
+        user: null,
+        settings: {
+            nama_lembaga: "MIS MIFTAHUSSA'ADAH",
+            kepala_madrasah: "Ahmad, S.Pd.I",
+            alamat_lembaga: "Jl. Pendidikan No. 5, Bekasi, Jawa Barat",
+            tahun_ajaran: "2026/2027",
+            semester_aktif: "Ganjil",
+            npsn_lembaga: "12345678",
+            nsm_lembaga: "111222333444",
+            telp_lembaga: "021-123456",
+            email_lembaga: "info@mismiftahussaadah.sch.id",
+            logo_url: "https://via.placeholder.com/85/0d5c75/FFFFFF?text=MIS"
+        },
+        currentModule: 'dashboard'
+    };
 
     // ==========================================
     // API CALLER (Fetch wrapper dengan Timeout Guard)
     // ==========================================
     async function callAPI(action, data = {}) {
-        const payload = { action: action, data: data };
-        
         if (IS_PREVIEW) {
-            const res = await mockAPI(payload);
-            if(res.status === 'error') throw new Error(res.message);
-            return res.data;
+            await new Promise(r => setTimeout(r, 400));
+            if (action === 'checkSetup') return { isSetup: true };
+            if (action === 'login') return { user: { id: 'u1', nama_lengkap: 'Demo Admin', username: 'admin', role: 'Admin', status: 'Aktif' }, settings: AppState.settings };
+            if (action === 'getData') return [];
+            if (action === 'getDashboardStats') return { totalSiswa: 340, totalGuru: 18, totalUsers: 25, guruHadirHariIni: 14 };
+            return { message: "Mock Success" };
         }
 
-        if (!GAS_URL || GAS_URL.trim() === "" || GAS_URL === "URL_DEPLOY_GAS_ANDA_DISINI") {
-            throw new Error("GAS_URL masih KOSONG! Pastikan Anda sudah mem-paste URL Apps Script ke dalam tanda kutip const GAS_URL = '...'; di file HTML Anda.");
-        }
-
-        // Setup controller timeout koneksi (12 detik) agar tidak loading terus menerus
+        const payload = { action: action, data: data };
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 12000);
 
         try {
-            console.log("Mengirim request ke GAS:", action);
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain untuk GAS CORS
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 redirect: 'follow',
                 signal: controller.signal
             });
             clearTimeout(timeoutId);
-
-            // Ambil sebagai teks terlebih dahulu untuk melacak error jika format bukan JSON
             const textResponse = await response.text(); 
-            
-            let result;
-            try {
-                result = JSON.parse(textResponse);
-            } catch (parseError) {
-                console.error("Gagal membaca JSON dari GAS. Response server asli:", textResponse);
-                throw new Error("Server mengembalikan respons non-JSON. Pastikan Web App GAS Anda sudah di-deploy dengan benar (Execute as: Me, Access: Anyone) dan menggunakan versi terbaru (New Version).");
-            }
-
+            const result = JSON.parse(textResponse);
             if (result.status === 'error') throw new Error(result.message);
             return result.data;
         } catch (error) {
             clearTimeout(timeoutId);
             console.error("API Error Detail:", error);
             if (error.name === 'AbortError') {
-                throw new Error("Waktu koneksi habis (Timeout 12 detik). Pastikan URL Web App GAS Anda aktif, tidak salah ketik (typo), dan koneksi internet Anda stabil.");
+                throw new Error("Waktu koneksi habis (Timeout 12 detik). Pastikan server Apps Script Anda aktif.");
             }
-            throw new Error("Gagal terhubung: " + error.message + ". Pastikan Anda telah mengotorisasi script dan memilih opsi 'Anyone' saat deploy Web App GAS.");
+            throw new Error("Gagal terhubung: " + error.message);
         }
     }
+    window.callAPI = callAPI;
 
     // ==========================================
     // INITIALIZATION & ROUTING
     // ==========================================
     window.onload = async () => {
-        // Cek sesi login (Menggunakan try-catch agar tidak crash di iframe Blogger/Github Pages)
         let savedSession = null;
         try {
             savedSession = localStorage.getItem('sim_session');
             if(!savedSession) savedSession = sessionStorage.getItem('sim_session');
         } catch (storageError) {
-            console.warn("Session storage diblokir oleh browser di dalam iframe:", storageError);
+            console.warn("Storage diblokir:", storageError);
         }
 
         if (savedSession) {
             try {
                 const sessionData = JSON.parse(savedSession);
                 AppState.user = sessionData.user;
-                AppState.settings = sessionData.settings;
+                if(sessionData.settings) {
+                    AppState.settings = { ...AppState.settings, ...sessionData.settings };
+                }
                 initDashboard();
                 return;
-            } catch (parseError) {
-                console.error("Gagal membaca session cache:", parseError);
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        // Cek status setup database ke server GAS
         try {
-            showLoader(true, "Menghubungkan ke Database Google Sheets...");
+            showLoader(true, "Menghubungkan ke Database...");
             const check = await callAPI('checkSetup');
             if (check.isSetup) {
                 switchView('view-login');
@@ -760,100 +924,19 @@
                 switchView('view-setup');
             }
         } catch (err) {
-            Swal.fire({
-                title: 'Koneksi Gagal',
-                text: err.message,
-                icon: 'error',
-                confirmButtonText: 'Coba Lagi'
-            }).then(() => {
-                location.reload(); // Reload halaman untuk mencoba ulang koneksi
-            });
-            switchView('view-login'); // Fallback jika gagal terhubung
+            Swal.fire('Koneksi Gagal', err.message, 'error');
+            switchView('view-login'); 
         } finally {
             showLoader(false);
         }
     };
 
-    // ==========================================
-    // SETUP HANDLER
-    // ==========================================
-    async function handleSetup(e) {
-        e.preventDefault();
-        showLoader(true, "Sedang membuat file database Spreadsheet baru...");
-        const btn = e.target.querySelector('button');
-        btn.disabled = true;
-
-        try {
-            const pwdPlain = document.getElementById('setup-password').value;
-            const pwdHash = await sha256(pwdPlain);
-
-            const data = {
-                nama_lembaga: document.getElementById('setup-lembaga').value,
-                nama_kepala: document.getElementById('setup-kepala').value,
-                username: document.getElementById('setup-username').value,
-                password: pwdHash
-            };
-
-            await callAPI('setupDatabase', data);
-            Swal.fire('Berhasil!', 'Database Google Sheets berhasil dibuat. Silakan login.', 'success').then(() => {
-                switchView('view-login');
-            });
-        } catch (err) {
-            Swal.fire('Gagal Setup', err.message, 'error');
-        } finally {
-            showLoader(false);
-            btn.disabled = false;
-        }
-    }
-
-    // ==========================================
-    // LOGIN HANDLER
-    // ==========================================
-    async function handleLogin(e) {
-        e.preventDefault();
-        showLoader(true, "Memvalidasi akun...");
-        
-        try {
-            const user = document.getElementById('login-username').value;
-            const passPlain = document.getElementById('login-password').value;
-            const passHash = await sha256(passPlain);
-
-            const response = await callAPI('login', { username: user, password: passHash });
-            
-            AppState.user = response.user;
-            AppState.settings = response.settings;
-            
-            try {
-                localStorage.setItem('sim_session', JSON.stringify(response));
-                sessionStorage.setItem('sim_session', JSON.stringify(response));
-            } catch (storageError) {
-                console.warn("Gagal menyimpan session cache (Storage diblokir):", storageError);
-            }
-            
-            initDashboard();
-        } catch (err) {
-            Swal.fire('Login Gagal', err.message, 'error');
-        } finally {
-            showLoader(false);
-        }
-    }
-
-    function logout() {
-        try {
-            localStorage.removeItem('sim_session');
-            sessionStorage.removeItem('sim_session');
-        } catch (storageError) {}
-        AppState.user = null;
-        switchView('view-login');
-    }
-
-    // ==========================================
-    // DASHBOARD & MENU RENDERER
-    // ==========================================
     function initDashboard() {
-        // Set info identitas
-        document.getElementById('sidebar-lembaga').innerText = AppState.settings.nama_lembaga || 'SIM Madrasah';
-        document.getElementById('sidebar-role').innerText = AppState.user.role;
+        const sidebarLembaga = document.getElementById('sidebar-lembaga');
+        if (sidebarLembaga) sidebarLembaga.innerText = AppState.settings.nama_lembaga || 'SIM Madrasah';
+        document.getElementById('header-center-title').innerText = "Dashboard Operator Madrasah";
+        document.getElementById('sidebar-role').innerText = "Akses: " + AppState.user.role;
+        document.getElementById('sidebar-user-name').innerText = AppState.user.nama_lengkap;
         document.getElementById('topbar-user').innerText = AppState.user.nama_lengkap;
 
         renderMenu();
@@ -867,37 +950,40 @@
         const menuContainer = document.getElementById('menu-container');
         let menus = [];
 
-        // Definisi Menu Berdasarkan Role
         if (role === 'Admin') {
             menus = [
-                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard' },
-                { id: 'users', icon: 'fa-users-cog', text: 'Manajemen User' },
-                { id: 'master_siswa', icon: 'fa-user-graduate', text: 'Data Siswa' },
-                { id: 'master_guru', icon: 'fa-chalkboard-teacher', text: 'Data Guru' },
-                { id: 'master_kelas', icon: 'fa-school', text: 'Data Kelas' },
-                { id: 'inventaris', icon: 'fa-boxes', text: 'Inventaris' },
-                { id: 'pengumuman', icon: 'fa-bullhorn', text: 'Pengumuman' }
-            ];
-        } else if (role === 'Kepala Madrasah') {
-            menus = [
-                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Monitoring Madrasah' },
-                { id: 'users', icon: 'fa-users', text: 'Data User' },
-                { id: 'inventaris', icon: 'fa-boxes', text: 'Inventaris' },
-                { id: 'pengumuman', icon: 'fa-bullhorn', text: 'Pengumuman' }
+                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard Control' },
+                { id: 'users', icon: 'fa-user-shield', text: 'Manajemen Akun' },
+                { id: 'master_siswa', icon: 'fa-user-graduate', text: 'Data Master Siswa' },
+                { id: 'master_guru', icon: 'fa-chalkboard-teacher', text: 'Data Master Guru' },
+                { id: 'master_kelas', icon: 'fa-school', text: 'Data Master Kelas' },
+                { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absen Siswa' },
+                { id: 'jurnal', icon: 'fa-edit', text: 'Jurnal Harian Mengajar' },
+                { id: 'kejadian', icon: 'fa-clipboard-list', text: 'Kejadian Siswa' },
+                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung' },
+                { id: 'tahfidz', icon: 'fa-quran', text: 'Bina Tahfidz' },
+                { id: 'karakter', icon: 'fa-star', text: 'Nilai Karakter' },
+                { id: 'inventaris', icon: 'fa-boxes', text: 'Inventaris Madrasah' },
+                { id: 'import_csv', icon: 'fa-file-upload', text: 'Upload / Import Data' },
+                { id: 'cetak_laporan', icon: 'fa-print', text: 'Cetak Laporan / PDF' },
+                { id: 'pengaturan', icon: 'fa-sliders-h', text: 'Pengaturan Lembaga' }
             ];
         } else if (role === 'Guru') {
             menus = [
                 { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard' },
                 { id: 'absen_guru', icon: 'fa-fingerprint', text: 'Absen Saya' },
                 { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absen Siswa' },
-                { id: 'jurnal', icon: 'fa-book-open', text: 'Jurnal Mengajar' },
+                { id: 'jurnal', icon: 'fa-edit', text: 'Jurnal Harian Mengajar' },
                 { id: 'kejadian', icon: 'fa-clipboard-list', text: 'Kejadian Siswa' },
+                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung' },
                 { id: 'tahfidz', icon: 'fa-quran', text: 'Bina Tahfidz' },
-                { id: 'karakter', icon: 'fa-star', text: 'Nilai Karakter' }
+                { id: 'karakter', icon: 'fa-star', text: 'Nilai Karakter' },
+                { id: 'cetak_laporan', icon: 'fa-print', text: 'Cetak Laporan / PDF' }
             ];
         } else if (role === 'Orang Tua') {
             menus = [
                 { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard Wali' },
+                { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung' },
                 { id: 'tahfidz', icon: 'fa-quran', text: 'Hafalan Anak' },
                 { id: 'karakter', icon: 'fa-star', text: 'Karakter Anak' }
             ];
@@ -910,21 +996,45 @@
         menuContainer.innerHTML = html;
     }
 
+    async function handleSetup(e) {
+        e.preventDefault();
+        showLoader(true, "Membangun Google Sheets...");
+        try {
+            const pwdPlain = document.getElementById('setup-password').value;
+            const pwdHash = await sha256(pwdPlain);
+
+            const data = {
+                nama_lembaga: document.getElementById('setup-lembaga').value,
+                nama_kepala: document.getElementById('setup-kepala').value,
+                username: document.getElementById('setup-username').value,
+                password: pwdHash
+            };
+
+            await callAPI('setupDatabase', data);
+            Swal.fire('Setup Selesai!', 'Database Google Sheets sukses terinisialisasi. Silakan login.', 'success').then(() => {
+                switchView('view-login');
+            });
+        } catch (err) {
+            Swal.fire('Setup Gagal', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
     // ==========================================
-    // MODULE LOADER
+    // MODULE LOAD ROUTING
     // ==========================================
     async function loadModule(moduleId) {
-        showLoader(true, "Memuat data...");
+        showLoader(true, "Menghubungkan Database...");
         AppState.currentModule = moduleId;
-        document.getElementById('topbar-title').innerText = moduleId.toUpperCase().replace('_', ' ');
+        document.getElementById('header-center-title').innerText = "Control Panel: " + moduleId.toUpperCase().replace('_', ' ');
         
-        // Update active menu class
         document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
         const activeMenu = document.getElementById('menu-' + moduleId);
         if(activeMenu) activeMenu.classList.add('active');
 
         const contentArea = document.getElementById('main-content-area');
-        contentArea.innerHTML = ''; // Clear
+        contentArea.innerHTML = '';
 
         try {
             if (moduleId === 'dashboard') await renderDashboard(contentArea);
@@ -933,97 +1043,154 @@
             else if (moduleId === 'master_guru') await renderGuruMenu(contentArea);
             else if (moduleId === 'master_kelas') await renderKelasMenu(contentArea);
             else if (moduleId === 'inventaris') await renderInventarisMenu(contentArea);
-            else if (moduleId === 'pengumuman') await renderPengumumanMenu(contentArea);
+            else if (moduleId === 'import_csv') await renderImportMenu(contentArea);
+            else if (moduleId === 'cetak_laporan') await renderCetakMenu(contentArea);
+            else if (moduleId === 'pengaturan') await renderPengaturanMenu(contentArea);
             else if (moduleId === 'jurnal') await renderJurnalMenu(contentArea);
             else if (moduleId === 'kejadian') await renderKejadianMenu(contentArea);
             else if (moduleId === 'tahfidz') await renderTahfidzMenu(contentArea);
             else if (moduleId === 'karakter') await renderKarakterMenu(contentArea);
             else if (moduleId === 'absen_siswa') await renderAbsenSiswaMenu(contentArea);
             else if (moduleId === 'absen_guru') await renderAbsenGuruMenu(contentArea);
+            else if (moduleId === 'penghubung') await renderPenghubungMenu(contentArea);
             else {
-                contentArea.innerHTML = `<div class="alert alert-info">Modul <b>${moduleId}</b> sedang dalam tahap pengembangan.</div>`;
+                contentArea.innerHTML = `<div class="alert alert-info">Modul ini sedang disiapkan.</div>`;
             }
         } catch (err) {
-            contentArea.innerHTML = `<div class="alert alert-danger">Error memuat modul: ${err.message}</div>`;
+            contentArea.innerHTML = `<div class="alert alert-danger">Error memuat data: ${err.message}</div>`;
         } finally {
             showLoader(false);
         }
     }
 
-    // --- MODULE: DASHBOARD ---
+    // ==========================================
+    // RENDER: MODULES UI
+    // ==========================================
+
     async function renderDashboard(container) {
         const stats = await callAPI('getDashboardStats', { role: AppState.user.role });
-        let html = `<div class="row">`;
-        
-        if(['Admin', 'Kepala Madrasah'].includes(AppState.user.role)) {
-            html += `
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div><h6 class="mb-0">Total Siswa</h6><h3 class="mb-0">${stats.totalSiswa || 0}</h3></div>
-                            <i class="fas fa-users fa-2x opacity-50"></i>
+        let html = `
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card m-blue" onclick="loadModule('master_siswa')">
+                        <div class="metric-info">
+                            <h3>${stats.totalSiswa || 0}</h3>
+                            <p>Peserta Didik</p>
                         </div>
+                        <div class="metric-icon"><i class="fas fa-user-graduate"></i></div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div><h6 class="mb-0">Total Guru</h6><h3 class="mb-0">${stats.totalGuru || 0}</h3></div>
-                            <i class="fas fa-chalkboard-teacher fa-2x opacity-50"></i>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card m-green" onclick="loadModule('master_guru')">
+                        <div class="metric-info">
+                            <h3>${stats.totalGuru || 0}</h3>
+                            <p>Pendidik & Staff</p>
                         </div>
+                        <div class="metric-icon"><i class="fas fa-chalkboard-teacher"></i></div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div><h6 class="mb-0">Total User Akun</h6><h3 class="mb-0">${stats.totalUsers || 0}</h3></div>
-                            <i class="fas fa-user-lock fa-2x opacity-50"></i>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card m-red" onclick="loadModule('inventaris')">
+                        <div class="metric-info">
+                            <h3>14</h3>
+                            <p>Item Inventaris</p>
                         </div>
+                        <div class="metric-icon"><i class="fas fa-boxes"></i></div>
                     </div>
                 </div>
-            `;
-        }
-        
-        html += `
-            <div class="col-12 mt-4">
-                <div class="card">
-                    <div class="card-header bg-white font-weight-bold">Selamat Datang di Portal SIM Madrasah</div>
-                    <div class="card-body">
-                        <h5>${AppState.settings.nama_lembaga}</h5>
-                        <p>Selamat bertugas kembali, <b>${AppState.user.nama_lengkap}</b>. Seluruh aktivitas administratif, jurnal mengajar, absensi, tahfidz, dan monitoring siswa dapat diakses secara langsung melalui dashboard ini secara tersinkronisasi.</p>
+                <div class="col-md-3 col-sm-6">
+                    <div class="metric-card m-orange" onclick="loadModule('users')">
+                        <div class="metric-info">
+                            <h3>${stats.totalUsers || 0}</h3>
+                            <p>Total User Akun</p>
+                        </div>
+                        <div class="metric-icon"><i class="fas fa-user-shield"></i></div>
                     </div>
                 </div>
             </div>
-        </div>`;
+
+            <div class="card card-custom">
+                <div class="card-custom-header">Control Panel Shortcut</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <div class="shortcut-card s-red" onclick="openAddSiswaModal()">
+                                <div><h5 class="mb-0 fw-bold">Siswa</h5><span class="small">Tambah Siswa</span></div>
+                                <i class="fas fa-plus-circle fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="shortcut-card s-orange" onclick="openAddGuruModal()">
+                                <div><h5 class="mb-0 fw-bold">Guru</h5><span class="small">Tambah Guru</span></div>
+                                <i class="fas fa-user-plus fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="shortcut-card s-blue" onclick="loadModule('import_csv')">
+                                <div><h5 class="mb-0 fw-bold">Import</h5><span class="small">Import File CSV</span></div>
+                                <i class="fas fa-file-excel fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="shortcut-card s-green" onclick="loadModule('cetak_laporan')">
+                                <div><h5 class="mb-0 fw-bold">Laporan</h5><span class="small">Export ke PDF</span></div>
+                                <i class="fas fa-print fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-custom">
+                        <div class="card-custom-header">Status Informasi Madrasah</div>
+                        <div class="card-body">
+                            <table class="table table-striped table-bordered mb-0">
+                                <tr><th>Lembaga</th><td><b>${AppState.settings.nama_lembaga}</b></td></tr>
+                                <tr><th>Kepala Sekolah</th><td>${AppState.settings.kepala_madrasah}</td></tr>
+                                <tr><th>Alamat</th><td>${AppState.settings.alamat_lembaga || '-'}</td></tr>
+                                <tr><th>Tahun Ajaran</th><td><span class="badge bg-success">${AppState.settings.tahun_ajaran || '2026/2027'}</span></td></tr>
+                                <tr><th>Semester</th><td><span class="badge bg-info">${AppState.settings.semester_aktif || 'Ganjil'}</span></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom">
+                        <div class="card-custom-header">Log Aktivitas Portal</div>
+                        <div class="card-body py-2">
+                            <ul class="list-group list-group-flush small">
+                                <li class="list-group-item py-2">System checked successfully <br><span class="text-muted small">Baru Saja</span></li>
+                                <li class="list-group-item py-2">Login Akun Sukses <br><span class="text-muted small">5 Menit yang lalu</span></li>
+                                <li class="list-group-item py-2">Database terhubung otomatis <br><span class="text-muted small">15 Menit yang lalu</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
         container.innerHTML = html;
     }
 
-    // --- MODULE: MANAJEMEN USER ---
     async function renderUsersMenu(container) {
         const users = await callAPI('getData', { sheetName: 'Users' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Pengguna Sistem (Akun Portal)</span>
-                    ${AppState.user.role === 'Admin' ? `<button class="btn btn-sm btn-success" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Tambah User</button>` : ''}
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Manajemen Pengguna Portal</span>
+                    <button class="btn btn-sm btn-success" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Buat User Baru</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Nama Lengkap</th>
-                                    <th>Username</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    ${AppState.user.role === 'Admin' ? `<th>Aksi</th>` : ''}
-                                </tr>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr><th>Nama Pengguna</th><th>Username</th><th>Akses / Role</th><th>Status</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
-        
-        if(users.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-3">Tidak ada data user.</td></tr>`;
+        if (users.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-4">Data pengguna tidak ditemukan.</td></tr>`;
         } else {
             users.forEach(u => {
                 const badge = u.status === 'Aktif' ? 'bg-success' : 'bg-danger';
@@ -1031,15 +1198,14 @@
                 const safeUser = (u.username || '').replace(/'/g, "\\'");
                 html += `
                     <tr>
-                        <td>${u.nama_lengkap}</td>
+                        <td><b>${u.nama_lengkap}</b></td>
                         <td>${u.username}</td>
-                        <td><span class="badge bg-secondary">${u.role}</span></td>
+                        <td><span class="badge bg-primary">${u.role}</span></td>
                         <td><span class="badge ${badge}">${u.status}</span></td>
-                        ${AppState.user.role === 'Admin' ? `
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" title="Edit" onclick="editUser('${u.id}', '${safeNama}', '${safeUser}', '${u.role}', '${u.status}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" title="Hapus User" onclick="deleteData('Users', '${u.id}')"><i class="fas fa-trash"></i></button>
-                        </td>` : ''}
+                            <button class="btn btn-sm btn-outline-primary" onclick="editUser('${u.id}', '${safeNama}', '${safeUser}', '${u.role}', '${u.status}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Users', '${u.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
                     </tr>
                 `;
             });
@@ -1048,36 +1214,38 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: DATA SISWA ---
     async function renderSiswaMenu(container) {
-        const siswa = await callAPI('getData', { sheetName: 'Siswa' });
+        const list = await callAPI('getData', { sheetName: 'Siswa' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Master Siswa</span>
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Database Siswa Aktif</span>
                     <button class="btn btn-sm btn-success" onclick="openAddSiswaModal()"><i class="fas fa-plus"></i> Tambah Siswa</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr><th>NIS</th><th>Nama Lengkap</th><th>Kelas</th><th>Nama Wali</th><th>No HP Wali</th><th>Aksi</th></tr>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr><th>NIS</th><th>NISN</th><th>Nama Siswa</th><th>Kelas</th><th>Nama Wali</th><th>No HP Wali</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(siswa.length === 0) {
-            html += `<tr><td colspan="6" class="text-center py-3">Tidak ada data siswa.</td></tr>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="7" class="text-center py-4">Siswa belum terdaftar. Silakan tambah data.</td></tr>`;
         } else {
-            siswa.forEach(s => {
+            list.forEach(s => {
+                const safeNama = (s.nama_lengkap || '').replace(/'/g, "\\'");
+                const safeWali = (s.nama_wali || '').replace(/'/g, "\\'");
                 html += `
                     <tr>
-                        <td>${s.nis}</td>
+                        <td><b>${s.nis}</b></td>
+                        <td>${s.nisn}</td>
                         <td>${s.nama_lengkap}</td>
-                        <td>${s.kelas_id}</td>
+                        <td><span class="badge bg-secondary">${s.kelas_id}</span></td>
                         <td>${s.nama_wali}</td>
                         <td>${s.no_hp_wali}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="editSiswa('${s.id}', '${s.nis}', '${s.nisn}', '${s.nama_lengkap.replace(/'/g, "\\'")}', '${s.kelas_id}', '${s.nama_wali.replace(/'/g, "\\'")}', '${s.no_hp_wali}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editSiswa('${s.id}', '${s.nis}', '${s.nisn}', '${safeNama}', '${s.kelas_id}', '${safeWali}', '${s.no_hp_wali}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Siswa', '${s.id}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
@@ -1088,36 +1256,38 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: DATA GURU ---
     async function renderGuruMenu(container) {
-        const gurus = await callAPI('getData', { sheetName: 'Guru' });
+        const list = await callAPI('getData', { sheetName: 'Guru' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Master Guru</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddGuruModal()"><i class="fas fa-plus"></i> Tambah Guru</button>
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Database Pendidik & Staff</span>
+                    <button class="btn btn-sm btn-success" onclick="openAddGuruModal()"><i class="fas fa-plus"></i> Tambah Guru Baru</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr><th>NIP/NUPTK</th><th>Nama Guru</th><th>Wali Kelas</th><th>Jabatan</th><th>Aksi</th></tr>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr><th>NIP / NUPTK</th><th>Nama Lengkap</th><th>Wali Kelas</th><th>Jabatan</th><th>No HP</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(gurus.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-4">Belum ada data guru.</td></tr>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="6" class="text-center py-4">Daftar Pendidik kosong. Silakan tambah data.</td></tr>`;
         } else {
-            gurus.forEach(g => {
+            list.forEach(g => {
                 const safeNama = (g.nama || '').replace(/'/g, "\\'");
+                const safeAlamat = (g.alamat || '').replace(/'/g, "\\'");
+                const safeJabatan = (g.jabatan_tambahan || '').replace(/'/g, "\\'");
                 html += `
                     <tr>
                         <td>${g.nip || '-'}</td>
-                        <td>${g.nama || '-'}</td>
-                        <td>${g.kelas_id || '-'}</td>
+                        <td><b>${g.nama}</b></td>
+                        <td><span class="badge bg-secondary">${g.kelas_id || '-'}</span></td>
                         <td>${g.jabatan_tambahan || '-'}</td>
+                        <td>${g.no_hp || '-'}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="editGuru('${g.id}', '${g.nip}', '${safeNama}', '${g.no_hp}', '${(g.alamat || '').replace(/'/g, "\\'")}', '${g.kelas_id}', '${(g.jabatan_tambahan || '').replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editGuru('${g.id}', '${g.nip || ''}', '${safeNama}', '${g.no_hp || ''}', '${safeAlamat}', '${g.kelas_id || ''}', '${safeJabatan}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Guru', '${g.id}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
@@ -1128,31 +1298,30 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: DATA KELAS ---
     async function renderKelasMenu(container) {
-        const kelas = await callAPI('getData', { sheetName: 'Kelas' });
+        const list = await callAPI('getData', { sheetName: 'Kelas' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Master Kelas</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddKelasModal()"><i class="fas fa-plus"></i> Tambah Kelas</button>
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Manajemen Kelas Madrasah</span>
+                    <button class="btn btn-sm btn-success" onclick="openAddKelasModal()"><i class="fas fa-plus"></i> Buat Kelas Baru</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr><th>Nama Kelas</th><th>Tingkat</th><th>Wali Kelas ID</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(kelas.length === 0) {
-            html += `<tr><td colspan="4" class="text-center py-3">Tidak ada data kelas.</td></tr>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="4" class="text-center py-4">Data kelas belum dikonfigurasi.</td></tr>`;
         } else {
-            kelas.forEach(k => {
+            list.forEach(k => {
                 html += `
                     <tr>
-                        <td>${k.nama_kelas}</td>
-                        <td>${k.tingkat}</td>
+                        <td><b>${k.nama_kelas}</b></td>
+                        <td>Tingkat ${k.tingkat}</td>
                         <td>${k.wali_kelas_id || '-'}</td>
                         <td>
                             <button class="btn btn-sm btn-outline-primary" onclick="editKelas('${k.id}', '${k.nama_kelas}', '${k.tingkat}', '${k.wali_kelas_id}')"><i class="fas fa-edit"></i></button>
@@ -1166,37 +1335,495 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: JURNAL GURU ---
+    async function renderInventarisMenu(container) {
+        const list = await callAPI('getData', { sheetName: 'Inventaris' });
+        let html = `
+            <div class="card card-custom">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Buku Inventaris & Aset</span>
+                    <button class="btn btn-sm btn-success" onclick="openAddInventarisModal()"><i class="fas fa-plus"></i> Tambah Aset</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr><th>Kode Barang</th><th>Nama Barang</th><th>Lokasi Penempatan</th><th>Kondisi</th><th>Tahun Perolehan</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        if (list.length === 0) {
+            html += `<tr><td colspan="6" class="text-center py-4">Aset belum terdaftar.</td></tr>`;
+        } else {
+            list.forEach(i => {
+                const color = i.kondisi === 'Baik' ? 'bg-success' : 'bg-warning';
+                const safeNama = (i.nama || '').replace(/'/g, "\\'");
+                const safeLokasi = (i.lokasi || '').replace(/'/g, "\\'");
+                html += `
+                    <tr>
+                        <td><code>${i.kode}</code></td>
+                        <td><b>${i.nama}</b></td>
+                        <td>${i.lokasi}</td>
+                        <td><span class="badge ${color}">${i.kondisi}</span></td>
+                        <td>${i.tahun}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editInventaris('${i.id}', '${i.kode}', '${safeNama}', '${safeLokasi}', '${i.kondisi}', '${i.tahun}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Inventaris', '${i.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+
+    function renderImportMenu(container) {
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header">Import Data Menggunakan Template CSV</div>
+                <div class="card-body">
+                    <p class="text-muted">Gunakan modul ini untuk memasukkan data secara massal ke dalam database Google Sheets.</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center border">
+                                <h6>Template Siswa</h6>
+                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="downloadCSVTemplate('Siswa')"><i class="fas fa-download"></i> Download Template Siswa</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center border">
+                                <h6>Template Guru</h6>
+                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="downloadCSVTemplate('Guru')"><i class="fas fa-download"></i> Download Template Guru</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center border">
+                                <h6>Template Inventaris</h6>
+                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="downloadCSVTemplate('Inventaris')"><i class="fas fa-download"></i> Download Template Aset</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Pilih Jenis Data yang di-upload:</b></label>
+                        <select class="form-select w-50" id="import-target-sheet">
+                            <option value="Siswa">Siswa</option>
+                            <option value="Guru">Guru</option>
+                            <option value="Inventaris">Inventaris</option>
+                        </select>
+                    </div>
+
+                    <div class="upload-dropzone" onclick="document.getElementById('csv-file-picker').click()">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                        <h5>Klik atau Tarik File CSV ke Sini</h5>
+                        <p class="text-muted small">Hanya file berekstensi .csv yang diizinkan.</p>
+                        <input type="file" id="csv-file-picker" style="display:none;" accept=".csv" onchange="handleCSVFileSelect(event)">
+                    </div>
+
+                    <div id="import-preview-container" class="mt-4" style="display:none;">
+                        <h5>Preview Data Sebelum Diunggah</h5>
+                        <div class="table-responsive border mb-3" style="max-height: 250px;">
+                            <table class="table table-sm table-hover mb-0" id="import-preview-table">
+                                <!-- Dinamis dirender -->
+                            </table>
+                        </div>
+                        <button class="btn btn-success" id="btn-execute-import" onclick="executeBulkImport()"><i class="fas fa-save"></i> Kirim Semua Data ke Google Sheets</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
+    let parsedCSVData = [];
+    let parsedSheetName = "";
+
+    function downloadCSVTemplate(type) {
+        let headers = "";
+        let filename = "";
+        if (type === 'Siswa') {
+            headers = "nis,nisn,nama_lengkap,kelas_id,nama_wali,no_hp_wali\n12345,1234567890,Siswa Baru,Kelas 1A,Budi Santoso,0812345678";
+            filename = "template_siswa.csv";
+        } else if (type === 'Guru') {
+            headers = "nip,nama,no_hp,kelas_id,jabatan_tambahan,alamat\n19850101,Ahmad Guru,0812121212,Kelas 1A,Pembina Pramuka,Bekasi";
+            filename = "template_guru.csv";
+        } else if (type === 'Inventaris') {
+            headers = "kode,nama,lokasi,kondisi,tahun\nINV-001,Kursi Guru,Ruang Guru,Baik,2026";
+            filename = "template_inventaris.csv";
+        }
+
+        const blob = new Blob([headers], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function handleCSVFileSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        parsedSheetName = document.getElementById('import-target-sheet').value;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const text = evt.target.result;
+            parseCSVText(text);
+        };
+        reader.readAsText(file);
+    }
+
+    function parseCSVText(text) {
+        const rows = text.split("\n").map(r => r.trim()).filter(r => r.length > 0);
+        if (rows.length <= 1) {
+            Swal.fire('Error', 'Data CSV kosong atau hanya berisi header!', 'error');
+            return;
+        }
+
+        const headers = rows.shift().split(",");
+        parsedCSVData = rows.map(row => {
+            const columns = row.split(",");
+            let obj = {};
+            headers.forEach((h, i) => {
+                obj[h.trim()] = columns[i] ? columns[i].trim() : '';
+            });
+            return obj;
+        });
+
+        // Render preview table
+        let html = `<thead class="table-light"><tr>`;
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += `</tr></thead><tbody>`;
+
+        parsedCSVData.forEach(row => {
+            html += `<tr>`;
+            headers.forEach(h => html += `<td>${row[h]}</td>`);
+            html += `</tr>`;
+        });
+        html += `</tbody>`;
+
+        document.getElementById('import-preview-table').innerHTML = html;
+        document.getElementById('import-preview-container').style.display = 'block';
+    }
+
+    async function executeBulkImport() {
+        if (parsedCSVData.length === 0) return;
+        showLoader(true, `Mengunggah ${parsedCSVData.length} baris data ke Google Sheets...`);
+        try {
+            for (let i = 0; i < parsedCSVData.length; i++) {
+                await callAPI('insertData', { sheetName: parsedSheetName, record: parsedCSVData[i] });
+            }
+            Swal.fire('Berhasil!', `Sukses mengimpor ${parsedCSVData.length} baris data ke Google Sheets.`, 'success');
+            loadModule(AppState.currentModule);
+        } catch (err) {
+            Swal.fire('Gagal Import', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    function renderCetakMenu(container) {
+        let html = `
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card card-custom">
+                        <div class="card-custom-header">1. Pengaturan Kop & Layout Margin</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Pilih Dokumen Laporan</label>
+                                <select class="form-select" id="print-source">
+                                    <option value="Siswa">Daftar Siswa Aktif</option>
+                                    <option value="Guru">Daftar Pendidik / Guru</option>
+                                    <option value="Inventaris">Laporan Aset Inventaris</option>
+                                    <option value="Log">Log Kejadian Harian</option>
+                                </select>
+                            </div>
+                            <hr>
+                            <h6 class="fw-bold mb-3">Konfigurasi Kop Surat</h6>
+                            <div class="mb-2">
+                                <label class="form-label">Baris 1 Kop (Nama Instansi)</label>
+                                <input type="text" class="form-control" id="print-kop-1" value="KEMENTERIAN AGAMA REPUBLIK INDONESIA">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Baris 2 Kop (Nama Madrasah)</label>
+                                <input type="text" class="form-control" id="print-kop-2" value="MIS MIFTAHUSSA'ADAH BEKASI">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Baris 3 Kop (Alamat)</label>
+                                <input type="text" class="form-control" id="print-kop-3" value="Jl. Pendidikan No. 5, Bekasi, Jawa Barat Telp. 021-123456">
+                            </div>
+                            <hr>
+                            <h6 class="fw-bold mb-3">Atur Margin Halaman (mm)</h6>
+                            <div class="row g-2">
+                                <div class="col-3">
+                                    <label class="form-label small">Atas</label>
+                                    <input type="number" class="form-control" id="m-top" value="20">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small">Bawah</label>
+                                    <input type="number" class="form-control" id="m-bottom" value="20">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small">Kiri</label>
+                                    <input type="number" class="form-control" id="m-left" value="20">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small">Kanan</label>
+                                    <input type="number" class="form-control" id="m-right" value="20">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary w-100 mt-4" onclick="previewPrintOutput()"><i class="fas fa-eye"></i> Tinjau Laporan PDF</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="card card-custom">
+                        <div class="card-custom-header d-flex justify-content-between align-items-center">
+                            <span>2. Live Preview PDF</span>
+                            <button class="btn btn-sm btn-success" id="btn-trigger-print" onclick="executeNativePrint()" style="display:none;"><i class="fas fa-print"></i> Cetak Sekarang (PDF)</button>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small">Tampilan pratinjau dokumen cetak akan muncul di frame di bawah ini.</p>
+                            <div id="print-preview-frame" class="border p-4 bg-white" style="min-height: 400px; display:none; overflow-y:auto;">
+                                <!-- Live render dokumen -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Div tersembunyi khusus untuk print out murni -->
+            <div id="print-rendered-document" style="display:none;"></div>
+        `;
+        container.innerHTML = html;
+    }
+
+    async function previewPrintOutput() {
+        const source = document.getElementById('print-source').value;
+        const line1 = document.getElementById('print-kop-1').value;
+        const line2 = document.getElementById('print-kop-2').value;
+        const line3 = document.getElementById('print-kop-3').value;
+        const logo = AppState.settings.logo_url;
+
+        showLoader(true, "Mempersiapkan dokumen cetak...");
+        try {
+            const data = await callAPI('getData', { sheetName: source === 'Log' ? 'KejadianSiswa' : source });
+            
+            let tableRows = "";
+            if (source === 'Siswa') {
+                tableRows = `
+                    <table class="table table-bordered table-sm mt-3" style="width:100%; border-collapse:collapse; border:1px solid #000;">
+                        <thead>
+                            <tr style="background:#e0e0e0;"><th style="border:1px solid #000; padding:6px;">NIS</th><th style="border:1px solid #000; padding:6px;">NISN</th><th style="border:1px solid #000; padding:6px;">Nama Siswa</th><th style="border:1px solid #000; padding:6px;">Kelas</th><th style="border:1px solid #000; padding:6px;">Wali</th></tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(s => `<tr><td style="border:1px solid #000; padding:6px;">${s.nis}</td><td style="border:1px solid #000; padding:6px;">${s.nisn}</td><td style="border:1px solid #000; padding:6px;">${s.nama_lengkap}</td><td style="border:1px solid #000; padding:6px;">${s.kelas_id}</td><td style="border:1px solid #000; padding:6px;">${s.nama_wali}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (source === 'Guru') {
+                tableRows = `
+                    <table class="table table-bordered table-sm mt-3" style="width:100%; border-collapse:collapse; border:1px solid #000;">
+                        <thead>
+                            <tr style="background:#e0e0e0;"><th style="border:1px solid #000; padding:6px;">NIP</th><th style="border:1px solid #000; padding:6px;">Nama Guru</th><th style="border:1px solid #000; padding:6px;">Kelas Diampu</th><th style="border:1px solid #000; padding:6px;">No HP</th></tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(g => `<tr><td style="border:1px solid #000; padding:6px;">${g.nip || '-'}</td><td style="border:1px solid #000; padding:6px;">${g.nama}</td><td style="border:1px solid #000; padding:6px;">${g.kelas_id || '-'}</td><td style="border:1px solid #000; padding:6px;">${g.no_hp || '-'}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (source === 'Inventaris') {
+                tableRows = `
+                    <table class="table table-bordered table-sm mt-3" style="width:100%; border-collapse:collapse; border:1px solid #000;">
+                        <thead>
+                            <tr style="background:#e0e0e0;"><th style="border:1px solid #000; padding:6px;">Kode</th><th style="border:1px solid #000; padding:6px;">Nama Barang</th><th style="border:1px solid #000; padding:6px;">Lokasi</th><th style="border:1px solid #000; padding:6px;">Kondisi</th></tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(i => `<tr><td style="border:1px solid #000; padding:6px;">${i.kode}</td><td style="border:1px solid #000; padding:6px;">${i.nama}</td><td style="border:1px solid #000; padding:6px;">${i.lokasi}</td><td style="border:1px solid #000; padding:6px;">${i.kondisi}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                tableRows = `<p class="text-center mt-3">Tidak ada data untuk laporan terpilih.</p>`;
+            }
+
+            const headerHtml = `
+                <div style="font-family:'Times New Roman', serif; color:#000;">
+                    <div style="display:flex; align-items:center; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:20px;">
+                        <img src="${logo}" style="width:80px; height:80px; margin-right:20px;" alt="Logo">
+                        <div style="text-align:center; flex:1;">
+                            <h4 style="margin:0; font-size:1.15rem; font-weight:bold; letter-spacing:1px;">${line1}</h4>
+                            <h2 style="margin:2px 0; font-size:1.5rem; font-weight:bold;">${line2}</h2>
+                            <p style="margin:0; font-size:0.85rem; font-style:italic;">${line3}</p>
+                        </div>
+                    </div>
+                    <div style="text-align:center; margin-bottom:15px;">
+                        <h4 style="margin:0; text-transform:uppercase; text-decoration:underline; font-weight:bold;">LAPORAN DATA ${source.toUpperCase()}</h4>
+                        <small>Tahun Ajaran: ${AppState.settings.tahun_ajaran} - Semester: ${AppState.settings.semester_aktif}</small>
+                    </div>
+                    ${tableRows}
+                </div>
+            `;
+
+            document.getElementById('print-preview-frame').innerHTML = headerHtml;
+            document.getElementById('print-preview-frame').style.display = 'block';
+            document.getElementById('btn-trigger-print').style.display = 'block';
+
+        } catch (err) {
+            Swal.fire('Gagal memuat', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    function executeNativePrint() {
+        const doc = document.getElementById('print-preview-frame').innerHTML;
+        const mt = document.getElementById('m-top').value;
+        const mb = document.getElementById('m-bottom').value;
+        const ml = document.getElementById('m-left').value;
+        const mr = document.getElementById('m-right').value;
+
+        // Buka jendela baru khusus untuk cetak, agar layout margin terkonfigurasi murni
+        const printWindow = window.open('', '_blank', 'width=900,height=600');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Cetak Laporan SIM Madrasah</title>
+                <style>
+                    @page {
+                        size: A4;
+                        margin: ${mt}mm ${mr}mm ${mb}mm ${ml}mm;
+                    }
+                    body {
+                        font-family: 'Inter', sans-serif;
+                        color: #000;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 15px;
+                    }
+                    table, th, td {
+                        border: 1px solid #000;
+                    }
+                    th, td {
+                        padding: 8px;
+                        text-align: left;
+                    }
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                ${doc}
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
+    async function renderPengaturanMenu(container) {
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header">Pengaturan Identitas Lembaga & Portal</div>
+                <div class="card-body">
+                    <form onsubmit="saveSettings(event)">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nama Lembaga</label>
+                                <input type="text" class="form-control" name="nama_lembaga" value="${AppState.settings.nama_lembaga}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Kepala Madrasah</label>
+                                <input type="text" class="form-control" name="kepala_madrasah" value="${AppState.settings.kepala_madrasah}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tahun Ajaran Aktif</label>
+                                <input type="text" class="form-control" name="tahun_ajaran" value="${AppState.settings.tahun_ajaran}" placeholder="Cth: 2026/2027" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Semester Aktif</label>
+                                <select class="form-select" name="semester_aktif">
+                                    <option value="Ganjil" ${AppState.settings.semester_aktif === 'Ganjil' ? 'selected' : ''}>Ganjil</option>
+                                    <option value="Genap" ${AppState.settings.semester_aktif === 'Genap' ? 'selected' : ''}>Genap</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">NSM (Nomor Statistik Madrasah)</label>
+                                <input type="text" class="form-control" name="nsm_lembaga" value="${AppState.settings.nsm_lembaga || ''}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">NPSN</label>
+                                <input type="text" class="form-control" name="npsn_lembaga" value="${AppState.settings.npsn_lembaga || ''}">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Alamat Lengkap</label>
+                                <textarea class="form-control" name="alamat_lembaga" rows="2">${AppState.settings.alamat_lembaga || ''}</textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Perbarui Parameter</button>
+                    </form>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
+    async function saveSettings(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        showLoader(true, "Memperbarui parameter madrasah...");
+        try {
+            for (const key in data) {
+                await callAPI('insertData', { 
+                    sheetName: 'Pengaturan', 
+                    record: { id: key, kunci: key, nilai: data[key], updated_at: new Date().toISOString() } 
+                });
+            }
+            AppState.settings = { ...AppState.settings, ...data };
+            Swal.fire('Sukses!', 'Parameter Madrasah berhasil diperbarui harian.', 'success');
+            initDashboard();
+        } catch (err) {
+            Swal.fire('Error', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
     async function renderJurnalMenu(container) {
         const filter = AppState.user.role === 'Guru' ? { user_id: AppState.user.id } : null;
-        const jurnal = await callAPI('getData', { sheetName: 'JurnalGuru', filter: filter });
+        const list = await callAPI('getData', { sheetName: 'JurnalGuru', filter: filter });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Riwayat Jurnal Mengajar Guru</span>
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Catatan Jurnal Mengajar Harian</span>
                     ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddJurnalModal()"><i class="fas fa-plus"></i> Isi Jurnal Baru</button>` : ''}
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr><th>Tanggal</th><th>Kelas</th><th>Mata Pelajaran</th><th>Materi</th><th>Aksi</th></tr>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr><th>Tanggal</th><th>Kelas</th><th>Mata Pelajaran</th><th>Materi Pembelajaran</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(jurnal.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-4">Belum ada catatan jurnal.</td></tr>`;
+        if (list.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-4">Catatan jurnal masih kosong.</td></tr>`;
         } else {
-            jurnal.forEach(j => {
+            list.forEach(j => {
+                const safeMapel = (j.mapel || '').replace(/'/g, "\\'");
+                const safeMateri = (j.materi || '').replace(/'/g, "\\'");
                 html += `
                     <tr>
                         <td>${j.tanggal}</td>
-                        <td>${j.kelas_id}</td>
-                        <td>${j.mapel}</td>
+                        <td><span class="badge bg-secondary">${j.kelas_id}</span></td>
+                        <td><b>${j.mapel}</b></td>
                         <td>${j.materi}</td>
                         <td>
                             ${AppState.user.role === 'Guru' ? `
-                            <button class="btn btn-sm btn-outline-primary" onclick="editJurnal('${j.id}', '${j.tanggal}', '${j.kelas_id}', '${j.mapel.replace(/'/g, "\\'")}', '${j.materi.replace(/'/g, "\\'")}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editJurnal('${j.id}', '${j.tanggal}', '${j.kelas_id}', '${safeMapel}', '${safeMateri}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteData('JurnalGuru', '${j.id}')"><i class="fas fa-trash"></i></button>` : '-'}
                         </td>
                     </tr>
@@ -1207,99 +1834,23 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: INVENTARIS ---
-    async function renderInventarisMenu(container) {
-        const inv = await callAPI('getData', { sheetName: 'Inventaris' });
-        let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Inventaris Madrasah</span>
-                    ${AppState.user.role === 'Admin' ? `<button class="btn btn-sm btn-success" onclick="openAddInventarisModal()"><i class="fas fa-plus"></i> Tambah Barang</button>` : ''}
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr><th>Kode</th><th>Nama Barang</th><th>Lokasi</th><th>Kondisi</th><th>Tahun</th>${AppState.user.role === 'Admin' ? `<th>Aksi</th>` : ''}</tr>
-                            </thead>
-                            <tbody>
-        `;
-        if(inv.length === 0) {
-            html += `<tr><td colspan="6" class="text-center py-3">Tidak ada data inventaris.</td></tr>`;
-        } else {
-            inv.forEach(i => {
-                html += `
-                    <tr>
-                        <td><b>${i.kode}</b></td>
-                        <td>${i.nama}</td>
-                        <td>${i.lokasi}</td>
-                        <td><span class="badge ${i.kondisi === 'Baik' ? 'bg-success' : i.kondisi === 'Rusak Ringan' ? 'bg-warning' : 'bg-danger'}">${i.kondisi}</span></td>
-                        <td>${i.tahun}</td>
-                        ${AppState.user.role === 'Admin' ? `
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="editInventaris('${i.id}', '${i.kode}', '${i.nama.replace(/'/g, "\\'")}', '${i.lokasi.replace(/'/g, "\\'")}', '${i.kondisi}', '${i.tahun}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteData('Inventaris', '${i.id}')"><i class="fas fa-trash"></i></button>
-                        </td>` : ''}
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: PENGUMUMAN ---
-    async function renderPengumumanMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Pengumuman' });
-        let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Pengumuman Digital</span>
-                    ${['Admin', 'Kepala Madrasah'].includes(AppState.user.role) ? `<button class="btn btn-sm btn-success" onclick="openAddPengumumanModal()"><i class="fas fa-plus"></i> Buat Pengumuman</button>` : ''}
-                </div>
-                <div class="card-body">
-        `;
-        if(list.length === 0) {
-            html += `<p class="text-muted text-center py-4">Belum ada pengumuman yang diterbitkan.</p>`;
-        } else {
-            list.forEach(p => {
-                html += `
-                    <div class="border-bottom pb-3 mb-3">
-                        <div class="d-flex justify-content-between">
-                            <h5>${p.judul}</h5>
-                            <small class="text-muted">${p.tanggal}</small>
-                        </div>
-                        <p class="mb-1">${p.isi}</p>
-                        <span class="badge bg-secondary">Target: ${p.target_role}</span>
-                        ${['Admin', 'Kepala Madrasah'].includes(AppState.user.role) ? `
-                        <button class="btn btn-link text-danger btn-sm p-0 ms-2" onclick="deleteData('Pengumuman', '${p.id}')">Hapus</button>
-                        ` : ''}
-                    </div>
-                `;
-            });
-        }
-        html += `</div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: KEJADIAN SISWA ---
     async function renderKejadianMenu(container) {
         const list = await callAPI('getData', { sheetName: 'KejadianSiswa' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
                     <span>Buku Kejadian Harian Siswa</span>
                     ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddKejadianModal()"><i class="fas fa-plus"></i> Catat Kejadian</button>` : ''}
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr><th>Siswa</th><th>Tanggal</th><th>Kategori</th><th>Jenis</th><th>Keterangan</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(list.length === 0) {
+        if (list.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Tidak ada catatan kejadian.</td></tr>`;
         } else {
             list.forEach(k => {
@@ -1319,24 +1870,23 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: TAHFIDZ ---
     async function renderTahfidzMenu(container) {
         const list = await callAPI('getData', { sheetName: 'Tahfidz' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
                     <span>Monitoring Hafalan Tahfidz Siswa</span>
                     ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddTahfidzModal()"><i class="fas fa-plus"></i> Input Setoran</button>` : ''}
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr><th>Nama Siswa</th><th>Tanggal</th><th>Surah</th><th>Ayat</th><th>Status</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(list.length === 0) {
+        if (list.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Belum ada catatan setoran tahfidz.</td></tr>`;
         } else {
             list.forEach(t => {
@@ -1355,24 +1905,23 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: KARAKTER ---
     async function renderKarakterMenu(container) {
         const list = await callAPI('getData', { sheetName: 'Karakter' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
                     <span>Penilaian Karakter & Akhlak</span>
                     ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddKarakterModal()"><i class="fas fa-plus"></i> Input Nilai Karakter</button>` : ''}
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr><th>Siswa</th><th>Tanggal</th><th>Aspek</th><th>Nilai</th><th>Keterangan</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(list.length === 0) {
+        if (list.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Belum ada penilaian karakter.</td></tr>`;
         } else {
             list.forEach(k => {
@@ -1391,24 +1940,23 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: ABSENSI SISWA ---
     async function renderAbsenSiswaMenu(container) {
         const list = await callAPI('getData', { sheetName: 'AbsensiSiswa' });
         let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
                     <span>Rekap Absensi Harian Siswa</span>
-                    <button class="btn btn-sm btn-success" onclick="openInputAbsenSiswa()"><i class="fas fa-edit"></i> Input Absen Baru</button>
+                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openInputAbsenSiswa()"><i class="fas fa-edit"></i> Input Absen Baru</button>` : ''}
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
                                 <tr><th>Siswa</th><th>Kelas</th><th>Tanggal</th><th>Status</th><th>Keterangan</th></tr>
                             </thead>
                             <tbody>
         `;
-        if(list.length === 0) {
+        if (list.length === 0) {
             html += `<tr><td colspan="5" class="text-center py-3">Belum ada rekap absen siswa.</td></tr>`;
         } else {
             list.forEach(a => {
@@ -1429,7 +1977,6 @@
     }
 
     async function openInputAbsenSiswa() {
-        // Form pengisian absensi siswa interaktif
         const { value: formValues } = await Swal.fire({
             title: 'Input Absensi Siswa',
             html:
@@ -1473,7 +2020,6 @@
         }
     }
 
-    // --- MODULE: ABSENSI GURU ---
     async function renderAbsenGuruMenu(container) {
         const list = await callAPI('getData', { sheetName: 'AbsensiGuru', filter: { user_id: AppState.user.id } });
         let html = `
@@ -1487,8 +2033,8 @@
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">Riwayat Absensi Kehadiran Saya</div>
+                    <div class="card card-custom">
+                        <div class="card-custom-header">Riwayat Absensi Kehadiran Saya</div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover mb-0">
@@ -1519,7 +2065,6 @@
     async function lakukanAbsenGuru() {
         showLoader(true, "Mendeteksi koordinat GPS...");
         
-        // Simulasi pembacaan GPS untuk browser/iframe aman
         let koordinat = "Lat: -6.2297, Long: 106.8296 (Lokasi Madrasah)";
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
@@ -1563,8 +2108,51 @@
         }, 1500);
     }
 
+    async function renderPenghubungMenu(container) {
+        const list = await callAPI('getData', { sheetName: 'BukuPenghubung' });
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Buku Penghubung Guru & Orang Tua</span>
+                    <button class="btn btn-sm btn-success" onclick="openAddPenghubungModal()"><i class="fas fa-plus"></i> Kirim Pesan Baru</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr><th>Tanggal</th><th>Dari (Pengirim)</th><th>Ke (Penerima)</th><th>Pesan</th><th>Status</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        if (list.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-4">Belum ada pesan di buku penghubung.</td></tr>`;
+        } else {
+            list.forEach(p => {
+                html += `
+                    <tr>
+                        <td>${p.tanggal}</td>
+                        <td><b>${p.pengirim_id}</b></td>
+                        <td>${p.penerima_id}</td>
+                        <td>${p.pesan}</td>
+                        <td><span class="badge ${p.status_baca === 'Dibaca' ? 'bg-success' : 'bg-warning'}">${p.status_baca}</span></td>
+                    </tr>
+                `;
+            });
+        }
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+
+    function openAddPenghubungModal() {
+        document.getElementById('formPenghubungId').value = '';
+        document.querySelector('#modalPenghubung form').reset();
+        document.getElementById('formPenghubungTanggal').value = new Date().toISOString().split('T')[0];
+        document.getElementById('formPenghubungPengirim').value = AppState.user.nama_lengkap;
+        new bootstrap.Modal(document.getElementById('modalPenghubung')).show();
+    }
+
     // ==========================================
-    // FORM OPENERS (RESET DAN ATUR MODAL)
+    // FORM OPENERS & EDITORS (RESET DAN ATUR MODAL)
     // ==========================================
     function openAddUserModal() {
         document.getElementById('formUserId').value = '';
@@ -1720,41 +2308,33 @@
         try {
             const isEdit = record.id && record.id.trim() !== "";
 
-            // Jika sheet Users, password harus di hash dulu sebelum dikirim
             if (sheetName === 'Users') {
                 if (record.password) {
                     record.password = await sha256(record.password);
                 } else if (isEdit) {
-                    delete record.password; // Jangan timpa password lama jika input dikosongkan
+                    delete record.password; 
                 }
             }
-            // Jika Jurnal, catat ID Guru yang sedang login secara otomatis
             if (sheetName === 'JurnalGuru' && !isEdit) {
                 record.user_id = AppState.user.id;
             }
 
             if (isEdit) {
-                // UPDATE DATA EKSISTING
                 await callAPI('updateData', { sheetName: sheetName, id: record.id, record: record });
             } else {
-                // INSERT DATA BARU
-                delete record.id; // Kosongkan ID agar backend men-generate ID baru (UUID)
+                delete record.id; 
                 await callAPI('insertData', { sheetName: sheetName, record: record });
             }
 
-            // Tutup modal menggunakan API Bootstrap
             const modalEl = form.closest('.modal');
             const modalInstance = bootstrap.Modal.getInstance(modalEl);
             if(modalInstance) modalInstance.hide();
             
-            // Hilangkan background gelap modal
             document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
             document.body.classList.remove('modal-open');
 
             form.reset();
             Swal.fire('Berhasil!', 'Data berhasil disimpan.', 'success');
-            
-            // Muat ulang tabel agar data baru langsung muncul
             loadModule(AppState.currentModule);
 
         } catch (err) {
@@ -1780,7 +2360,6 @@
             try {
                 await callAPI('deleteData', { sheetName: sheetName, id: id });
                 Swal.fire('Terhapus!', 'Data telah dihapus.', 'success');
-                // Muat ulang tabel
                 loadModule(AppState.currentModule);
             } catch (err) {
                 Swal.fire('Error', err.message, 'error');

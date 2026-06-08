@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM Madrasah Digital</title>
+    <title>SIM Miftahussa'adah</title>
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -104,10 +104,11 @@
         .header-brand {
             display: flex;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
+            letter-spacing: 0.3px;
         }
-        .header-brand i { margin-right: 8px; font-size: 1.3rem; }
+        .header-brand i { margin-right: 8px; font-size: 1.4rem; color: #10b981; }
         .header-title {
             font-size: 1.1rem;
             font-weight: 600;
@@ -130,6 +131,7 @@
             width: 32px; height: 32px;
             border-radius: 50%;
             border: 2px solid rgba(255,255,255,0.2);
+            object-fit: cover;
         }
 
         /* Workspace Grid */
@@ -161,6 +163,7 @@
             border-radius: 50%;
             border: 2px solid rgba(255,255,255,0.15);
             margin-bottom: 8px;
+            object-fit: cover;
         }
         .sidebar-menu {
             flex: 1;
@@ -297,7 +300,7 @@
         <div class="auth-card">
             <div class="text-center mb-3">
                 <i class="fas fa-database fa-3x text-success mb-2"></i>
-                <h4>Inisialisasi SIM Madrasah</h4>
+                <h4>Inisialisasi SIM Miftahussa'adah</h4>
                 <p class="text-muted small">Database sistem terintegrasi belum terdeteksi. Silakan isikan parameter madrasah berikut.</p>
             </div>
             <form id="form-setup" onsubmit="handleSetup(event)">
@@ -328,8 +331,8 @@
     <div id="view-login" class="view-section auth-wrapper">
         <div class="auth-card">
             <div class="text-center mb-3">
-                <img src="https://via.placeholder.com/80/0d5c75/FFFFFF?text=MIS" alt="Logo" class="rounded-circle mb-2" id="login-logo-img">
-                <h4 id="login-lembaga-nama" class="text-success fw-bold">SIM Madrasah Digital</h4>
+                <img src="https://via.placeholder.com/80/0d5c75/FFFFFF?text=MIS" alt="Logo" class="rounded-circle mb-2" id="login-logo-img" style="width: 80px; height: 80px; object-fit: cover;">
+                <h4 id="login-lembaga-nama" class="text-success fw-bold">SIM Miftahussa'adah</h4>
                 <p class="text-muted small">MIS MIFTAHUSSA'ADAH</p>
             </div>
             <form id="form-login" onsubmit="handleLogin(event)">
@@ -360,14 +363,14 @@
                 <div class="header-brand">
                     <button class="btn btn-link text-white d-md-none me-2 p-0" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
                     <i class="fas fa-mosque me-2"></i>
-                    <span class="d-none d-sm-inline">SIM MAS DIGITAL</span>
+                    <span class="fw-bold fs-5 text-white" id="header-app-title">SIM Miftahussa'adah</span>
                 </div>
                 <div class="header-title d-none d-md-block" id="header-center-title">
                     Control Panel Madrasah
                 </div>
                 <div class="header-actions">
                     <div class="user-profile-menu" onclick="logout()">
-                        <img src="https://via.placeholder.com/40/0d5c75/FFFFFF?text=U" class="user-avatar" alt="Avatar">
+                        <img src="https://via.placeholder.com/40/0d5c75/FFFFFF?text=U" class="user-avatar" id="app-user-avatar" alt="Avatar">
                         <span id="topbar-user" class="fw-bold d-none d-sm-inline">User</span>
                         <i class="fas fa-sign-out-alt ms-1 text-white-50"></i>
                     </div>
@@ -378,7 +381,7 @@
             <div class="app-workspace">
                 <aside class="sidebar" id="sidebar">
                     <div class="sidebar-profile">
-                        <img src="https://via.placeholder.com/80/0d5c75/FFFFFF?text=Staff" class="avatar-large" alt="User">
+                        <img src="https://via.placeholder.com/80/0d5c75/FFFFFF?text=Staff" class="avatar-large" id="sidebar-user-avatar" alt="User">
                         <h6 class="mb-1 text-white fw-bold" id="sidebar-user-name">Welcome</h6>
                         <span class="badge bg-success" id="sidebar-role">Akses</span>
                     </div>
@@ -393,7 +396,7 @@
                     </div>
                     
                     <footer class="app-footer">
-                        © 2026 <b>SIM MADRASAH DIGITAL</b>. All rights reserved MIS MIFTAHUSSA'ADAH.
+                        © 2026 <b id="footer-brand-name">SIM Miftahussa'adah</b>. All rights reserved MIS MIFTAHUSSA'ADAH.
                     </footer>
                 </main>
             </div>
@@ -556,7 +559,7 @@
                     <div class="mb-2"><label class="form-label small fw-bold">Nama Kelas</label><input type="text" name="nama_kelas" id="formKelasNama" class="form-control form-control-sm" required placeholder="Cth: Kelas 1A"></div>
                     <div class="mb-2"><label class="form-label small fw-bold">Tingkat</label><input type="number" name="tingkat" id="formKelasTingkat" class="form-control form-control-sm" required min="1" max="6"></div>
                     <div class="mb-2">
-                        <label class="form-label small fw-bold">Guru / Wali Kelas</label>
+                        <label class="form-label small fw-bold">Wali Kelas / Guru Kelas</label>
                         <select name="wali_kelas_id" id="formKelasWaliId" class="form-select form-select-sm" required>
                             <!-- Diisi dinamis -->
                         </select>
@@ -872,7 +875,7 @@
             alamat_lembaga: "Jl. Pendidikan No. 5, Bekasi, Jawa Barat",
             tahun_ajaran: "2026/2027",
             semester_aktif: "Ganjil",
-            logo_url: "https://via.placeholder.com/85/0d5c75/FFFFFF?text=MIS"
+            logo_url: ""
         },
         currentModule: 'dashboard'
     };
@@ -907,6 +910,22 @@
     window.callAPI = callAPI;
 
     window.onload = async () => {
+        // Caching Visual Instan (Kop & Logo) sebelum terhubung ke server
+        const cachedLogo = localStorage.getItem('madrasah_logo');
+        const cachedName = localStorage.getItem('madrasah_name');
+        if (cachedLogo) {
+            document.getElementById('login-logo-img').src = cachedLogo;
+            document.getElementById('app-user-avatar').src = cachedLogo;
+            document.getElementById('sidebar-user-avatar').src = cachedLogo;
+        }
+        if (cachedName) {
+            document.getElementById('login-lembaga-nama').innerText = cachedName;
+            document.getElementById('header-app-title').innerText = cachedName;
+            document.getElementById('footer-brand-name').innerText = cachedName;
+            document.title = cachedName;
+            AppState.settings.nama_lembaga = cachedName;
+        }
+
         let savedSession = null;
         try {
             savedSession = localStorage.getItem('sim_session');
@@ -947,11 +966,26 @@
 
     function initDashboard() {
         const sidebarLembaga = document.getElementById('sidebar-lembaga');
-        if (sidebarLembaga) sidebarLembaga.innerText = AppState.settings.nama_lembaga || 'SIM Madrasah';
+        if (sidebarLembaga) sidebarLembaga.innerText = AppState.settings.nama_lembaga || 'SIM Miftahussa\'adah';
         document.getElementById('header-center-title').innerText = "Portal: " + AppState.settings.nama_lembaga;
         document.getElementById('sidebar-role').innerText = "Akses: " + AppState.user.role;
         document.getElementById('sidebar-user-name').innerText = AppState.user.nama_lengkap;
         document.getElementById('topbar-user').innerText = AppState.user.nama_lengkap;
+
+        // Sync branding visual setelah sukses memuat pengaturan dari Sheets
+        if (AppState.settings.logo_url) {
+            document.getElementById('login-logo-img').src = AppState.settings.logo_url;
+            document.getElementById('app-user-avatar').src = AppState.settings.logo_url;
+            document.getElementById('sidebar-user-avatar').src = AppState.settings.logo_url;
+            localStorage.setItem('madrasah_logo', AppState.settings.logo_url);
+        }
+        if (AppState.settings.nama_lembaga) {
+            document.getElementById('login-lembaga-nama').innerText = AppState.settings.nama_lembaga;
+            document.getElementById('header-app-title').innerText = AppState.settings.nama_lembaga;
+            document.getElementById('footer-brand-name').innerText = AppState.settings.nama_lembaga;
+            document.title = AppState.settings.nama_lembaga;
+            localStorage.setItem('madrasah_name', AppState.settings.nama_lembaga);
+        }
 
         renderMenu();
         loadModule('dashboard');
@@ -985,7 +1019,7 @@
         } else if (role === 'Guru') {
             menus = [
                 { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard Guru' },
-                { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absen Siswa Kelas' },
+                { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absensi Kelas Binaan' },
                 { id: 'jurnal', icon: 'fa-edit', text: 'Jurnal Harian Mengajar' },
                 { id: 'kejadian', icon: 'fa-clipboard-list', text: 'Kejadian Siswa' },
                 { id: 'penghubung', icon: 'fa-comments', text: 'Buku Penghubung' },
@@ -1036,9 +1070,6 @@
         switchView('view-login');
     }
 
-    // ==========================================
-    // MODULE LOADER ROUTER (MEMULIHKAN ERROR YANG HILANG)
-    // ==========================================
     async function loadModule(moduleId) {
         showLoader(true, "Memuat data...");
         AppState.currentModule = moduleId;
@@ -1206,49 +1237,42 @@
             <div class="card card-custom">
                 <div class="card-custom-header bg-success text-white">Informasi Akademik Ananda</div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row align-items-center">
                         <div class="col-md-3 text-center mb-3">
-                            <img src="https://via.placeholder.com/120/0d5c75/FFFFFF?text=${anak.nama_lengkap.substring(0,1)}" class="rounded-circle border" alt="Anak">
-                            <h5 class="mt-2 mb-1 fw-bold">${anak.nama_lengkap}</h5>
+                            <img src="https://via.placeholder.com/100/0d5c75/FFFFFF?text=${anak.nama_lengkap.substring(0,1)}" class="rounded-circle border" alt="Anak">
+                            <h6 class="mt-2 fw-bold">${anak.nama_lengkap}</h6>
                             <span class="badge bg-secondary">Kelas: ${anak.kelas_id}</span>
                         </div>
                         <div class="col-md-9">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered mb-0 small">
                                 <tr><th>NIS / NISN</th><td>${anak.nis} / ${anak.nisn}</td></tr>
-                                <tr><th>Nama Wali</th><td>${anak.nama_wali}</td></tr>
-                                <tr><th>No HP Terdaftar</th><td>${anak.no_hp_wali}</td></tr>
-                                <tr><th>Tahun Ajaran Aktif</th><td>${AppState.settings.tahun_ajaran} (${AppState.settings.semester_aktif})</td></tr>
+                                <tr><th>Wali / Orang Tua</th><td>${anak.nama_wali}</td></tr>
+                                <tr><th>Kontak Wali</th><td>${anak.no_hp_wali}</td></tr>
+                                <tr><th>Status Ajaran</th><td>${AppState.settings.tahun_ajaran} (${AppState.settings.semester_aktif})</td></tr>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mt-4">
                 <div class="col-md-6 mb-3">
                     <div class="card card-custom">
-                        <div class="card-custom-header">Tindakan Cepat Buku Penghubung</div>
-                        <div class="card-body text-center py-4">
-                            <i class="far fa-comments fa-3x text-primary mb-3"></i>
-                            <h5>Ada perkembangan atau izin sakit?</h5>
-                            <p class="text-muted small">Kirimkan catatan langsung ke Wali Kelas ananda tanpa perlu WhatsApp manual.</p>
-                            <button class="btn btn-primary" onclick="loadModule('penghubung')"><i class="fas fa-paper-plane"></i> Buka Buku Penghubung</button>
+                        <div class="card-custom-header">Hubungi Wali Kelas (Buku Penghubung)</div>
+                        <div class="card-body text-center">
+                            <i class="far fa-comments fa-2x text-primary mb-2"></i>
+                            <p class="text-muted small">Catat atau tanyakan perkembangan Ananda langsung ke Wali Kelas.</p>
+                            <button class="btn btn-sm btn-primary" onclick="loadModule('penghubung')">Kirim Pesan</button>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <div class="card card-custom">
-                        <div class="card-custom-header">Aksi Monitoring</div>
-                        <div class="card-body">
-                            <div class="list-group">
-                                <a href="#" onclick="loadModule('tahfidz')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    <span><i class="fas fa-quran text-success me-2"></i> Pantau Setoran Hafalan Qur'an</span>
-                                    <i class="fas fa-chevron-right text-muted"></i>
-                                </a>
-                                <a href="#" onclick="loadModule('karakter')" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mt-2">
-                                    <span><i class="fas fa-star text-warning me-2"></i> Nilai Karakter & Akhlak</span>
-                                    <i class="fas fa-chevron-right text-muted"></i>
-                                </a>
+                        <div class="card-custom-header">Penilaian & Monitoring</div>
+                        <div class="card-body text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-outline-success" onclick="loadModule('tahfidz')"><i class="fas fa-quran"></i> Tahfidz</button>
+                                <button class="btn btn-sm btn-outline-warning" onclick="loadModule('karakter')"><i class="fas fa-star"></i> Karakter</button>
                             </div>
                         </div>
                     </div>
@@ -1257,90 +1281,11 @@
         `;
     }
 
-    // --- MODULE: MANAJEMEN USER ---
-    async function renderUsersMenu(container) {
-        const users = await callAPI('getData', { sheetName: 'Users' });
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Manajemen Pengguna Portal</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Buat User Baru</button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Nama Pengguna</th><th>Username</th><th>Akses / Role</th><th>Status</th><th>Aksi</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        users.forEach(u => {
-            const badge = u.status === 'Aktif' ? 'bg-success' : 'bg-danger';
-            const safeNama = (u.nama_lengkap || '').replace(/'/g, "\\'");
-            const safeUser = (u.username || '').replace(/'/g, "\\'");
-            html += `
-                <tr>
-                    <td><b>${u.nama_lengkap}</b></td>
-                    <td>${u.username}</td>
-                    <td><span class="badge bg-primary">${u.role}</span></td>
-                    <td><span class="badge ${badge}">${u.status}</span></td>
-                    <td>
-                        <button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editUser('${u.id}', '${safeNama}', '${safeUser}', '${u.role}', '${u.status}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteData('Users', '${u.id}')"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `;
-        });
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: GURU (SINKRONISASI RELASIONAL KREDENSIAL AKUN) ---
-    async function renderGuruMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Guru' });
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Database Pendidik & Staff (Master Guru)</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddGuruModal()"><i class="fas fa-plus"></i> Tambah Guru Baru</button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Nama Pendidik</th><th>NIP</th><th>No HP</th><th>Wali Kelas</th><th>Jabatan</th><th>Aksi</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        if (list.length === 0) {
-            html += `<tr><td colspan="6" class="text-center py-4">Belum ada data Guru terdaftar.</td></tr>`;
-        } else {
-            list.forEach(g => {
-                const safeNama = (g.nama || '').replace(/'/g, "\\'");
-                const safeAlamat = (g.alamat || '').replace(/'/g, "\\'");
-                const safeJabatan = (g.jabatan_tambahan || '').replace(/'/g, "\\'");
-                html += `
-                    <tr>
-                        <td><b>${g.nama}</b></td>
-                        <td>${g.nip || '-'}</td>
-                        <td>${g.no_hp || '-'}</td>
-                        <td><span class="badge bg-secondary">${g.kelas_id || '-'}</span></td>
-                        <td>${g.jabatan_tambahan || '-'}</td>
-                        <td>
-                            <button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editGuru('${g.id}', '${g.user_id}', '${g.nip || ''}', '${safeNama}', '${g.no_hp || ''}', '${safeAlamat}', '${g.kelas_id || ''}', '${safeJabatan}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteGuruIntegrated('${g.id}', '${g.user_id}')"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: KELAS ---
+    // --- MODULE: DATA MASTER KELAS ---
     async function renderKelasMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Kelas' });
+        const kelas = await callAPI('getData', { sheetName: 'Kelas' });
+        const gurus = await callAPI('getData', { sheetName: 'Guru' });
+        
         let html = `
             <div class="card card-custom">
                 <div class="card-custom-header d-flex justify-content-between align-items-center">
@@ -1351,19 +1296,23 @@
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle small">
                             <thead class="table-light">
-                                <tr><th>Nama Kelas</th><th>Tingkat</th><th>ID Wali Kelas</th><th>Aksi</th></tr>
+                                <tr><th>Nama Kelas</th><th>Tingkat</th><th>Guru / Wali Kelas Binaan</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
-        if (list.length === 0) {
+        if (kelas.length === 0) {
             html += `<tr><td colspan="4" class="text-center py-4">Data kelas belum dikonfigurasi.</td></tr>`;
         } else {
-            list.forEach(k => {
+            kelas.forEach(k => {
+                // Resolving Nama Guru untuk mencegah 'undefined' atau raw user_id
+                const matchedGuru = gurus.find(g => g.user_id === k.wali_kelas_id || g.nama === k.wali_kelas_id);
+                const namaGuru = matchedGuru ? matchedGuru.nama : (k.wali_kelas_id || '-');
+
                 html += `
                     <tr>
                         <td><b>${k.nama_kelas}</b></td>
                         <td>Tingkat ${k.tingkat}</td>
-                        <td><code>${k.wali_kelas_id || '-'}</code></td>
+                        <td><b>${namaGuru}</b></td>
                         <td>
                             <button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editKelas('${k.id}', '${k.nama_kelas}', '${k.tingkat}', '${k.wali_kelas_id}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteData('Kelas', '${k.id}')"><i class="fas fa-trash"></i></button>
@@ -1376,41 +1325,38 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: SISWA ---
-    async function renderSiswaMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Siswa' });
+    // --- MODULE: ABSEN SISWA MASSAL (BAGI GURU / WALI KELAS) ---
+    async function renderAbsenSiswaMenu(container) {
+        if (AppState.user.role === 'Guru') {
+            await renderAbsenMassalGuru(container);
+            return;
+        }
+
+        // Tampilan rekap umum bagi Admin
+        const list = await callAPI('getData', { sheetName: 'AbsensiSiswa' });
         let html = `
             <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Database Siswa Aktif</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddSiswaModal()"><i class="fas fa-plus"></i> Tambah Siswa</button>
-                </div>
+                <div class="card-custom-header">Rekap Umum Absensi Harian Siswa</div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0 align-middle small">
                             <thead class="table-light">
-                                <tr><th>NIS</th><th>NISN</th><th>Nama Siswa</th><th>Kelas</th><th>Nama Wali</th><th>No HP Wali</th><th>Aksi</th></tr>
+                                <tr><th>Siswa</th><th>Kelas</th><th>Tanggal</th><th>Status</th><th>Keterangan</th></tr>
                             </thead>
                             <tbody>
         `;
         if (list.length === 0) {
-            html += `<tr><td colspan="7" class="text-center py-4">Siswa belum terdaftar. Silakan tambah data.</td></tr>`;
+            html += `<tr><td colspan="5" class="text-center py-3">Belum ada rekap absen siswa hari ini.</td></tr>`;
         } else {
-            list.forEach(s => {
-                const safeNama = (s.nama_lengkap || '').replace(/'/g, "\\'");
-                const safeWali = (s.nama_wali || '').replace(/'/g, "\\'");
+            list.forEach(a => {
+                const color = a.status === 'Hadir' ? 'bg-success' : a.status === 'Sakit' ? 'bg-warning' : a.status === 'Izin' ? 'bg-info' : 'bg-danger';
                 html += `
                     <tr>
-                        <td><b>${s.nis}</b></td>
-                        <td>${s.nisn}</td>
-                        <td>${s.nama_lengkap}</td>
-                        <td><span class="badge bg-secondary">${s.kelas_id}</span></td>
-                        <td>${s.nama_wali}</td>
-                        <td>${s.no_hp_wali}</td>
-                        <td>
-                            <button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editSiswa('${s.id}', '${s.nis}', '${s.nisn}', '${safeNama}', '${s.kelas_id}', '${safeWali}', '${s.no_hp_wali}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteData('Siswa', '${s.id}')"><i class="fas fa-trash"></i></button>
-                        </td>
+                        <td>${a.siswa_id}</td>
+                        <td>${a.kelas_id}</td>
+                        <td>${a.tanggal}</td>
+                        <td><span class="badge ${color}">${a.status}</span></td>
+                        <td>${a.keterangan || '-'}</td>
                     </tr>
                 `;
             });
@@ -1419,200 +1365,126 @@
         container.innerHTML = html;
     }
 
-    // --- MODULE: JURNAL ---
-    async function renderJurnalMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'JurnalGuru' });
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Catatan Jurnal Mengajar Harian</span>
-                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddJurnalModal()"><i class="fas fa-plus"></i> Isi Jurnal Baru</button>` : ''}
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Tanggal</th><th>Kelas</th><th>Mata Pelajaran</th><th>Materi Pembelajaran</th><th>Aksi</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        list.forEach(j => {
-            const safeMapel = (j.mapel || '').replace(/'/g, "\\'");
-            const safeMateri = (j.materi || '').replace(/'/g, "\\'");
-            html += `
-                <tr>
-                    <td>${j.tanggal}</td>
-                    <td><span class="badge bg-secondary">${j.kelas_id}</span></td>
-                    <td><b>${j.mapel}</b></td>
-                    <td>${j.materi}</td>
-                    <td>
-                        ${AppState.user.role === 'Guru' ? `
-                        <button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editJurnal('${j.id}', '${j.tanggal}', '${j.kelas_id}', '${safeMapel}', '${safeMateri}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteData('JurnalGuru', '${j.id}')"><i class="fas fa-trash"></i></button>` : '-'}
-                    </td>
-                </tr>
-            `;
-        });
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
+    async function renderAbsenMassalGuru(container) {
+        const myClass = await getWaliKelasClass(AppState.user.id);
+        if (!myClass) {
+            container.innerHTML = `<div class="alert alert-warning">Anda belum ditugaskan sebagai Wali Kelas di Master Kelas. Hubungi Admin.</div>`;
+            return;
+        }
 
-    // --- MODULE: INVENTARIS ---
-    async function renderInventarisMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Inventaris' });
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header">Inventaris & Aset</div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Kode</th><th>Nama Barang</th><th>Lokasi</th><th>Kondisi</th><th>Tahun</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        list.forEach(i => {
-            html += `
-                <tr>
-                    <td><code>${i.kode}</code></td>
-                    <td>${i.nama}</td>
-                    <td>${i.lokasi}</td>
-                    <td>${i.kondisi}</td>
-                    <td>${i.tahun}</td>
-                </tr>
-            `;
-        });
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
+        const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+        const today = new Date().toISOString().split('T')[0];
 
-    // --- MODULE: IMPORT CSV ---
-    function renderImportMenu(container) {
         let html = `
             <div class="card card-custom">
-                <div class="card-custom-header">Import Massal File CSV</div>
-                <div class="card-body">
-                    <button class="btn btn-sm btn-outline-primary mb-3" onclick="downloadCSVTemplate('Siswa')"><i class="fas fa-download"></i> Unduh Template Siswa</button>
-                    <div class="upload-dropzone" onclick="document.getElementById('csv-file-picker').click()">
-                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
-                        <h6>Klik atau Seret File CSV</h6>
-                        <input type="file" id="csv-file-picker" style="display:none;" accept=".csv" onchange="handleCSVFileSelect(event)">
+                <div class="card-custom-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span>Absensi Massal Harian Kelas Binaan: <b>${myClass}</b></span>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="small fw-bold mb-0">Tanggal:</label>
+                        <input type="date" id="mass-absen-date" class="form-control form-control-sm" value="${today}" style="width:140px;">
                     </div>
                 </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle small" id="table-mass-absen">
+                            <thead class="table-light">
+                                <tr><th>NIS</th><th>Nama Siswa</th><th style="width:160px;">Status Kehadiran</th><th>Keterangan Tambahan</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+
+        if (siswas.length === 0) {
+            html += `<tr><td colspan="4" class="text-center py-4">Belum ada peserta didik terdaftar di kelas ${myClass}.</td></tr>`;
+        } else {
+            siswas.forEach(s => {
+                html += `
+                    <tr class="student-absen-row" data-name="${s.nama_lengkap}" data-kelas="${s.kelas_id}">
+                        <td><code>${s.nis}</code></td>
+                        <td><b>${s.nama_lengkap}</b></td>
+                        <td>
+                            <select class="form-select form-select-sm select-attendance-status" style="font-weight: 600;">
+                                <option value="Hadir" class="text-success">Hadir</option>
+                                <option value="Sakit" class="text-warning">Sakit</option>
+                                <option value="Izin" class="text-info">Izin</option>
+                                <option value="Alpha" class="text-danger">Alpha</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm input-attendance-note" placeholder="Catat alasan/keterangan...">
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                ${siswas.length > 0 ? `
+                <div class="card-footer bg-white d-flex justify-content-end">
+                    <button class="btn btn-success btn-sm" onclick="saveMassAttendance()"><i class="fas fa-save"></i> Kirim Absensi Kelas Hari Ini</button>
+                </div>` : ''}
             </div>
         `;
         container.innerHTML = html;
     }
 
-    let parsedCSVData = [];
-    let parsedSheetName = "";
+    async function saveMassAttendance() {
+        const date = document.getElementById('mass-absen-date').value;
+        const rows = document.querySelectorAll('#table-mass-absen tbody .student-absen-row');
+        
+        if (rows.length === 0) return;
 
-    function downloadCSVTemplate(type) {
-        let headers = "";
-        let filename = "";
-        if (type === 'Siswa') {
-            headers = "nis,nisn,nama_lengkap,kelas_id,nama_wali,no_hp_wali\n12345,1234567890,Siswa Baru,Kelas 1A,Budi Santoso,0812345678";
-            filename = "template_siswa.csv";
-        } else if (type === 'Guru') {
-            headers = "nip,nama,no_hp,kelas_id,jabatan_tambahan,alamat\n19850101,Ahmad Guru,0812121212,Kelas 1A,Pembina Pramuka,Bekasi";
-            filename = "template_guru.csv";
-        } else if (type === 'Inventaris') {
-            headers = "kode,nama,lokasi,kondisi,tahun\nINV-001,Kursi Guru,Ruang Guru,Baik,2026";
-            filename = "template_inventaris.csv";
-        }
-
-        const blob = new Blob([headers], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function handleCSVFileSelect(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        parsedSheetName = document.getElementById('import-target-sheet').value;
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-            const text = evt.target.result;
-            parseCSVText(text);
-        };
-        reader.readAsText(file);
-    }
-
-    function parseCSVText(text) {
-        const rows = text.split("\n").map(r => r.trim()).filter(r => r.length > 0);
-        if (rows.length <= 1) {
-            Swal.fire('Error', 'Data CSV kosong atau hanya berisi header!', 'error');
-            return;
-        }
-
-        const headers = rows.shift().split(",");
-        parsedCSVData = rows.map(row => {
-            const columns = row.split(",");
-            let obj = {};
-            headers.forEach((h, i) => {
-                obj[h.trim()] = columns[i] ? columns[i].trim() : '';
-            });
-            return obj;
-        });
-
-        let html = `<thead class="table-light"><tr>`;
-        headers.forEach(h => html += `<th>${h}</th>`);
-        html += `</tr></thead><tbody>`;
-
-        parsedCSVData.forEach(row => {
-            html += `<tr>`;
-            headers.forEach(h => html += `<td>${row[h]}</td>`);
-            html += `</tr>`;
-        });
-        html += `</tbody>`;
-
-        document.getElementById('import-preview-table').innerHTML = html;
-        document.getElementById('import-preview-container').style.display = 'block';
-    }
-
-    async function executeBulkImport() {
-        if (parsedCSVData.length === 0) return;
-        showLoader(true, `Mengunggah ${parsedCSVData.length} baris data...`);
+        showLoader(true, "Menyimpan seluruh absensi kelas...");
         try {
-            for (let i = 0; i < parsedCSVData.length; i++) {
-                await callAPI('insertData', { sheetName: parsedSheetName, record: parsedCSVData[i] });
+            for (let row of rows) {
+                const payload = {
+                    siswa_id: row.getAttribute('data-name'),
+                    kelas_id: row.getAttribute('data-kelas'),
+                    tanggal: date,
+                    status: row.querySelector('.select-attendance-status').value,
+                    keterangan: row.querySelector('.input-attendance-note').value
+                };
+                await callAPI('insertData', { sheetName: 'AbsensiSiswa', record: payload });
             }
-            Swal.fire('Berhasil!', `Sukses mengimpor ${parsedCSVData.length} baris data ke Google Sheets.`, 'success');
-            loadModule(AppState.currentModule);
-        } catch (err) {
-            Swal.fire('Gagal Import', err.message, 'error');
+            Swal.fire('Absensi Disimpan!', 'Absensi massal kelas binaan sukses tersimpan di Google Sheets.', 'success');
+            loadModule('absen_siswa');
+        } catch (e) {
+            Swal.fire('Error', e.message, 'error');
         } finally {
             showLoader(false);
         }
     }
 
-    // --- MODULE: CETAK & PDF CONFIGURATOR ---
+    // --- MODULE: CETAK & PDF CONFIGURATOR (LENGKAP SEMUA DATA AKUN GURU) ---
     function renderCetakMenu(container) {
         let html = `
             <div class="row">
                 <div class="col-md-5">
                     <div class="card card-custom">
-                        <div class="card-custom-header">Konfigurasi Kop & Layout Margin</div>
+                        <div class="card-custom-header">Pengaturan Laporan PDF</div>
                         <div class="card-body">
                             <div class="mb-2">
-                                <label class="form-label small fw-bold">Pilih Sumber Data</label>
+                                <label class="form-label small fw-bold">Pilih Sumber Data Laporan</label>
                                 <select class="form-select form-select-sm" id="print-source">
                                     <option value="Siswa">Daftar Siswa Aktif</option>
                                     <option value="Guru">Daftar Pendidik / Guru</option>
                                     <option value="Inventaris">Laporan Aset Inventaris</option>
+                                    <option value="AbsensiSiswa">Laporan Absensi Siswa</option>
+                                    <option value="JurnalGuru">Jurnal Mengajar Harian</option>
+                                    <option value="KejadianSiswa">Buku Kejadian Khusus Siswa</option>
+                                    <option value="BukuPenghubung">Catatan Buku Penghubung</option>
+                                    <option value="Tahfidz">Monitoring Bina Tahfidz</option>
+                                    <option value="Karakter">Penilaian Karakter & Akhlak</option>
                                 </select>
                             </div>
                             <div class="mb-2">
                                 <label class="form-label small fw-bold">Ukuran Huruf Laporan (PDF)</label>
                                 <select class="form-select form-select-sm" id="print-font-size">
                                     <option value="9pt">9pt (Sangat Kecil)</option>
-                                    <option value="10pt">10pt (Sedang)</option>
+                                    <option value="10pt">10pt (Rapat)</option>
                                     <option value="11pt" selected>11pt (Normal)</option>
                                     <option value="12pt">12pt (Besar)</option>
                                     <option value="14pt">14pt (Sangat Besar)</option>
@@ -1626,7 +1498,7 @@
                                 <label class="form-label small fw-bold">Madrasah (Baris 2)</label>
                                 <input type="text" class="form-control form-control-sm" id="print-kop-2" value="MIS MIFTAHUSSA'ADAH BEKASI">
                             </div>
-                            <button class="btn btn-primary btn-sm w-100" onclick="previewPrintOutput()"><i class="fas fa-eye"></i> Tinjau Laporan</button>
+                            <button class="btn btn-primary btn-sm w-100" onclick="previewPrintOutput()"><i class="fas fa-eye"></i> Tinjau Laporan PDF</button>
                         </div>
                     </div>
                 </div>
@@ -1637,7 +1509,7 @@
                             <button class="btn btn-sm btn-success" id="btn-trigger-print" onclick="executeNativePrint()" style="display:none;"><i class="fas fa-print"></i> Unduh PDF</button>
                         </div>
                         <div class="card-body">
-                            <div id="print-preview-frame" class="border p-3 bg-white" style="min-height: 300px; display:none;"></div>
+                            <div id="print-preview-frame" class="border p-3 bg-white" style="min-height: 300px; display:none; overflow-y:auto; max-height:400px;"></div>
                         </div>
                     </div>
                 </div>
@@ -1655,24 +1527,47 @@
         showLoader(true, "Mempersiapkan dokumen cetak...");
         try {
             const data = await callAPI('getData', { sheetName: source });
+            let headerCols = "";
             let rowsHtml = "";
 
             if (source === 'Siswa') {
-                rowsHtml = data.map(s => `<tr><td>${s.nis}</td><td>${s.nisn}</td><td>${s.nama_lengkap}</td><td>${s.kelas_id}</td></tr>`).join('');
+                headerCols = "<tr><th>NIS</th><th>NISN</th><th>Nama Siswa</th><th>Kelas</th><th>Orang Tua</th></tr>";
+                rowsHtml = data.map(s => `<tr><td>${s.nis}</td><td>${s.nisn}</td><td><b>${s.nama_lengkap}</b></td><td>${s.kelas_id}</td><td>${s.nama_wali}</td></tr>`).join('');
             } else if (source === 'Guru') {
-                rowsHtml = data.map(g => `<tr><td>${g.nip || '-'}</td><td>${g.nama}</td><td>${g.kelas_id || '-'}</td></tr>`).join('');
+                headerCols = "<tr><th>NIP</th><th>Nama Lengkap Guru</th><th>Wali Kelas</th><th>No HP</th></tr>";
+                rowsHtml = data.map(g => `<tr><td>${g.nip || '-'}</td><td><b>${g.nama}</b></td><td>${g.kelas_id || '-'}</td><td>${g.no_hp || '-'}</td></tr>`).join('');
             } else if (source === 'Inventaris') {
-                rowsHtml = data.map(i => `<tr><td>${i.kode}</td><td>${i.nama}</td><td>${i.kondisi}</td></tr>`).join('');
+                headerCols = "<tr><th>Kode</th><th>Nama Barang</th><th>Lokasi</th><th>Kondisi</th><th>Tahun</th></tr>";
+                rowsHtml = data.map(i => `<tr><td><code>${i.kode}</code></td><td><b>${i.nama}</b></td><td>${i.lokasi}</td><td>${i.kondisi}</td><td>${i.tahun}</td></tr>`).join('');
+            } else if (source === 'AbsensiSiswa') {
+                headerCols = "<tr><th>Tanggal</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Keterangan</th></tr>";
+                rowsHtml = data.map(a => `<tr><td>${a.tanggal}</td><td><b>${a.siswa_id}</b></td><td>${a.kelas_id}</td><td>${a.status}</td><td>${a.keterangan || '-'}</td></tr>`).join('');
+            } else if (source === 'JurnalGuru') {
+                headerCols = "<tr><th>Tanggal</th><th>Kelas</th><th>Mata Pelajaran</th><th>Materi Pembelajaran</th></tr>";
+                rowsHtml = data.map(j => `<tr><td>${j.tanggal}</td><td>${j.kelas_id}</td><td><b>${j.mapel}</b></td><td>${j.materi}</td></tr>`).join('');
+            } else if (source === 'KejadianSiswa') {
+                headerCols = "<tr><th>Siswa</th><th>Tanggal</th><th>Kategori</th><th>Jenis Kejadian</th><th>Kronologi</th></tr>";
+                rowsHtml = data.map(k => `<tr><td><b>${k.siswa_id}</b></td><td>${k.tanggal}</td><td>${k.kategori}</td><td>${k.jenis}</td><td>${k.kronologi}</td></tr>`).join('');
+            } else if (source === 'BukuPenghubung') {
+                headerCols = "<tr><th>Tanggal</th><th>Pengirim</th><th>Penerima</th><th>Isi Catatan Pesan</th></tr>";
+                rowsHtml = data.map(p => `<tr><td>${p.tanggal}</td><td>${p.pengirim_id}</td><td>${p.penerima_id}</td><td>${p.pesan}</td></tr>`).join('');
+            } else if (source === 'Tahfidz') {
+                headerCols = "<tr><th>Siswa</th><th>Tanggal</th><th>Surah</th><th>Ayat</th><th>Status Hafalan</th></tr>";
+                rowsHtml = data.map(t => `<tr><td><b>${t.siswa_id}</b></td><td>${t.tanggal}</td><td>${t.surah}</td><td>Ayat ${t.ayat}</td><td>${t.status_hafalan}</td></tr>`).join('');
+            } else if (source === 'Karakter') {
+                headerCols = "<tr><th>Siswa</th><th>Tanggal</th><th>Aspek Penilaian</th><th>Nilai</th><th>Catatan</th></tr>";
+                rowsHtml = data.map(k => `<tr><td><b>${k.siswa_id}</b></td><td>${k.tanggal}</td><td>${k.aspek}</td><td><b>${k.nilai}/4</b></td><td>${k.catatan || '-'}</td></tr>`).join('');
             }
 
             const docHtml = `
                 <div style="font-family:'Times New Roman', serif; font-size:${fontSize}; color:#000;">
                     <div style="text-align:center; border-bottom:3px double #000; padding-bottom:8px; margin-bottom:15px;">
-                        <h4 style="margin:0; font-size:1rem; font-weight:bold;">${line1}</h4>
+                        <h4 style="margin:0; font-size:1rem; font-weight:bold; text-transform:uppercase;">${line1}</h4>
                         <h2 style="margin:2px 0; font-size:1.3rem; font-weight:bold;">${line2}</h2>
                     </div>
-                    <h5 style="text-align:center; text-transform:uppercase; font-weight:bold; margin-bottom:10px;">LAPORAN DATA ${source.toUpperCase()}</h5>
+                    <h5 style="text-align:center; text-transform:uppercase; font-weight:bold; margin-bottom:10px; letter-spacing:0.5px;">LAPORAN DATA ${source.toUpperCase()}</h5>
                     <table class="table table-bordered table-sm" style="font-size:${fontSize}; width:100%;">
+                        <thead style="background-color:#eef2f5;">${headerCols}</thead>
                         <tbody>${rowsHtml}</tbody>
                     </table>
                 </div>
@@ -1681,7 +1576,7 @@
             document.getElementById('print-preview-frame').style.display = 'block';
             document.getElementById('btn-trigger-print').style.display = 'block';
         } catch (e) {
-            Swal.fire('Gagal', e.message, 'error');
+            Swal.fire('Gagal memuat', e.message, 'error');
         } finally {
             showLoader(false);
         }
@@ -1708,7 +1603,7 @@
         printWindow.document.close();
     }
 
-    // --- MODULE: PENGATURAN ---
+    // --- MODULE: PENGATURAN LEMBAGA (UPLOAD LOGO BASE64) ---
     async function renderPengaturanMenu(container) {
         let html = `
             <div class="card card-custom">
@@ -1717,7 +1612,7 @@
                     <form onsubmit="saveSettings(event)">
                         <div class="row">
                             <div class="col-md-6 mb-2">
-                                <label class="form-label small fw-bold">Nama Lembaga</label>
+                                <label class="form-label small fw-bold">Nama Lembaga / Madrasah</label>
                                 <input type="text" class="form-control form-control-sm" name="nama_lembaga" value="${AppState.settings.nama_lembaga}" required>
                             </div>
                             <div class="col-md-6 mb-2">
@@ -1735,8 +1630,16 @@
                                     <option value="Genap" ${AppState.settings.semester_aktif === 'Genap' ? 'selected' : ''}>Genap</option>
                                 </select>
                             </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label small fw-bold">Upload Logo Madrasah Baru</label>
+                                <input type="file" class="form-control form-control-sm" id="logo-file-picker" accept="image/*" onchange="convertLogoToBase64(event)">
+                                <input type="hidden" name="logo_url" id="settings-logo-url" value="${AppState.settings.logo_url || ''}">
+                                <div class="mt-2">
+                                    <img src="${AppState.settings.logo_url || 'https://via.placeholder.com/80/0d5c75/FFFFFF?text=MIS'}" id="settings-logo-preview" class="border rounded" style="width: 70px; height: 70px; object-fit: cover;">
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-sm btn-success mt-3"><i class="fas fa-save"></i> Perbarui Parameter</button>
+                        <button type="submit" class="btn btn-sm btn-success mt-1"><i class="fas fa-save"></i> Simpan Parameter & Logo</button>
                     </form>
                 </div>
             </div>
@@ -1744,386 +1647,28 @@
         container.innerHTML = html;
     }
 
-    async function saveSettings(e) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+    function convertLogoToBase64(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-        showLoader(true, "Memperbarui parameter madrasah...");
-        try {
-            for (const key in data) {
-                await callAPI('insertData', { 
-                    sheetName: 'Pengaturan', 
-                    record: { id: key, kunci: key, nilai: data[key], updated_at: new Date().toISOString() } 
-                });
-            }
-            AppState.settings = { ...AppState.settings, ...data };
-            Swal.fire('Sukses!', 'Parameter Lembaga sukses diperbarui.', 'success');
-            initDashboard();
-        } catch (err) {
-            Swal.fire('Error', err.message, 'error');
-        } finally {
-            showLoader(false);
-        }
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const base64 = evt.target.result;
+            document.getElementById('settings-logo-url').value = base64;
+            document.getElementById('settings-logo-preview').src = base64;
+            toast("Gambar berhasil diproses lokal, siap disimpan.");
+        };
+        reader.readAsText(file); // fallback safe
+        const readerData = new FileReader();
+        readerData.onload = function(evt) {
+            document.getElementById('settings-logo-url').value = evt.target.result;
+            document.getElementById('settings-logo-preview').src = evt.target.result;
+        };
+        readerData.readAsDataURL(file);
     }
 
-    // --- MODULE: KEJADIAN ---
-    async function renderKejadianMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'KejadianSiswa' });
-        let filteredList = list;
-        
-        if (AppState.user.role === 'Guru') {
-            const myClass = await getWaliKelasClass(AppState.user.id);
-            if (myClass) {
-                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
-                const mySiswaNames = siswas.map(s => s.nama_lengkap);
-                filteredList = list.filter(k => mySiswaNames.includes(k.siswa_id));
-            }
-        }
-
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Buku Kejadian Harian Siswa</span>
-                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddKejadianModal()"><i class="fas fa-plus"></i> Catat Kejadian</button>` : ''}
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Siswa</th><th>Tanggal</th><th>Kategori</th><th>Jenis</th><th>Keterangan</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        if (filteredList.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-3">Tidak ada catatan kejadian.</td></tr>`;
-        } else {
-            filteredList.forEach(k => {
-                const badge = k.kategori === 'Positif' ? 'bg-success' : 'bg-danger';
-                html += `
-                    <tr>
-                        <td>${k.siswa_id}</td>
-                        <td>${k.tanggal}</td>
-                        <td><span class="badge ${badge}">${k.kategori}</span></td>
-                        <td><b>${k.jenis}</b></td>
-                        <td>${k.kronologi}</td>
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: TAHFIDZ ---
-    async function renderTahfidzMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Tahfidz' });
-        let filteredList = list;
-        
-        if (AppState.user.role === 'Guru') {
-            const myClass = await getWaliKelasClass(AppState.user.id);
-            if (myClass) {
-                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
-                const mySiswaNames = siswas.map(s => s.nama_lengkap);
-                filteredList = list.filter(t => mySiswaNames.includes(t.siswa_id));
-            }
-        } else if (AppState.user.role === 'Orang Tua') {
-            const childNis = AppState.user.username.replace('wali_', '');
-            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
-            if (siswas.length > 0) {
-                filteredList = list.filter(t => t.siswa_id === siswas[0].nama_lengkap);
-            } else {
-                filteredList = [];
-            }
-        }
-
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Monitoring Hafalan Tahfidz Siswa</span>
-                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddTahfidzModal()"><i class="fas fa-plus"></i> Input Setoran</button>` : ''}
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Nama Siswa</th><th>Tanggal</th><th>Surah</th><th>Ayat</th><th>Status</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        if (filteredList.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-3">Belum ada catatan setoran tahfidz.</td></tr>`;
-        } else {
-            filteredList.forEach(t => {
-                html += `
-                    <tr>
-                        <td>${t.siswa_id}</td>
-                        <td>${t.tanggal}</td>
-                        <td>${t.surah}</td>
-                        <td>Ayat ${t.ayat}</td>
-                        <td><span class="badge bg-primary">${t.status_hafalan}</span></td>
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: KARAKTER ---
-    async function renderKarakterMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'Karakter' });
-        let filteredList = list;
-        
-        if (AppState.user.role === 'Guru') {
-            const myClass = await getWaliKelasClass(AppState.user.id);
-            if (myClass) {
-                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
-                const mySiswaNames = siswas.map(s => s.nama_lengkap);
-                filteredList = list.filter(k => mySiswaNames.includes(k.siswa_id));
-            }
-        } else if (AppState.user.role === 'Orang Tua') {
-            const childNis = AppState.user.username.replace('wali_', '');
-            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
-            if (siswas.length > 0) {
-                filteredList = list.filter(k => k.siswa_id === siswas[0].nama_lengkap);
-            } else {
-                filteredList = [];
-            }
-        }
-
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Penilaian Karakter & Akhlak</span>
-                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddKarakterModal()"><i class="fas fa-plus"></i> Input Nilai Karakter</button>` : ''}
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Siswa</th><th>Tanggal</th><th>Aspek</th><th>Nilai</th><th>Keterangan</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        if (filteredList.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-3">Belum ada penilaian karakter.</td></tr>`;
-        } else {
-            filteredList.forEach(k => {
-                html += `
-                    <tr>
-                        <td>${k.siswa_id}</td>
-                        <td>${k.tanggal}</td>
-                        <td><b>${k.aspek}</b></td>
-                        <td><span class="badge bg-info">Skor: ${k.nilai}/4</span></td>
-                        <td>${k.catatan || '-'}</td>
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: ABSEN SISWA ---
-    async function renderAbsenSiswaMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'AbsensiSiswa' });
-        let filteredList = list;
-        
-        if (AppState.user.role === 'Guru') {
-            const myClass = await getWaliKelasClass(AppState.user.id);
-            if (myClass) {
-                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
-                const mySiswaNames = siswas.map(s => s.nama_lengkap);
-                filteredList = list.filter(a => mySiswaNames.includes(a.siswa_id));
-            }
-        }
-
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Rekap Absensi Harian Siswa</span>
-                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openInputAbsenSiswa()"><i class="fas fa-edit"></i> Input Absen Baru</button>` : ''}
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Siswa</th><th>Kelas</th><th>Tanggal</th><th>Status</th><th>Keterangan</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        if (filteredList.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-3">Belum ada rekap absen siswa.</td></tr>`;
-        } else {
-            filteredList.forEach(a => {
-                const color = a.status === 'Hadir' ? 'bg-success' : a.status === 'Sakit' ? 'bg-warning' : a.status === 'Izin' ? 'bg-info' : 'bg-danger';
-                html += `
-                    <tr>
-                        <td>${a.siswa_id}</td>
-                        <td>${a.kelas_id}</td>
-                        <td>${a.tanggal}</td>
-                        <td><span class="badge ${color}">${a.status}</span></td>
-                        <td>${a.keterangan || '-'}</td>
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    async function openInputAbsenSiswa() {
-        let targetSiswa = [];
-        showLoader(true, "Membuat daftar siswa...");
-        try {
-            const allSiswa = await callAPI('getData', { sheetName: 'Siswa' });
-            if (AppState.user.role === 'Guru') {
-                const myClass = await getWaliKelasClass(AppState.user.id);
-                targetSiswa = allSiswa.filter(s => s.kelas_id === myClass);
-            } else {
-                targetSiswa = allSiswa;
-            }
-        } catch (e) {
-            targetSiswa = [];
-        } finally {
-            showLoader(false);
-        }
-
-        if (targetSiswa.length === 0) {
-            Swal.fire('Gagal', 'Tidak ada siswa yang terdaftar di kelas Anda bina.', 'warning');
-            return;
-        }
-
-        const optionsHtml = targetSiswa.map(s => `<option value="${s.nama_lengkap}">${s.nama_lengkap} (${s.kelas_id})</option>`).join('');
-
-        const { value: formValues } = await Swal.fire({
-            title: 'Input Absensi Siswa',
-            html:
-                '<label class="form-label text-start d-block small fw-bold">Pilih Siswa</label>' +
-                `<select id="swal-siswa" class="form-select form-select-sm mb-2">${optionsHtml}</select>` +
-                '<label class="form-label text-start d-block small fw-bold">Tanggal</label>' +
-                '<input id="swal-tgl" type="date" class="form-control form-control-sm mb-2" value="'+new Date().toISOString().split('T')[0]+'">' +
-                '<label class="form-label text-start d-block small fw-bold">Status</label>' +
-                '<select id="swal-status" class="form-select form-select-sm mb-2">' +
-                '  <option value="Hadir">Hadir</option>' +
-                '  <option value="Sakit">Sakit</option>' +
-                '  <option value="Izin">Izin</option>' +
-                '  <option value="Alpha">Alpha</option>' +
-                '</select>' +
-                '<label class="form-label text-start d-block small fw-bold">Keterangan</label>' +
-                '<input id="swal-ket" class="form-control form-control-sm" placeholder="Keterangan (Opsional)">',
-            focusConfirm: false,
-            preConfirm: () => {
-                const selectedName = document.getElementById('swal-siswa').value;
-                const matchSiswa = targetSiswa.find(s => s.nama_lengkap === selectedName);
-                return {
-                    siswa_id: selectedName,
-                    kelas_id: matchSiswa ? matchSiswa.kelas_id : '',
-                    tanggal: document.getElementById('swal-tgl').value,
-                    status: document.getElementById('swal-status').value,
-                    keterangan: document.getElementById('swal-ket').value
-                }
-            }
-        });
-
-        if (formValues) {
-            showLoader(true, "Menyimpan data absensi...");
-            try {
-                await callAPI('insertData', { sheetName: 'AbsensiSiswa', record: formValues });
-                Swal.fire('Tercatat!', 'Absensi berhasil disimpan.', 'success');
-                loadModule('absen_siswa');
-            } catch (err) {
-                Swal.fire('Error', err.message, 'error');
-            } finally {
-                showLoader(false);
-            }
-        }
-    }
-
-    // --- MODULE: BUKU PENGHUBUNG ---
-    async function renderPenghubungMenu(container) {
-        const list = await callAPI('getData', { sheetName: 'BukuPenghubung' });
-        let filteredList = list;
-
-        if (AppState.user.role === 'Orang Tua') {
-            const childNis = AppState.user.username.replace('wali_', '');
-            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
-            if (siswas.length > 0) {
-                const anak = siswas[0];
-                const kelasList = await callAPI('getData', { sheetName: 'Kelas', filter: { nama_kelas: anak.kelas_id } });
-                const waliId = kelasList.length > 0 ? kelasList[0].wali_kelas_id : '';
-                
-                filteredList = list.filter(p => 
-                    (p.pengirim_id === AppState.user.nama_lengkap && p.penerima_id === waliId) ||
-                    (p.pengirim_id === waliId && p.penerima_id === AppState.user.nama_lengkap)
-                );
-            } else {
-                filteredList = [];
-            }
-        } else if (AppState.user.role === 'Guru') {
-            filteredList = list.filter(p => p.penerima_id === AppState.user.id || p.pengirim_id === AppState.user.id);
-        }
-
-        let html = `
-            <div class="card card-custom">
-                <div class="card-custom-header d-flex justify-content-between align-items-center">
-                    <span>Buku Penghubung Digital Guru & Orang Tua</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddPenghubungModal()"><i class="fas fa-plus"></i> Kirim Pesan Baru</button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle small">
-                            <thead class="table-light">
-                                <tr><th>Tanggal</th><th>Dari (Pengirim)</th><th>Ke (Penerima)</th><th>Pesan</th><th>Status</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        if (filteredList.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-4">Belum ada pesan di buku penghubung.</td></tr>`;
-        } else {
-            filteredList.forEach(p => {
-                html += `
-                    <tr>
-                        <td>${p.tanggal}</td>
-                        <td><b>${p.pengirim_id}</b></td>
-                        <td><code>${p.penerima_id}</code></td>
-                        <td>${p.pesan}</td>
-                        <td><span class="badge ${p.status_baca === 'Dibaca' ? 'bg-success' : 'bg-warning'}">${p.status_baca}</span></td>
-                    </tr>
-                `;
-            });
-        }
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // ==========================================
-    // SINKRONISASI RELASIONAL - LOAD DATA DROPDOWNS
-    // ==========================================
-    let usersListGlobal = [];
-    function syncGuruName(selectEl) {
-        const userId = selectEl.value;
-        const matchUser = usersListGlobal.find(u => u.id === userId);
-        if (matchUser) {
-            document.getElementById('formGuruNama').value = matchUser.nama_lengkap;
-        }
-    }
-
-    async function getWaliKelasClass(userId) {
-        try {
-            const kelas = await callAPI('getData', { sheetName: 'Kelas', filter: { wali_kelas_id: userId } });
-            return kelas.length > 0 ? kelas[0].nama_kelas : null;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    // ==========================================
-    // FORM OPENERS, MUTATOR, & BULK SAVES
-    // ==========================================
-    function openAddUserModal() {
+    // --- RE-BIND SINKRONISASI RELASIONAL DI DALAM MODAL ---
+    async function openAddUserModal() {
         document.getElementById('formUserId').value = '';
         document.querySelector('#modalUser form').reset();
         document.getElementById('modalUserTitle').innerText = "Tambah User Baru";
@@ -2375,7 +1920,6 @@
         document.getElementById('formJurnalMapel').value = mapel;
         document.getElementById('formJurnalMateri').value = materi;
         
-        // Memaksa kelas memiliki pilihan yang sesuai
         document.getElementById('formJurnalKelas').innerHTML = `<option value="${kelas}">${kelas}</option>`;
         document.getElementById('formJurnalKelas').value = kelas;
 

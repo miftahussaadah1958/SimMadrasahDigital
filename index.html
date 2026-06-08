@@ -254,7 +254,6 @@
                     </div>
                 </header>
 
-             <!-- ... existing code ... -->
                 <div class="content-area" id="main-content-area">
                     <!-- Konten dinamis dirender di sini -->
                 </div>
@@ -359,294 +358,8 @@
 
 <!-- ==========================================
      LOGIKA JAVASCRIPT (SPA & API CALLS)
-<!-- ... existing code ... -->
-        try {
-            if (moduleId === 'dashboard') await renderDashboard(contentArea);
-            else if (moduleId === 'users') await renderUsersMenu(contentArea);
-            else if (moduleId === 'master') await renderMasterMenu(contentArea);
-            else if (moduleId === 'jurnal') await renderJurnalMenu(contentArea);
-            else {
-                contentArea.innerHTML = `<div class="alert alert-info">Modul <b>${moduleId}</b> sedang dalam tahap pengembangan.</div>`;
-            }
-        } catch (err) {
-<!-- ... existing code ... -->
-    // --- MODULE: MANAJEMEN USER (Admin Only) ---
-    async function renderUsersMenu(container) {
-        const users = await callAPI('getData', { sheetName: 'Users' });
-        
-        let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Pengguna Sistem</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Tambah User</button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Nama</th>
-                                    <th>Username</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-        `;
-        
-        if(users.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-3">Tidak ada data user.</td></tr>`;
-        } else {
-            users.forEach(u => {
-                const badge = u.status === 'Aktif' ? 'bg-success' : 'bg-danger';
-                const safeNama = (u.nama_lengkap || '').replace(/'/g, "\\'");
-                const safeUser = (u.username || '').replace(/'/g, "\\'");
-                html += `
-                    <tr>
-                        <td>${u.nama_lengkap}</td>
-                        <td>${u.username}</td>
-                        <td><span class="badge bg-secondary">${u.role}</span></td>
-                        <td><span class="badge ${badge}">${u.status}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" title="Edit" onclick="editUser('${u.id}', '${safeNama}', '${safeUser}', '${u.role}', '${u.status}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" title="Hapus User" onclick="deleteData('Users', '${u.id}')"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-        
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: DATA MASTER GURU ---
-    async function renderMasterMenu(container) {
-        const gurus = await callAPI('getData', { sheetName: 'Guru' });
-        
-        let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Data Master Guru</span>
-                    <button class="btn btn-sm btn-success" onclick="openAddGuruModal()"><i class="fas fa-plus"></i> Tambah Guru</button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr><th>NIP/NUPTK</th><th>Nama Guru</th><th>Wali Kelas</th><th>Jabatan</th><th>Aksi</th></tr>
-                            </thead>
-                            <tbody>
-        `;
-        
-        if(gurus.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-4">Belum ada data guru.</td></tr>`;
-        } else {
-            gurus.forEach(g => {
-                const safeNip = (g.nip || '').replace(/'/g, "\\'");
-                const safeNama = (g.nama || '').replace(/'/g, "\\'");
-                const safeHp = (g.no_hp || '').replace(/'/g, "\\'");
-                const safeAlamat = (g.alamat || '').replace(/'/g, "\\'");
-                const safeKelas = (g.kelas_id || '').replace(/'/g, "\\'");
-                const safeJabatan = (g.jabatan_tambahan || '').replace(/'/g, "\\'");
-
-                html += `
-                    <tr>
-                        <td>${g.nip || '-'}</td>
-                        <td>${g.nama || '-'}</td>
-                        <td>${g.kelas_id || '-'}</td>
-                        <td>${g.jabatan_tambahan || '-'}</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" title="Edit" onclick="editGuru('${g.id}', '${safeNip}', '${safeNama}', '${safeHp}', '${safeAlamat}', '${safeKelas}', '${safeJabatan}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" title="Hapus" onclick="deleteData('Guru', '${g.id}')"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-        
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // --- MODULE: JURNAL MENGAJAR (Guru) ---
-    async function renderJurnalMenu(container) {
-        const jurnal = await callAPI('getData', { sheetName: 'JurnalGuru', filter: { user_id: AppState.user.id } });
-        
-        let html = `
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Riwayat Jurnal Mengajar</span>
-                    <button class="btn btn-sm btn-success" onclick="new bootstrap.Modal(document.getElementById('modalJurnal')).show()"><i class="fas fa-plus"></i> Isi Jurnal Baru</button>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>Kelas</th>
-                                    <th>Mata Pelajaran</th>
-                                    <th>Materi</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-        `;
-        
-        if(jurnal.length === 0) {
-            html += `<tr><td colspan="5" class="text-center py-4">Belum ada catatan jurnal.</td></tr>`;
-        } else {
-            jurnal.forEach(j => {
-                html += `
-                    <tr>
-                        <td>${j.tanggal || '-'}</td>
-                        <td>${j.kelas_id || '-'}</td>
-                        <td>${j.mapel || '-'}</td>
-                        <td>${j.materi || '-'}</td>
-                        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteData('JurnalGuru', '${j.id}')"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-        
-        html += `</tbody></table></div></div></div>`;
-        container.innerHTML = html;
-    }
-
-    // ==========================================
-    // GENERIC CRUD HANDLERS (SAVE & DELETE)
-    // ==========================================
-    
-    // --- HELPER UNTUK MEMBUKA MODAL FORM ---
-    function openAddUserModal() {
-        document.getElementById('formUserId').value = '';
-        document.querySelector('#modalUser form').reset();
-        document.getElementById('modalUserTitle').innerText = "Tambah User Baru";
-        document.getElementById('formUserPassword').required = true;
-        document.getElementById('formUserPasswordHelp').style.display = 'none';
-        document.getElementById('userStatusDiv').style.display = 'none'; // Sembunyikan status (Otomatis Aktif)
-        document.getElementById('formUserStatus').value = 'Aktif';
-        new bootstrap.Modal(document.getElementById('modalUser')).show();
-    }
-
-    function editUser(id, nama, username, role, status) {
-        document.getElementById('formUserId').value = id;
-        document.getElementById('formUserNama').value = nama;
-        document.getElementById('formUserUsername').value = username;
-        document.getElementById('formUserRole').value = role;
-        document.getElementById('formUserStatus').value = status;
-        
-        document.getElementById('modalUserTitle').innerText = "Edit Data User";
-        document.getElementById('formUserPassword').required = false; // Boleh kosong saat edit
-        document.getElementById('formUserPasswordHelp').style.display = 'block';
-        document.getElementById('userStatusDiv').style.display = 'block'; // Tampilkan status untuk diubah
-        new bootstrap.Modal(document.getElementById('modalUser')).show();
-    }
-
-    function openAddGuruModal() {
-        document.getElementById('formGuruId').value = '';
-        document.querySelector('#modalGuru form').reset();
-        document.getElementById('modalGuruTitle').innerText = "Tambah Data Guru";
-        new bootstrap.Modal(document.getElementById('modalGuru')).show();
-    }
-
-    function editGuru(id, nip, nama, hp, alamat, kelas, jabatan) {
-        document.getElementById('formGuruId').value = id;
-        document.getElementById('formGuruNip').value = nip;
-        document.getElementById('formGuruNama').value = nama;
-        document.getElementById('formGuruHp').value = hp;
-        document.getElementById('formGuruAlamat').value = alamat;
-        document.getElementById('formGuruKelas').value = kelas;
-        document.getElementById('formGuruJabatan').value = jabatan;
-        
-        document.getElementById('modalGuruTitle').innerText = "Edit Data Guru";
-        new bootstrap.Modal(document.getElementById('modalGuru')).show();
-    }
-
-    async function handleSaveData(e, sheetName) {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        let record = Object.fromEntries(formData.entries());
-
-        showLoader(true);
-        try {
-            const isEdit = record.id && record.id.trim() !== "";
-
-            // Jika sheet Users, password harus di hash dulu sebelum dikirim
-            if (sheetName === 'Users') {
-                if (record.password) {
-                    record.password = await sha256(record.password);
-                } else if (isEdit) {
-                    delete record.password; // Jangan timpa password lama jika input dikosongkan
-                }
-            }
-            // Jika Jurnal, catat ID Guru yang sedang login secara otomatis
-            if (sheetName === 'JurnalGuru' && !isEdit) {
-                record.user_id = AppState.user.id;
-            }
-
-            if (isEdit) {
-                // UPDATE DATA EKSISTING
-                await callAPI('updateData', { sheetName: sheetName, id: record.id, record: record });
-            } else {
-                // INSERT DATA BARU
-                delete record.id; // Kosongkan ID agar backend men-generate ID baru (UUID)
-                await callAPI('insertData', { sheetName: sheetName, record: record });
-            }
-
-            // Tutup modal menggunakan API Bootstrap
-            const modalEl = form.closest('.modal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if(modalInstance) modalInstance.hide();
-            
-            // Hilangkan background gelap modal
-            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-            document.body.classList.remove('modal-open');
-
-            form.reset();
-            Swal.fire('Berhasil!', 'Data berhasil disimpan.', 'success');
-            
-            // Muat ulang tabel agar data baru langsung muncul
-            loadModule(AppState.currentModule);
-
-        } catch (err) {
-            Swal.fire('Error', err.message, 'error');
-        } finally {
-            showLoader(false);
-        }
-    }
-
-    async function deleteData(sheetName, id) {
-        const result = await Swal.fire({
-            title: 'Hapus Data?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Hapus!'
-        });
-
-        if (result.isConfirmed) {
-            showLoader(true);
-            try {
-                await callAPI('deleteData', { sheetName: sheetName, id: id });
-                Swal.fire('Terhapus!', 'Data telah dihapus.', 'success');
-                // Muat ulang tabel
-                loadModule(AppState.currentModule);
-            } catch (err) {
-                Swal.fire('Error', err.message, 'error');
-            } finally {
-                showLoader(false);
-            }
-        }
-    }
-</script>
-<!-- Bootstrap JS -->
-<!-- ... existing code ... -->
+     ========================================== -->
+<script>
     // ==========================================
     // KONFIGURASI UTAMA BLOGGER DEPLOYMENT
     // ==========================================
@@ -1014,7 +727,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Data Pengguna Sistem</span>
-                    <button class="btn btn-sm btn-success" onclick="new bootstrap.Modal(document.getElementById('modalUser')).show()"><i class="fas fa-plus"></i> Tambah User</button>
+                    <button class="btn btn-sm btn-success" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Tambah User</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -1036,6 +749,8 @@
         } else {
             users.forEach(u => {
                 const badge = u.status === 'Aktif' ? 'bg-success' : 'bg-danger';
+                const safeNama = (u.nama_lengkap || '').replace(/'/g, "\\'");
+                const safeUser = (u.username || '').replace(/'/g, "\\'");
                 html += `
                     <tr>
                         <td>${u.nama_lengkap}</td>
@@ -1043,6 +758,7 @@
                         <td><span class="badge bg-secondary">${u.role}</span></td>
                         <td><span class="badge ${badge}">${u.status}</span></td>
                         <td>
+                            <button class="btn btn-sm btn-outline-primary" title="Edit" onclick="editUser('${u.id}', '${safeNama}', '${safeUser}', '${u.role}', '${u.status}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" title="Hapus User" onclick="deleteData('Users', '${u.id}')"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
@@ -1062,27 +778,38 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Data Master Guru</span>
-                    <button class="btn btn-sm btn-success" onclick="new bootstrap.Modal(document.getElementById('modalGuru')).show()"><i class="fas fa-plus"></i> Tambah Guru</button>
+                    <button class="btn btn-sm btn-success" onclick="openAddGuruModal()"><i class="fas fa-plus"></i> Tambah Guru</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
                             <thead>
-                                <tr><th>NIP/NUPTK</th><th>Nama Guru</th><th>No HP</th><th>Aksi</th></tr>
+                                <tr><th>NIP/NUPTK</th><th>Nama Guru</th><th>Wali Kelas</th><th>Jabatan</th><th>Aksi</th></tr>
                             </thead>
                             <tbody>
         `;
         
         if(gurus.length === 0) {
-            html += `<tr><td colspan="4" class="text-center py-4">Belum ada data guru.</td></tr>`;
+            html += `<tr><td colspan="5" class="text-center py-4">Belum ada data guru.</td></tr>`;
         } else {
             gurus.forEach(g => {
+                const safeNip = (g.nip || '').replace(/'/g, "\\'");
+                const safeNama = (g.nama || '').replace(/'/g, "\\'");
+                const safeHp = (g.no_hp || '').replace(/'/g, "\\'");
+                const safeAlamat = (g.alamat || '').replace(/'/g, "\\'");
+                const safeKelas = (g.kelas_id || '').replace(/'/g, "\\'");
+                const safeJabatan = (g.jabatan_tambahan || '').replace(/'/g, "\\'");
+
                 html += `
                     <tr>
                         <td>${g.nip || '-'}</td>
                         <td>${g.nama || '-'}</td>
-                        <td>${g.no_hp || '-'}</td>
-                        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteData('Guru', '${g.id}')"><i class="fas fa-trash"></i></button></td>
+                        <td>${g.kelas_id || '-'}</td>
+                        <td>${g.jabatan_tambahan || '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" title="Edit" onclick="editGuru('${g.id}', '${safeNip}', '${safeNama}', '${safeHp}', '${safeAlamat}', '${safeKelas}', '${safeJabatan}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" title="Hapus" onclick="deleteData('Guru', '${g.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
                     </tr>
                 `;
             });
@@ -1140,6 +867,53 @@
     // ==========================================
     // GENERIC CRUD HANDLERS (SAVE & DELETE)
     // ==========================================
+    
+    // --- HELPER UNTUK MEMBUKA MODAL FORM ---
+    function openAddUserModal() {
+        document.getElementById('formUserId').value = '';
+        document.querySelector('#modalUser form').reset();
+        document.getElementById('modalUserTitle').innerText = "Tambah User Baru";
+        document.getElementById('formUserPassword').required = true;
+        document.getElementById('formUserPasswordHelp').style.display = 'none';
+        document.getElementById('userStatusDiv').style.display = 'none'; // Sembunyikan status (Otomatis Aktif)
+        document.getElementById('formUserStatus').value = 'Aktif';
+        new bootstrap.Modal(document.getElementById('modalUser')).show();
+    }
+
+    function editUser(id, nama, username, role, status) {
+        document.getElementById('formUserId').value = id;
+        document.getElementById('formUserNama').value = nama;
+        document.getElementById('formUserUsername').value = username;
+        document.getElementById('formUserRole').value = role;
+        document.getElementById('formUserStatus').value = status;
+        
+        document.getElementById('modalUserTitle').innerText = "Edit Data User";
+        document.getElementById('formUserPassword').required = false; // Boleh kosong saat edit
+        document.getElementById('formUserPasswordHelp').style.display = 'block';
+        document.getElementById('userStatusDiv').style.display = 'block'; // Tampilkan status untuk diubah
+        new bootstrap.Modal(document.getElementById('modalUser')).show();
+    }
+
+    function openAddGuruModal() {
+        document.getElementById('formGuruId').value = '';
+        document.querySelector('#modalGuru form').reset();
+        document.getElementById('modalGuruTitle').innerText = "Tambah Data Guru";
+        new bootstrap.Modal(document.getElementById('modalGuru')).show();
+    }
+
+    function editGuru(id, nip, nama, hp, alamat, kelas, jabatan) {
+        document.getElementById('formGuruId').value = id;
+        document.getElementById('formGuruNip').value = nip;
+        document.getElementById('formGuruNama').value = nama;
+        document.getElementById('formGuruHp').value = hp;
+        document.getElementById('formGuruAlamat').value = alamat;
+        document.getElementById('formGuruKelas').value = kelas;
+        document.getElementById('formGuruJabatan').value = jabatan;
+        
+        document.getElementById('modalGuruTitle').innerText = "Edit Data Guru";
+        new bootstrap.Modal(document.getElementById('modalGuru')).show();
+    }
+
     async function handleSaveData(e, sheetName) {
         e.preventDefault();
         const form = e.target;
@@ -1148,16 +922,29 @@
 
         showLoader(true);
         try {
+            const isEdit = record.id && record.id.trim() !== "";
+
             // Jika sheet Users, password harus di hash dulu sebelum dikirim
-            if (sheetName === 'Users' && record.password) {
-                record.password = await sha256(record.password);
+            if (sheetName === 'Users') {
+                if (record.password) {
+                    record.password = await sha256(record.password);
+                } else if (isEdit) {
+                    delete record.password; // Jangan timpa password lama jika input dikosongkan
+                }
             }
             // Jika Jurnal, catat ID Guru yang sedang login secara otomatis
-            if (sheetName === 'JurnalGuru') {
+            if (sheetName === 'JurnalGuru' && !isEdit) {
                 record.user_id = AppState.user.id;
             }
 
-            await callAPI('insertData', { sheetName: sheetName, record: record });
+            if (isEdit) {
+                // UPDATE DATA EKSISTING
+                await callAPI('updateData', { sheetName: sheetName, id: record.id, record: record });
+            } else {
+                // INSERT DATA BARU
+                delete record.id; // Kosongkan ID agar backend men-generate ID baru (UUID)
+                await callAPI('insertData', { sheetName: sheetName, record: record });
+            }
 
             // Tutup modal menggunakan API Bootstrap
             const modalEl = form.closest('.modal');
@@ -1169,7 +956,7 @@
             document.body.classList.remove('modal-open');
 
             form.reset();
-            Swal.fire('Berhasil!', 'Data berhasil ditambahkan.', 'success');
+            Swal.fire('Berhasil!', 'Data berhasil disimpan.', 'success');
             
             // Muat ulang tabel agar data baru langsung muncul
             loadModule(AppState.currentModule);

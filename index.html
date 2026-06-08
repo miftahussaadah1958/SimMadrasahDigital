@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM Madrasah Digital</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* ==========================================
+           CSS SCOPED & THEME
+           ========================================== */
+        :root {
+            --primary-color: #198754; /* Hijau Madrasah */
+            --primary-dark: #146c43;
+            --sidebar-bg: #212529;
+            --sidebar-hover: #343a40;
+            --text-light: #f8f9fa;
+            --bg-light: #f4f6f9;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        #sim-root {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Loading Overlay */
+        #global-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+        .spinner-madrasah {
+            width: 3rem; height: 3rem;
+            color: var(--primary-color);
+        }
+
+        /* Layout SPA */
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Auth Container (Login & Setup) */
+        .auth-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+        .auth-card {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        /* Main Dashboard Layout */
+        #app-layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+            list-style: none;
+            margin: 0;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+            border-left: 4px solid var(--primary-color);
+        }
+        .sidebar-menu li a i { width: 25px; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .topbar {
+            background: #fff;
+            padding: 15px 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        .content-area {
+            padding: 25px;
+            flex: 1;
+        }
+
+        /* Cards & Tables */
+        .card { border: none; box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075); border-radius: 10px; margin-bottom: 20px; }
+        .card-header { background-color: #fff; border-bottom: 1px solid #f0f0f0; font-weight: 600; }
+        .table-responsive { border-radius: 8px; overflow: hidden; }
+        .table th { background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; }
+
+        @media (max-width: 768px) {
+            #app-layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; }
+            .sidebar-menu { display: flex; flex-wrap: wrap; }
+            .sidebar-menu li { flex: 1 1 50%; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="sim-root">
+    <!-- Global Loader -->
+    <div id="global-loader">
+        <div class="spinner-border spinner-madrasah" role="status"></div>
+        <h5 class="mt-3 text-muted">Memuat Sistem...</h5>
+    </div>
+
+    <!-- VIEW: SETUP DATABASE -->
+    <div id="view-setup" class="view-section auth-wrapper">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <i class="fas fa-database fa-3x text-success mb-3"></i>
+                <h4>Setup Awal Sistem</h4>
+                <p class="text-muted small">Database belum terdeteksi. Silakan lakukan setup awal.</p>
+            </div>
+            <form id="form-setup" onsubmit="handleSetup(event)">
+                <div class="mb-3">
+                    <label class="form-label">Nama Lembaga</label>
+                    <input type="text" id="setup-lembaga" class="form-control" required value="MIS MIFTAHUSSA'ADAH">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nama Kepala Madrasah</label>
+                    <input type="text" id="setup-kepala" class="form-control" required>
+                </div>
+                <hr>
+                <h6 class="mb-3">Akun Administrator Default</h6>
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="setup-username" class="form-control" required value="admin">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="setup-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100"><i class="fas fa-cogs"></i> Mulai Setup & Buat Database</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW: LOGIN -->
+    <div id="view-login" class="view-section auth-wrapper">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <img src="https://via.placeholder.com/80/198754/FFFFFF?text=SIM" alt="Logo" class="rounded-circle mb-3" id="login-logo-img">
+                <h4 id="login-lembaga-nama">SIM Madrasah Digital</h4>
+                <p class="text-muted small">Silakan login untuk mengakses sistem</p>
+            </div>
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" id="login-username" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="login-password" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success w-100 mb-3"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW: MAIN APP (Dashboard dll) -->
+    <div id="view-main" class="view-section">
+        <div id="app-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <h5 class="mb-0 text-truncate" id="sidebar-lembaga">SIM Madrasah</h5>
+                    <small class="text-muted" id="sidebar-role">Role</small>
+                </div>
+                <ul class="sidebar-menu" id="menu-container">
+                    <!-- Menu dirender dinamis via JS berdasarkan Role -->
+                </ul>
+                <div class="p-3 mt-auto">
+                    <button class="btn btn-outline-danger w-100 btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <header class="topbar">
+                    <div>
+                        <button class="btn btn-light d-md-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                        <span class="h5 mb-0 ms-2" id="topbar-title">Dashboard</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3 d-none d-md-block" id="topbar-user">Nama User</span>
+                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width:35px;height:35px;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="content-area" id="main-content-area">
+                    <!-- Konten dinamis dirender di sini -->
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     LOGIKA JAVASCRIPT (SPA & API CALLS)
+     ========================================== -->
+<script>
+    // ==========================================
+    // KONFIGURASI UTAMA BLOGGER DEPLOYMENT
+    // ==========================================
+    const IS_PREVIEW = false; // UBAH KE false SAAT DEPLOY PRODUCTION
+    // GANTI TEKS DI BAWAH INI DENGAN URL WEB APP GAS ANDA YANG BERAKHIRAN /exec
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwpaM35dtme8xUWFQZneMvSydsLcOvkuq6Q_9VocOpTKqzuztnJBMMr6s2JO0Uc_9q5MA/exec"; 
+
+    // ==========================================
+    // STATE MANAGEMENT
+    // ==========================================
+    const AppState = {
+        user: null,
+        settings: {},
+        currentModule: 'dashboard'
+    };
+
+    // ==========================================
+    // MOCK DATA & MOCK API UNTUK PREVIEW MODE
+    // ==========================================
+    const DUMMY_DB = {
+        setupStatus: { isSetup: true },
+        settings: { nama_lembaga: "MIS MIFTAHUSSA'ADAH", kepala_madrasah: "Ahmad, S.Pd.I" },
+        users: [
+            { id: 'u1', nama_lengkap: 'Admin Utama', username: 'admin', role: 'Admin', status: 'Aktif', passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }, // hash dr 'admin'
+            { id: 'u2', nama_lengkap: 'Budi Guru', username: 'guru1', role: 'Guru', status: 'Aktif', passwordHash: '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' }
+        ],
+        jurnal: [
+            { id: 'j1', tanggal: '2023-10-25', mapel: 'Aqidah Akhlak', materi: 'Sifat Wajib Allah', kelas_id: 'Kls 1' }
+        ]
+    };
+
+    async function mockAPI(payload) {
+        console.log("Mock API Called:", payload.action, payload.data);
+        await new Promise(r => setTimeout(r, 600)); // Simulasi delay jaringan
+
+        switch (payload.action) {
+            case 'checkSetup':
+                return { status: 'success', data: DUMMY_DB.setupStatus };
+            case 'setupDatabase':
+                DUMMY_DB.setupStatus.isSetup = true;
+                return { status: 'success', data: { message: 'Setup Mock Berhasil' } };
+            case 'login':
+                const user = DUMMY_DB.users.find(u => u.username === payload.data.username && u.passwordHash === payload.data.password);
+                if (user) {
+                    let u = {...user}; delete u.passwordHash;
+                    return { status: 'success', data: { user: u, settings: DUMMY_DB.settings } };
+                }
+                throw new Error("Username atau password salah (Mock)");
+            case 'getData':
+                if (payload.data.sheetName === 'Users') return { status: 'success', data: DUMMY_DB.users };
+                if (payload.data.sheetName === 'JurnalGuru') return { status: 'success', data: DUMMY_DB.jurnal };
+                return { status: 'success', data: [] };
+            case 'getDashboardStats':
+                return { status: 'success', data: { totalSiswa: 150, totalGuru: 12, totalUsers: 165, guruHadirHariIni: 10 } };
+            default:
+                return { status: 'success', data: [] };
+        }
+    }
+
+    // ==========================================
+    // UTILITIES
+    // ==========================================
+    
+    // Hash Password menggunakan Web Crypto API
+    async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function showLoader(show) {
+        document.getElementById('global-loader').style.display = show ? 'flex' : 'none';
+    }
+
+    function toast(message, type = 'success') {
+        Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, icon: type, title: message });
+    }
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+    }
+
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        sb.style.display = sb.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    // ==========================================
+    // API CALLER (Fetch wrapper)
+    // ==========================================
+    async function callAPI(action, data = {}) {
+        const payload = { action: action, data: data };
+        
+        if (IS_PREVIEW) {
+            const res = await mockAPI(payload);
+            if(res.status === 'error') throw new Error(res.message);
+            return res.data;
+        }
+
+        if (GAS_URL === "https://script.google.com/macros/s/AKfycbwpaM35dtme8xUWFQZneMvSydsLcOvkuq6Q_9VocOpTKqzuztnJBMMr6s2JO0Uc_9q5MA/exec") {
+            throw new Error("GAS_URL belum dikonfigurasi. Silakan update di HTML.");
+        }
+
+        try {
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain untuk GAS CORS
+                redirect: 'follow'
+            });
+            const result = await response.json();
+            if (result.status === 'error') throw new Error(result.message);
+            return result.data;
+        } catch (error) {
+            console.error("API Error:", error);
+            throw new Error("Gagal terhubung ke server: " + error.message);
+        }
+    }
+
+    // ==========================================
+    // INITIALIZATION & ROUTING
+    // ==========================================
+    window.onload = async () => {
+        // Cek sesi login
+        const savedSession = sessionStorage.getItem('sim_session');
+        if (savedSession) {
+            const sessionData = JSON.parse(savedSession);
+            AppState.user = sessionData.user;
+            AppState.settings = sessionData.settings;
+            initDashboard();
+            return;
+        }
+
+        // Cek status setup database
+        try {
+            const check = await callAPI('checkSetup');
+            if (check.isSetup) {
+                switchView('view-login');
+            } else {
+                switchView('view-setup');
+            }
+        } catch (err) {
+            Swal.fire('Error', err.message, 'error');
+            switchView('view-login'); // Fallback to login on error
+        } finally {
+            showLoader(false);
+        }
+    };
+
+    // ==========================================
+    // SETUP HANDLER
+    // ==========================================
+    async function handleSetup(e) {
+        e.preventDefault();
+        showLoader(true);
+        const btn = e.target.querySelector('button');
+        btn.disabled = true;
+
+        try {
+            const pwdPlain = document.getElementById('setup-password').value;
+            const pwdHash = await sha256(pwdPlain);
+
+            const data = {
+                nama_lembaga: document.getElementById('setup-lembaga').value,
+                nama_kepala: document.getElementById('setup-kepala').value,
+                username: document.getElementById('setup-username').value,
+                password: pwdHash
+            };
+
+            await callAPI('setupDatabase', data);
+            Swal.fire('Berhasil!', 'Database berhasil dibuat. Silakan login.', 'success').then(() => {
+                switchView('view-login');
+            });
+        } catch (err) {
+            Swal.fire('Gagal Setup', err.message, 'error');
+        } finally {
+            showLoader(false);
+            btn.disabled = false;
+        }
+    }
+
+    // ==========================================
+    // LOGIN HANDLER
+    // ==========================================
+    async function handleLogin(e) {
+        e.preventDefault();
+        showLoader(true);
+        
+        try {
+            const user = document.getElementById('login-username').value;
+            const passPlain = document.getElementById('login-password').value;
+            const passHash = await sha256(passPlain);
+
+            const response = await callAPI('login', { username: user, password: passHash });
+            
+            AppState.user = response.user;
+            AppState.settings = response.settings;
+            
+            sessionStorage.setItem('sim_session', JSON.stringify(response));
+            
+            initDashboard();
+        } catch (err) {
+            Swal.fire('Login Gagal', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    function logout() {
+        sessionStorage.removeItem('sim_session');
+        AppState.user = null;
+        switchView('view-login');
+    }
+
+    // ==========================================
+    // DASHBOARD & MENU RENDERER
+    // ==========================================
+    function initDashboard() {
+        // Set info identitas
+        document.getElementById('sidebar-lembaga').innerText = AppState.settings.nama_lembaga || 'SIM Madrasah';
+        document.getElementById('sidebar-role').innerText = AppState.user.role;
+        document.getElementById('topbar-user').innerText = AppState.user.nama_lengkap;
+
+        renderMenu();
+        loadModule('dashboard');
+        switchView('view-main');
+        showLoader(false);
+    }
+
+    function renderMenu() {
+        const role = AppState.user.role;
+        const menuContainer = document.getElementById('menu-container');
+        let menus = [];
+
+        // Definisi Menu Berdasarkan Role
+        if (role === 'Admin') {
+            menus = [
+                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard' },
+                { id: 'users', icon: 'fa-users-cog', text: 'Manajemen User' },
+                { id: 'master', icon: 'fa-database', text: 'Data Master (Guru/Siswa)' },
+                { id: 'pengaturan', icon: 'fa-cogs', text: 'Pengaturan Sistem' }
+            ];
+        } else if (role === 'Kepala Madrasah') {
+            menus = [
+                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard Monitoring' },
+                { id: 'lap_absen', icon: 'fa-clipboard-check', text: 'Laporan Absensi' },
+                { id: 'lap_jurnal', icon: 'fa-book', text: 'Monitoring Jurnal' }
+            ];
+        } else if (role === 'Guru') {
+            menus = [
+                { id: 'dashboard', icon: 'fa-tachometer-alt', text: 'Dashboard' },
+                { id: 'jurnal', icon: 'fa-book-open', text: 'Jurnal Mengajar' },
+                { id: 'absen_siswa', icon: 'fa-user-check', text: 'Absensi Siswa' },
+                { id: 'tahfidz', icon: 'fa-quran', text: 'Bina Tahfidz' }
+            ];
+        }
+
+        let html = '';
+        menus.forEach(m => {
+            html += `<li><a href="#" id="menu-${m.id}" onclick="loadModule('${m.id}')"><i class="fas ${m.icon}"></i> ${m.text}</a></li>`;
+        });
+        menuContainer.innerHTML = html;
+    }
+
+    // ==========================================
+    // MODULE LOADER
+    // ==========================================
+    async function loadModule(moduleId) {
+        showLoader(true);
+        AppState.currentModule = moduleId;
+        document.getElementById('topbar-title').innerText = moduleId.toUpperCase().replace('_', ' ');
+        
+        // Update active menu class
+        document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+        const activeMenu = document.getElementById('menu-' + moduleId);
+        if(activeMenu) activeMenu.classList.add('active');
+
+        const contentArea = document.getElementById('main-content-area');
+        contentArea.innerHTML = ''; // Clear
+
+        try {
+            if (moduleId === 'dashboard') await renderDashboard(contentArea);
+            else if (moduleId === 'users') await renderUsersMenu(contentArea);
+            else if (moduleId === 'jurnal') await renderJurnalMenu(contentArea);
+            else {
+                contentArea.innerHTML = `<div class="alert alert-info">Modul <b>${moduleId}</b> sedang dalam tahap pengembangan.</div>`;
+            }
+        } catch (err) {
+            contentArea.innerHTML = `<div class="alert alert-danger">Error memuat modul: ${err.message}</div>`;
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    // --- MODULE: DASHBOARD ---
+    async function renderDashboard(container) {
+        const stats = await callAPI('getDashboardStats', { role: AppState.user.role });
+        
+        let html = `<div class="row">`;
+        
+        if(['Admin', 'Kepala Madrasah'].includes(AppState.user.role)) {
+            html += `
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div><h6 class="mb-0">Total Siswa</h6><h3 class="mb-0">${stats.totalSiswa || 0}</h3></div>
+                            <i class="fas fa-users fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div><h6 class="mb-0">Total Guru</h6><h3 class="mb-0">${stats.totalGuru || 0}</h3></div>
+                            <i class="fas fa-chalkboard-teacher fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div><h6 class="mb-0">Guru Hadir Hari Ini</h6><h3 class="mb-0">${stats.guruHadirHariIni || 0}</h3></div>
+                            <i class="fas fa-calendar-check fa-2x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `
+            <div class="col-12 mt-4">
+                <div class="card">
+                    <div class="card-header bg-white">Selamat Datang</div>
+                    <div class="card-body">
+                        <h5>${AppState.settings.nama_lembaga}</h5>
+                        <p>Selamat bertugas, <b>${AppState.user.nama_lengkap}</b>. Gunakan menu di samping untuk mengelola administrasi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        container.innerHTML = html;
+    }
+
+    // --- MODULE: MANAJEMEN USER (Admin Only) ---
+    async function renderUsersMenu(container) {
+        const users = await callAPI('getData', { sheetName: 'Users' });
+        
+        let html = `
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Data Pengguna Sistem</span>
+                    <button class="btn btn-sm btn-success" onclick="alert('Fitur Tambah User akan membuka modal')"><i class="fas fa-plus"></i> Tambah User</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        `;
+        
+        if(users.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-3">Tidak ada data user.</td></tr>`;
+        } else {
+            users.forEach(u => {
+                const badge = u.status === 'Aktif' ? 'bg-success' : 'bg-danger';
+                html += `
+                    <tr>
+                        <td>${u.nama_lengkap}</td>
+                        <td>${u.username}</td>
+                        <td><span class="badge bg-secondary">${u.role}</span></td>
+                        <td><span class="badge ${badge}">${u.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-warning" title="Reset Password"><i class="fas fa-key"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+
+    // --- MODULE: JURNAL MENGAJAR (Guru) ---
+    async function renderJurnalMenu(container) {
+        const jurnal = await callAPI('getData', { sheetName: 'JurnalGuru', filter: { user_id: AppState.user.id } });
+        
+        let html = `
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Riwayat Jurnal Mengajar</span>
+                    <button class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Isi Jurnal Baru</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kelas</th>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Materi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+        `;
+        
+        if(jurnal.length === 0) {
+            html += `<tr><td colspan="4" class="text-center py-4">Belum ada catatan jurnal.</td></tr>`;
+        } else {
+            jurnal.forEach(j => {
+                html += `
+                    <tr>
+                        <td>${j.tanggal || '-'}</td>
+                        <td>${j.kelas_id || '-'}</td>
+                        <td>${j.mapel || '-'}</td>
+                        <td>${j.materi || '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+
+</script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

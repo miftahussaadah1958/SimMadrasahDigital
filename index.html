@@ -260,6 +260,86 @@
             </main>
         </div>
     </div>
+
+    <!-- ==========================================
+         MODALS (FORM INPUT DATA)
+         ========================================== -->
+    <!-- Modal Tambah User -->
+    <div class="modal fade" id="modalUser" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form onsubmit="handleSaveData(event, 'Users')">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tambah User Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2"><label>Nama Lengkap</label><input type="text" name="nama_lengkap" class="form-control" required></div>
+                        <div class="mb-2"><label>Username</label><input type="text" name="username" class="form-control" required></div>
+                        <div class="mb-2"><label>Password</label><input type="password" name="password" class="form-control" required></div>
+                        <div class="mb-2"><label>Role</label>
+                            <select name="role" class="form-select">
+                                <option value="Guru">Guru</option>
+                                <option value="Siswa">Siswa</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Kepala Madrasah">Kepala Madrasah</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="status" value="Aktif">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Guru -->
+    <div class="modal fade" id="modalGuru" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form onsubmit="handleSaveData(event, 'Guru')">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tambah Data Guru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2"><label>NIP / NUPTK</label><input type="text" name="nip" class="form-control"></div>
+                        <div class="mb-2"><label>Nama Guru</label><input type="text" name="nama" class="form-control" required></div>
+                        <div class="mb-2"><label>No HP</label><input type="text" name="no_hp" class="form-control"></div>
+                        <div class="mb-2"><label>Alamat</label><textarea name="alamat" class="form-control"></textarea></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan Guru</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Jurnal -->
+    <div class="modal fade" id="modalJurnal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form onsubmit="handleSaveData(event, 'JurnalGuru')">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Isi Jurnal Mengajar</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2"><label>Tanggal</label><input type="date" name="tanggal" class="form-control" required></div>
+                        <div class="mb-2"><label>Kelas</label><input type="text" name="kelas_id" class="form-control" required placeholder="Contoh: Kelas 1A"></div>
+                        <div class="mb-2"><label>Mata Pelajaran</label><input type="text" name="mapel" class="form-control" required></div>
+                        <div class="mb-2"><label>Materi / Kegiatan</label><textarea name="materi" class="form-control" required rows="3"></textarea></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Simpan Jurnal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ==========================================
@@ -373,18 +453,30 @@
         }
 
         try {
+            console.log("Mengirim request ke GAS:", action);
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain untuk GAS CORS
                 redirect: 'follow'
             });
-            const result = await response.json();
+
+            // Ambil sebagai teks terlebih dahulu untuk melacak error jika format bukan JSON
+            const textResponse = await response.text(); 
+            
+            let result;
+            try {
+                result = JSON.parse(textResponse);
+            } catch (parseError) {
+                console.error("Gagal membaca JSON dari GAS. Response server asli:", textResponse);
+                throw new Error("Server mengembalikan respons error. Pastikan backend Anda sudah menggunakan versi terbaru (New Version).");
+            }
+
             if (result.status === 'error') throw new Error(result.message);
             return result.data;
         } catch (error) {
-            console.error("API Error:", error);
-            throw new Error("Gagal terhubung ke server: " + error.message);
+            console.error("API Error Detail:", error);
+            throw new Error("Gagal terhubung: " + error.message);
         }
     }
 
@@ -552,6 +644,7 @@
         try {
             if (moduleId === 'dashboard') await renderDashboard(contentArea);
             else if (moduleId === 'users') await renderUsersMenu(contentArea);
+            else if (moduleId === 'master') await renderMasterMenu(contentArea);
             else if (moduleId === 'jurnal') await renderJurnalMenu(contentArea);
             else {
                 contentArea.innerHTML = `<div class="alert alert-info">Modul <b>${moduleId}</b> sedang dalam tahap pengembangan.</div>`;
@@ -620,7 +713,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Data Pengguna Sistem</span>
-                    <button class="btn btn-sm btn-success" onclick="alert('Fitur Tambah User akan membuka modal')"><i class="fas fa-plus"></i> Tambah User</button>
+                    <button class="btn btn-sm btn-success" onclick="new bootstrap.Modal(document.getElementById('modalUser')).show()"><i class="fas fa-plus"></i> Tambah User</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -649,9 +742,46 @@
                         <td><span class="badge bg-secondary">${u.role}</span></td>
                         <td><span class="badge ${badge}">${u.status}</span></td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-outline-warning" title="Reset Password"><i class="fas fa-key"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" title="Hapus User" onclick="deleteData('Users', '${u.id}')"><i class="fas fa-trash"></i></button>
                         </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+
+    // --- MODULE: DATA MASTER GURU ---
+    async function renderMasterMenu(container) {
+        const gurus = await callAPI('getData', { sheetName: 'Guru' });
+        
+        let html = `
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Data Master Guru</span>
+                    <button class="btn btn-sm btn-success" onclick="new bootstrap.Modal(document.getElementById('modalGuru')).show()"><i class="fas fa-plus"></i> Tambah Guru</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr><th>NIP/NUPTK</th><th>Nama Guru</th><th>No HP</th><th>Aksi</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        
+        if(gurus.length === 0) {
+            html += `<tr><td colspan="4" class="text-center py-4">Belum ada data guru.</td></tr>`;
+        } else {
+            gurus.forEach(g => {
+                html += `
+                    <tr>
+                        <td>${g.nip || '-'}</td>
+                        <td>${g.nama || '-'}</td>
+                        <td>${g.no_hp || '-'}</td>
+                        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteData('Guru', '${g.id}')"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
             });
@@ -669,7 +799,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Riwayat Jurnal Mengajar</span>
-                    <button class="btn btn-sm btn-success"><i class="fas fa-plus"></i> Isi Jurnal Baru</button>
+                    <button class="btn btn-sm btn-success" onclick="new bootstrap.Modal(document.getElementById('modalJurnal')).show()"><i class="fas fa-plus"></i> Isi Jurnal Baru</button>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -680,13 +810,14 @@
                                     <th>Kelas</th>
                                     <th>Mata Pelajaran</th>
                                     <th>Materi</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
         `;
         
         if(jurnal.length === 0) {
-            html += `<tr><td colspan="4" class="text-center py-4">Belum ada catatan jurnal.</td></tr>`;
+            html += `<tr><td colspan="5" class="text-center py-4">Belum ada catatan jurnal.</td></tr>`;
         } else {
             jurnal.forEach(j => {
                 html += `
@@ -695,6 +826,7 @@
                         <td>${j.kelas_id || '-'}</td>
                         <td>${j.mapel || '-'}</td>
                         <td>${j.materi || '-'}</td>
+                        <td><button class="btn btn-sm btn-outline-danger" onclick="deleteData('JurnalGuru', '${j.id}')"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `;
             });
@@ -704,6 +836,75 @@
         container.innerHTML = html;
     }
 
+    // ==========================================
+    // GENERIC CRUD HANDLERS (SAVE & DELETE)
+    // ==========================================
+    async function handleSaveData(e, sheetName) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        let record = Object.fromEntries(formData.entries());
+
+        showLoader(true);
+        try {
+            // Jika sheet Users, password harus di hash dulu sebelum dikirim
+            if (sheetName === 'Users' && record.password) {
+                record.password = await sha256(record.password);
+            }
+            // Jika Jurnal, catat ID Guru yang sedang login secara otomatis
+            if (sheetName === 'JurnalGuru') {
+                record.user_id = AppState.user.id;
+            }
+
+            await callAPI('insertData', { sheetName: sheetName, record: record });
+
+            // Tutup modal menggunakan API Bootstrap
+            const modalEl = form.closest('.modal');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if(modalInstance) modalInstance.hide();
+            
+            // Hilangkan background gelap modal
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+
+            form.reset();
+            Swal.fire('Berhasil!', 'Data berhasil ditambahkan.', 'success');
+            
+            // Muat ulang tabel agar data baru langsung muncul
+            loadModule(AppState.currentModule);
+
+        } catch (err) {
+            Swal.fire('Error', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    async function deleteData(sheetName, id) {
+        const result = await Swal.fire({
+            title: 'Hapus Data?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus!'
+        });
+
+        if (result.isConfirmed) {
+            showLoader(true);
+            try {
+                await callAPI('deleteData', { sheetName: sheetName, id: id });
+                Swal.fire('Terhapus!', 'Data telah dihapus.', 'success');
+                // Muat ulang tabel
+                loadModule(AppState.currentModule);
+            } catch (err) {
+                Swal.fire('Error', err.message, 'error');
+            } finally {
+                showLoader(false);
+            }
+        }
+    }
 </script>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

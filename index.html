@@ -1043,6 +1043,36 @@
         menuContainer.innerHTML = html;
     }
 
+    async function handleLogin(e) {
+        e.preventDefault();
+        showLoader(true, "Memvalidasi akun...");
+        try {
+            const user = document.getElementById('login-username').value;
+            const passPlain = document.getElementById('login-password').value;
+            const passHash = await sha256(passPlain);
+
+            const response = await callAPI('login', { username: user, password: passHash });
+            AppState.user = response.user;
+            if(response.settings) AppState.settings = { ...AppState.settings, ...response.settings };
+            
+            localStorage.setItem('sim_session', JSON.stringify(response));
+            initDashboard();
+        } catch (err) {
+            Swal.fire('Login Gagal', err.message, 'error');
+        } finally {
+            showLoader(false);
+        }
+    }
+
+    function logout() {
+        try { localStorage.removeItem('sim_session'); sessionStorage.removeItem('sim_session'); } catch (e) {}
+        AppState.user = null;
+        switchView('view-login');
+    }
+
+    // ==========================================
+    // MODULE LOADER ROUTER (PENGENDALI TAMPILAN SPA)
+    // ==========================================
     async function loadModule(moduleId) {
         showLoader(true, "Memuat data...");
         AppState.currentModule = moduleId;
@@ -2129,7 +2159,7 @@
         document.getElementById('formInventarisId').value = id;
         document.getElementById('formInventarisKode').value = kode;
         document.getElementById('formInventarisNama').value = nama;
-        document.getElementById('formInventarisLokasi').value = lokasi;
+        document.getElementById('formInventarisLocations').value = lokasi;
         document.getElementById('formInventarisKondisi').value = kondisi;
         document.getElementById('formInventarisTahun').value = tahun;
         new bootstrap.Modal(document.getElementById('modalInventaris')).show();
@@ -2169,6 +2199,165 @@
         }
         new bootstrap.Modal(document.getElementById('modalPenghubung')).show();
     }
+
+    // --- SINKRONISASI MODUL KHUSUS LAINNYA ---
+    async function renderKejadianMenu(container) {
+        const list = await callAPI('getData', { sheetName: 'KejadianSiswa' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(k => mySiswaNames.includes(k.siswa_id));
+            }
+        }
+
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Buku Kejadian Harian Siswa</span>
+                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddKejadianModal()"><i class="fas fa-plus"></i> Catat Kejadian</button>` : ''}
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle small">
+                            <thead class="table-light">
+                                <tr><th>Siswa</th><th>Tanggal</th><th>Kategori</th><th>Jenis</th><th>Keterangan</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        if (filteredList.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-3">Tidak ada catatan kejadian.</td></tr>`;
+        } else {
+            filteredList.forEach(k => {
+                const badge = k.kategori === 'Positif' ? 'bg-success' : 'bg-danger';
+                html += `
+                    <tr>
+                        <td>${k.siswa_id}</td>
+                        <td>${k.tanggal}</td>
+                        <td><span class="badge ${badge}">${k.kategori}</span></td>
+                        <td><b>${k.jenis}</b></td>
+                        <td>${k.kronologi}</td>
+                    </tr>
+                `;
+            });
+        }
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+    window.renderKejadianMenu = renderKejadianMenu;
+
+    async function renderTahfidzMenu(container) {
+        const list = await callAPI('getData', { sheetName: 'Tahfidz' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(t => mySiswaNames.includes(t.siswa_id));
+            }
+        } else if (AppState.user.role === 'Orang Tua') {
+            const childNis = AppState.user.username.replace('wali_', '');
+            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+            if (siswas.length > 0) {
+                filteredList = list.filter(t => t.siswa_id === siswas[0].nama_lengkap);
+            } else {
+                filteredList = [];
+            }
+        }
+
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Monitoring Hafalan Tahfidz Siswa</span>
+                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddTahfidzModal()"><i class="fas fa-plus"></i> Input Setoran</button>` : ''}
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle small">
+                            <thead class="table-light">
+                                <tr><th>Nama Siswa</th><th>Tanggal</th><th>Surah</th><th>Ayat</th><th>Status</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        if (filteredList.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-3">Belum ada catatan setoran tahfidz.</td></tr>`;
+        } else {
+            filteredList.forEach(t => {
+                html += `
+                    <tr>
+                        <td>${t.siswa_id}</td>
+                        <td>${t.tanggal}</td>
+                        <td>${t.surah}</td>
+                        <td>Ayat ${t.ayat}</td>
+                        <td><span class="badge bg-primary">${t.status_hafalan}</span></td>
+                    </tr>
+                `;
+            });
+        }
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+    window.renderTahfidzMenu = renderTahfidzMenu;
+
+    async function renderKarakterMenu(container) {
+        const list = await callAPI('getData', { sheetName: 'Karakter' });
+        let filteredList = list;
+        
+        if (AppState.user.role === 'Guru') {
+            const myClass = await getWaliKelasClass(AppState.user.id);
+            if (myClass) {
+                const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { kelas_id: myClass } });
+                const mySiswaNames = siswas.map(s => s.nama_lengkap);
+                filteredList = list.filter(k => mySiswaNames.includes(k.siswa_id));
+            }
+        } else if (AppState.user.role === 'Orang Tua') {
+            const childNis = AppState.user.username.replace('wali_', '');
+            const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
+            if (siswas.length > 0) {
+                filteredList = list.filter(k => k.siswa_id === siswas[0].nama_lengkap);
+            } else {
+                filteredList = [];
+            }
+        }
+
+        let html = `
+            <div class="card card-custom">
+                <div class="card-custom-header d-flex justify-content-between align-items-center">
+                    <span>Penilaian Karakter & Akhlak</span>
+                    ${AppState.user.role === 'Guru' ? `<button class="btn btn-sm btn-success" onclick="openAddKarakterModal()"><i class="fas fa-plus"></i> Input Nilai Karakter</button>` : ''}
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle small">
+                            <thead class="table-light">
+                                <tr><th>Siswa</th><th>Tanggal</th><th>Aspek</th><th>Nilai</th><th>Keterangan</th></tr>
+                            </thead>
+                            <tbody>
+        `;
+        if (filteredList.length === 0) {
+            html += `<tr><td colspan="5" class="text-center py-3">Belum ada penilaian karakter.</td></tr>`;
+        } else {
+            filteredList.forEach(k => {
+                html += `
+                    <tr>
+                        <td>${k.siswa_id}</td>
+                        <td>${k.tanggal}</td>
+                        <td><b>${k.aspek}</b></td>
+                        <td><span class="badge bg-info">Skor: ${k.nilai}/4</span></td>
+                        <td>${k.catatan || '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+        html += `</tbody></table></div></div></div>`;
+        container.innerHTML = html;
+    }
+    window.renderKarakterMenu = renderKarakterMenu;
 
     // ==========================================
     // GENERIC CRUD HANDLERS (SAVE & DELETE)

@@ -358,7 +358,7 @@
     <!-- VIEW: MAIN APP -->
     <div id="view-main" class="view-section">
         <div id="app-layout">
-            <!-- App Header -->
+            <!-- App Header (Top Navbar) -->
             <header class="app-header">
                 <div class="header-brand">
                     <button class="btn btn-link text-white d-md-none me-2 p-0" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
@@ -602,192 +602,8 @@
     </div>
 </div>
 
-<!-- Modal Tambah Kejadian Siswa -->
-<div class="modal fade" id="modalKejadian" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form onsubmit="handleSaveData(event, 'KejadianSiswa')">
-                <input type="hidden" name="id" id="formKejadianId">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalKejadianTitle">Catat Kejadian Harian Siswa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Pilih Siswa</label>
-                        <select name="siswa_id" id="formKejadianSiswa" class="form-select form-select-sm" required>
-                            <!-- Diisi dinamis -->
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Tanggal</label><input type="date" name="tanggal" id="formKejadianTanggal" class="form-control form-control-sm" required></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Kategori</label>
-                        <select name="kategori" id="formKejadianKategori" class="form-select form-select-sm">
-                            <option value="Positif">Positif (Prestasi/Disiplin)</option>
-                            <option value="Negatif">Negatif (Pelanggaran/Terlambat)</option>
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Jenis Kejadian</label><input type="text" name="jenis" id="formKejadianJenis" class="form-control form-control-sm" required placeholder="Cth: Terlambat, Juara Lomba"></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Kronologi / Keterangan</label><textarea name="kronologi" id="formKejadianKronologi" class="form-control form-control-sm" rows="3" required></textarea></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-success">Simpan Catatan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Tambah Tahfidz -->
-<div class="modal fade" id="modalTahfidz" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form onsubmit="handleSaveData(event, 'Tahfidz')">
-                <input type="hidden" name="id" id="formTahfidzId">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTahfidzTitle">Bina Tahfidz Siswa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Nama Siswa</label>
-                        <select name="siswa_id" id="formTahfidzSiswa" class="form-select form-select-sm" required>
-                            <!-- Diisi dinamis -->
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Tanggal</label><input type="date" name="tanggal" id="formTahfidzTanggal" class="form-control form-control-sm" required></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Surah</label><input type="text" name="surah" id="formTahfidzSurah" class="form-control form-control-sm" required placeholder="Cth: An-Naba'"></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Ayat</label><input type="text" name="ayat" id="formTahfidzAyat" class="form-control form-control-sm" required placeholder="Cth: 1-10"></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Status Hafalan</label>
-                        <select name="status_hafalan" id="formTahfidzStatus" class="form-select form-select-sm">
-                            <option value="Baru">Baru</option>
-                            <option value="Murajaah">Murajaah</option>
-                            <option value="Lancar">Lancar</option>
-                            <option value="Sangat Baik">Sangat Baik</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-success">Simpan Setoran</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Tambah Penilaian Karakter -->
-<div class="modal fade" id="modalKarakter" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form onsubmit="handleSaveData(event, 'Karakter')">
-                <input type="hidden" name="id" id="formKarakterId">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalKarakterTitle">Input Penilaian Karakter</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Nama Siswa</label>
-                        <select name="siswa_id" id="formKarakterSiswa" class="form-select form-select-sm" required>
-                            <!-- Diisi dinamis -->
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Tanggal</label><input type="date" name="tanggal" id="formKarakterTanggal" class="form-control form-control-sm" required></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Aspek Penilaian</label>
-                        <select name="aspek" id="formKarakterAspek" class="form-select form-select-sm">
-                            <option value="Disiplin">Disiplin</option>
-                            <option value="Kejujuran">Kejujuran</option>
-                            <option value="Tanggung Jawab">Tanggung Jawab</option>
-                            <option value="Akhlak">Akhlak / Sopan Santun</option>
-                            <option value="Ibadah">Aktivitas Ibadah</option>
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Nilai (Skala 1 - 4)</label>
-                        <select name="nilai" id="formKarakterNilai" class="form-select form-select-sm">
-                            <option value="4">4 (Sangat Baik)</option>
-                            <option value="3">3 (Baik)</option>
-                            <option value="2">2 (Cukup)</option>
-                            <option value="1">1 (Kurang)</option>
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Catatan</label><textarea name="catatan" id="formKarakterCatatan" class="form-control form-control-sm" rows="2"></textarea></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-success">Simpan Penilaian</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Tambah Inventaris -->
-<div class="modal fade" id="modalInventaris" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form onsubmit="handleSaveData(event, 'Inventaris')">
-                <input type="hidden" name="id" id="formInventarisId">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalInventarisTitle">Data Inventaris Barang</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2"><label class="form-label small fw-bold">Kode Barang</label><input type="text" name="kode" id="formInventarisKode" class="form-control form-control-sm" required placeholder="Cth: INV-MAD-001"></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Nama Barang</label><input type="text" name="nama" id="formInventarisNama" class="form-control form-control-sm" required></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Lokasi Penempatan</label><input type="text" name="lokasi" id="formInventarisLokasi" class="form-control form-control-sm" required placeholder="Cth: Ruang Guru"></div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Kondisi</label>
-                        <select name="kondisi" id="formInventarisKondisi" class="form-select form-select-sm">
-                            <option value="Baik">Baik</option>
-                            <option value="Rusak Ringan">Rusak Ringan</option>
-                            <option value="Rusak Berat">Rusak Berat</option>
-                        </select>
-                    </div>
-                    <div class="mb-2"><label class="form-label small fw-bold">Tahun Perolehan</label><input type="number" name="tahun" id="formInventarisTahun" class="form-control form-control-sm" required placeholder="Cth: 2023"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-success">Simpan Barang</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Buku Penghubung -->
-<div class="modal fade" id="modalPenghubung" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form onsubmit="handleSaveData(event, 'BukuPenghubung')">
-                <input type="hidden" name="id" id="formPenghubungId">
-                <input type="hidden" name="pengirim_id" id="formPenghubungPengirim">
-                <div class="modal-header">
-                    <h5 class="modal-title">Kirim Pesan Buku Penghubung</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Pilih Penerima Pesan</label>
-                        <select name="penerima_id" id="formPenghubungPenerima" class="form-select form-select-sm" required>
-                            <!-- Diisi dinamis -->
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Tanggal</label>
-                        <input type="date" name="tanggal" id="formPenghubungTanggal" class="form-control form-control-sm" required>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold">Isi Pesan / Catatan Perkembangan</label>
-                        <textarea name="pesan" id="formPenghubungPesan" class="form-control form-control-sm" rows="4" required placeholder="Tuliskan pesan..."></textarea>
-                    </div>
-                    <input type="hidden" name="status_baca" value="Belum Dibaca">
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-paper-plane"></i> Kirim Pesan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <!-- ==========================================
-     LOGIKA JAVASCRIPT UTAMA (LENGKAP)
+     LOGIKA JAVASCRIPT UTAMA (LENGKAP 100%)
      ========================================== -->
 <script>
     // ----------------------------------------
@@ -861,6 +677,7 @@
     // BOOTSTRAP & AUTH
     // ----------------------------------------
     window.onload = async () => {
+        // Caching Logo & Nama Lembaga Instan
         const cachedLogo = localStorage.getItem('madrasah_logo');
         const cachedName = localStorage.getItem('madrasah_name');
         if (cachedLogo) {
@@ -1056,7 +873,6 @@
     // ----------------------------------------
     async function renderDashboard(container) {
         if (AppState.user.role === 'Orang Tua') {
-            // Dashboard Orang Tua
             const childNis = AppState.user.username.replace('wali_', '');
             const siswas = await callAPI('getData', { sheetName: 'Siswa', filter: { nis: childNis } });
             if (siswas.length === 0) {
@@ -1075,7 +891,6 @@
             return;
         }
 
-        // Dashboard Admin & Guru
         const stats = await callAPI('getDashboardStats', { role: AppState.user.role });
         container.innerHTML = `
             <div class="row g-3 mb-4">
@@ -1103,10 +918,15 @@
 
     async function renderGuruMenu(container) {
         const list = await callAPI('getData', { sheetName: 'Guru' });
+        const users = await callAPI('getData', { sheetName: 'Users' }); 
+        
         let html = `<div class="card card-custom"><div class="card-custom-header d-flex justify-content-between"><span>Database Pendidik (Relasional Akun)</span><button class="btn btn-sm btn-success" onclick="openAddGuruModal()">Tambah Guru & Akun</button></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover mb-0 small"><thead class="table-light"><tr><th>Nama Guru</th><th>NIP</th><th>Wali Kelas</th><th>No HP</th><th>Aksi</th></tr></thead><tbody>`;
         list.forEach(g => {
-            html += `<tr><td><b>${g.nama}</b></td><td>${g.nip||'-'}</td><td><span class="badge bg-secondary">${g.kelas_id||'-'}</span></td><td>${g.no_hp||'-'}</td>
-            <td><button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editGuru('${g.id}', '${g.user_id}', '${g.nip||''}', '${(g.nama||'').replace(/'/g,"\\'")}', '${g.no_hp||''}', '${(g.alamat||'').replace(/'/g,"\\'")}', '${g.kelas_id||''}', '${(g.jabatan_tambahan||'').replace(/'/g,"\\'")}')">Edit</button>
+            const u = users.find(x => x.id === g.user_id);
+            const namaLengkap = u ? u.nama_lengkap : (g.nama || 'Tanpa Nama');
+
+            html += `<tr><td><b>${namaLengkap}</b></td><td>${g.nip||'-'}</td><td><span class="badge bg-secondary">${g.kelas_id||'-'}</span></td><td>${g.no_hp||'-'}</td>
+            <td><button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editGuru('${g.id}', '${g.user_id}', '${g.nip||''}', '${namaLengkap.replace(/'/g,"\\'")}', '${g.no_hp||''}', '${(g.alamat||'').replace(/'/g,"\\'")}', '${g.kelas_id||''}', '${(g.jabatan_tambahan||'').replace(/'/g,"\\'")}')">Edit</button>
             <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteGuruIntegrated('${g.id}', '${g.user_id}')">Hapus</button></td></tr>`;
         });
         container.innerHTML = html + `</tbody></table></div></div></div>`;
@@ -1126,10 +946,20 @@
     async function renderKelasMenu(container) {
         const kelas = await callAPI('getData', { sheetName: 'Kelas' });
         const gurus = await callAPI('getData', { sheetName: 'Guru' });
+        const users = await callAPI('getData', { sheetName: 'Users' });
+
         let html = `<div class="card card-custom"><div class="card-custom-header d-flex justify-content-between"><span>Manajemen Kelas</span><button class="btn btn-sm btn-success" onclick="openAddKelasModal()">Buat Kelas</button></div><div class="card-body p-0"><div class="table-responsive"><table class="table table-hover mb-0 small"><thead class="table-light"><tr><th>Nama Kelas</th><th>Tingkat</th><th>Wali Kelas Binaan</th><th>Aksi</th></tr></thead><tbody>`;
         kelas.forEach(k => {
             const matchedGuru = gurus.find(g => g.user_id === k.wali_kelas_id || g.nama === k.wali_kelas_id);
-            const namaGuru = matchedGuru ? matchedGuru.nama : (k.wali_kelas_id || '-');
+            let namaGuru = k.wali_kelas_id || '-';
+            if (matchedGuru) {
+                const u = users.find(x => x.id === matchedGuru.user_id);
+                namaGuru = u ? u.nama_lengkap : (matchedGuru.nama || namaGuru);
+            } else {
+                const u = users.find(x => x.id === k.wali_kelas_id);
+                if (u) namaGuru = u.nama_lengkap;
+            }
+
             html += `<tr><td><b>${k.nama_kelas}</b></td><td>Tingkat ${k.tingkat}</td><td>${namaGuru}</td>
             <td><button class="btn btn-xs btn-outline-primary py-0 px-1" onclick="editKelas('${k.id}', '${k.nama_kelas}', '${k.tingkat}', '${k.wali_kelas_id}')">Edit</button>
             <button class="btn btn-xs btn-outline-danger py-0 px-1" onclick="deleteData('Kelas', '${k.id}')">Hapus</button></td></tr>`;
@@ -1302,17 +1132,47 @@
         `;
     }
     window.previewPrintOutput = async () => {
-        showLoader(true, "Mempersiapkan...");
+        showLoader(true, "Mempersiapkan dokumen cetak...");
         try {
-            const src = document.getElementById('print-source').value;
-            const data = await callAPI('getData', { sheetName: src });
-            let hd = "<tr>", rb = "";
-            if(data.length > 0) { Object.keys(data[0]).forEach(k => { if(k!=='id') hd += `<th>${k.toUpperCase()}</th>`; }); hd += "</tr>"; }
-            data.forEach(row => { rb += "<tr>"; Object.keys(row).forEach(k => { if(k!=='id') rb += `<td>${row[k]}</td>`; }); rb += "</tr>"; });
+            const source = document.getElementById('print-source').value;
+            const line1 = document.getElementById('print-kop-1').value;
+            const line2 = document.getElementById('print-kop-2').value;
+            const fontSize = document.getElementById('print-font-size').value;
             
-            const fs = document.getElementById('print-font-size').value;
+            const data = await callAPI('getData', { sheetName: source });
+            let headerCols = "";
+            let rowsHtml = "";
+
+            if (source === 'Siswa') {
+                headerCols = "<tr><th>NIS</th><th>NISN</th><th>Nama Siswa</th><th>Kelas</th><th>Orang Tua</th></tr>";
+                rowsHtml = data.map(s => `<tr><td>${s.nis}</td><td>${s.nisn}</td><td><b>${s.nama_lengkap}</b></td><td>${s.kelas_id}</td><td>${s.nama_wali}</td></tr>`).join('');
+            } else if (source === 'Guru') {
+                const users = await callAPI('getData', { sheetName: 'Users' });
+                headerCols = "<tr><th>NIP</th><th>Nama Lengkap Guru</th><th>Wali Kelas</th><th>No HP</th></tr>";
+                rowsHtml = data.map(g => {
+                    const u = users.find(x => x.id === g.user_id);
+                    const nm = u ? u.nama_lengkap : (g.nama || '-');
+                    return `<tr><td>${g.nip || '-'}</td><td><b>${nm}</b></td><td>${g.kelas_id || '-'}</td><td>${g.no_hp || '-'}</td></tr>`;
+                }).join('');
+            } else if (source === 'Inventaris') {
+                headerCols = "<tr><th>Kode</th><th>Nama Barang</th><th>Lokasi</th><th>Kondisi</th><th>Tahun</th></tr>";
+                rowsHtml = data.map(i => `<tr><td><code>${i.kode}</code></td><td><b>${i.nama}</b></td><td>${i.lokasi}</td><td>${i.kondisi}</td><td>${i.tahun}</td></tr>`).join('');
+            } else if (source === 'AbsensiSiswa') {
+                headerCols = "<tr><th>Tanggal</th><th>Nama Siswa</th><th>Kelas</th><th>Status</th><th>Keterangan</th></tr>";
+                rowsHtml = data.map(a => `<tr><td>${a.tanggal}</td><td><b>${a.siswa_id}</b></td><td>${a.kelas_id}</td><td>${a.status}</td><td>${a.keterangan || '-'}</td></tr>`).join('');
+            } else if (source === 'JurnalGuru') {
+                headerCols = "<tr><th>Tanggal</th><th>Kelas</th><th>Mata Pelajaran</th><th>Materi Pembelajaran</th></tr>";
+                rowsHtml = data.map(j => `<tr><td>${j.tanggal}</td><td>${j.kelas_id}</td><td><b>${j.mapel}</b></td><td>${j.materi}</td></tr>`).join('');
+            } else if (source === 'KejadianSiswa') {
+                headerCols = "<tr><th>Siswa</th><th>Tanggal</th><th>Kategori</th><th>Jenis Kejadian</th><th>Kronologi</th></tr>";
+                rowsHtml = data.map(k => `<tr><td><b>${k.siswa_id}</b></td><td>${k.tanggal}</td><td>${k.kategori}</td><td>${k.jenis}</td><td>${k.kronologi}</td></tr>`).join('');
+            } else if (source === 'Tahfidz') {
+                headerCols = "<tr><th>Siswa</th><th>Tanggal</th><th>Surah</th><th>Ayat</th><th>Status Hafalan</th></tr>";
+                rowsHtml = data.map(t => `<tr><td><b>${t.siswa_id}</b></td><td>${t.tanggal}</td><td>${t.surah}</td><td>Ayat ${t.ayat}</td><td>${t.status_hafalan}</td></tr>`).join('');
+            }
+
             const logo = AppState.settings.logo_url || 'https://via.placeholder.com/80/000000/FFFFFF?text=LOGO';
-            const html = `<div style="font-family:serif; font-size:${fs};"><div style="text-align:center; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:10px;"><img src="${logo}" style="width:60px; float:left;"><h4 style="margin:0;">${document.getElementById('print-kop-1').value}</h4><h2 style="margin:0;">${document.getElementById('print-kop-2').value}</h2><div style="clear:both;"></div></div><h4 style="text-align:center;">LAPORAN ${src.toUpperCase()}</h4><table border="1" style="width:100%; border-collapse:collapse; font-size:${fs};"><thead>${hd}</thead><tbody>${rb}</tbody></table></div>`;
+            const html = `<div style="font-family:'Times New Roman', serif; font-size:${fontSize};"><div style="text-align:center; border-bottom:3px double #000; padding-bottom:10px; margin-bottom:10px;"><img src="${logo}" style="width:70px; float:left;"><h4 style="margin:0;">${line1}</h4><h2 style="margin:0;">${line2}</h2><div style="clear:both;"></div></div><h4 style="text-align:center;">LAPORAN ${source.toUpperCase()}</h4><table border="1" style="width:100%; border-collapse:collapse; font-size:${fontSize}; text-align:left;"><thead>${headerCols}</thead><tbody>${rowsHtml}</tbody></table></div>`;
             document.getElementById('print-preview-frame').innerHTML = html;
             document.getElementById('print-preview-frame').style.display = 'block';
             document.getElementById('btn-trigger-print').style.display = 'block';
@@ -1411,12 +1271,25 @@
 
     window.openAddKelasModal = async () => { 
         document.getElementById('formKelasId').value=''; document.querySelector('#modalKelas form').reset(); 
-        const gurus = await callAPI('getData', { sheetName: 'Guru' }); document.getElementById('formKelasWaliId').innerHTML = gurus.map(g=>`<option value="${g.nama}">${g.nama}</option>`).join('');
+        const gurus = await callAPI('getData', { sheetName: 'Guru' }); 
+        const users = await callAPI('getData', { sheetName: 'Users' });
+        document.getElementById('formKelasWaliId').innerHTML = `<option value="">-- Pilih Wali Kelas --</option>` + gurus.map(g=> {
+            const u = users.find(x => x.id === g.user_id);
+            const nm = u ? u.nama_lengkap : g.user_id;
+            return `<option value="${g.user_id}">${nm}</option>`;
+        }).join('');
         new bootstrap.Modal(document.getElementById('modalKelas')).show(); 
     };
     window.editKelas = async (id, nm, tkt, wal) => {
         document.getElementById('formKelasId').value=id; document.getElementById('formKelasNama').value=nm; document.getElementById('formKelasTingkat').value=tkt;
-        const gurus = await callAPI('getData', { sheetName: 'Guru' }); document.getElementById('formKelasWaliId').innerHTML = gurus.map(g=>`<option value="${g.nama}">${g.nama}</option>`).join(''); document.getElementById('formKelasWaliId').value=wal;
+        const gurus = await callAPI('getData', { sheetName: 'Guru' }); 
+        const users = await callAPI('getData', { sheetName: 'Users' });
+        document.getElementById('formKelasWaliId').innerHTML = `<option value="">-- Pilih Wali Kelas --</option>` + gurus.map(g=> {
+            const u = users.find(x => x.id === g.user_id);
+            const nm = u ? u.nama_lengkap : g.user_id;
+            return `<option value="${g.user_id}">${nm}</option>`;
+        }).join(''); 
+        document.getElementById('formKelasWaliId').value=wal;
         new bootstrap.Modal(document.getElementById('modalKelas')).show();
     };
 

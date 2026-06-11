@@ -865,43 +865,60 @@ function updateMobNav(id){const map={dashboard:'mob-dash',master_siswa:'mob-sisw
 ══════════════════════════════════════════ */
 window.onload=async()=>{
   updateOnline();
+
+  /* 1. Dark mode restore */
   try{if(localStorage.getItem('sim_dark')==='1')toggleDark()}catch(_){}
 
-  /* ── Restore cached brand instantly ── */
+  /* 2. Restore cached brand (instant, tanpa API) */
   try{
-    const cl=localStorage.getItem('madrasah_logo'),cn=localStorage.getItem('madrasah_name');
-    if(cl)['login-logo-img','app-user-avatar','sidebar-user-avatar'].forEach(id=>{const e=el(id);if(e)e.src=cl});
-    if(cn){['login-lembaga-nama','header-app-title','footer-brand-name','loader-lembaga'].forEach(id=>{const e=el(id);if(e)e.textContent=cn});document.title=cn}
+    const cl=localStorage.getItem('madrasah_logo');
+    const cn=localStorage.getItem('madrasah_name');
+    if(cl)['login-logo-img','app-user-avatar','sidebar-user-avatar'].forEach(i=>{const e=el(i);if(e)e.src=cl});
+    if(cn){['login-lembaga-nama','header-app-title','footer-brand-name','loader-lembaga'].forEach(i=>{const e=el(i);if(e)e.textContent=cn});document.title=cn}
   }catch(_){}
 
-  /* ── Restore session tanpa API call ── */
-  let sess=null;
-  try{sess=localStorage.getItem('sim_session')||sessionStorage.getItem('sim_session')}catch(_){}
-  if(sess){
-    try{
-      const sd=JSON.parse(sess);
-      if(sd?.user){S.user=sd.user;if(sd.settings)S.settings={...S.settings,...sd.settings};showLoader(false);initApp();return}
-    }catch(_){try{localStorage.removeItem('sim_session')}catch(__){}}
-  }
-
-  /* ── Jika offline langsung tampilkan login ── */
-  if(!navigator.onLine){showLoader(false);switchView('view-login');toast('warning','Tidak ada koneksi internet. Pastikan terhubung lalu muat ulang.',5000);return}
-
-  /* ── Cek setup GAS, timeout 5 detik ── */
-  showLoader(true,'Memeriksa konfigurasi...');
-  let timedOut=false;
-  const setupTimer=setTimeout(()=>{timedOut=true;showLoader(false);switchView('view-login');toast('info','Server lambat. Silakan login langsung.',4000)},5000);
+  /* 3. Restore session (instant, tanpa API) */
   try{
-    const res=await fetch(GAS_URL,{method:'POST',body:JSON.stringify({action:'checkSetup',data:{}}),headers:{'Content-Type':'text/plain;charset=utf-8'},redirect:'follow'});
-    clearTimeout(setupTimer);
-    if(timedOut)return;
-    const result=JSON.parse(await res.text());
-    switchView(result.data?.isSetup?'view-login':'view-setup');
-  }catch(e){
-    clearTimeout(setupTimer);
-    if(!timedOut){switchView('view-login');toast('info','Tidak dapat menghubungi server. Silakan coba login.',4000)}
-  }finally{if(!timedOut)showLoader(false)}
+    const raw=localStorage.getItem('sim_session')||sessionStorage.getItem('sim_session');
+    if(raw){
+      const sd=JSON.parse(raw);
+      if(sd&&sd.user){
+        S.user=sd.user;
+        if(sd.settings)S.settings=Object.assign({},S.settings,sd.settings);
+        showLoader(false);
+        initApp();
+        return; /* ← langsung masuk, tidak perlu checkSetup */
+      }
+    }
+  }catch(_){try{localStorage.removeItem('sim_session')}catch(__){}}
+
+  /* 4. Tidak ada session → LANGSUNG tampilkan login, sembunyikan loader */
+  showLoader(false);
+  switchView('view-login');
+
+  /* 5. Cek setup GAS di background (tidak memblokir UI) */
+  try{
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),4000);
+    const res=await fetch(GAS_URL,{
+      method:'POST',
+      body:JSON.stringify({action:'checkSetup',data:{}}),
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      redirect:'follow',
+      signal:ctrl.signal
+    });
+    clearTimeout(tid);
+    const json=JSON.parse(await res.text());
+    /* Jika belum setup → tampilkan view setup */
+    if(json&&json.data&&json.data.isSetup===false){
+      switchView('view-setup');
+    }
+    /* Jika sudah setup → tetap di view-login (sudah tampil) */
+  }catch(_){
+    /* Timeout/error → tidak apa-apa, user tetap di login */
+  }
 };
+
 
 
 /* ═══ AUTH ═══ */
